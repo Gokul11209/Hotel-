@@ -11,12 +11,14 @@
     "depends": ["hotel"],
     "demo": ["views/hotel_housekeeping_data.xml"],
     "data": [
+        "security/security.xml",
         "security/ir.model.access.csv",
         "views/report_hotel_housekeeping.xml",
         "views/hotel_housekeeping_view.xml",
         "report/hotel_housekeeping_report.xml",
         "wizard/hotel_housekeeping_wizard.xml",
         "wizard/cancel_wizard.xml",
+
 
     ],
     "installable": True,

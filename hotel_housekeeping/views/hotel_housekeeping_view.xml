@@ -138,6 +138,62 @@
         </field>
     </record>
 
+     <record id="hotel_calendar_view" model="ir.ui.view">
+        <field name="name">Hotel Housekeeping</field>
+        <field name="model">hotel.housekeeping</field>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <calendar
+                    string="House Keeping"
+                    date_start="current_date"
+                    date_stop="inspect_date_time"
+                    color="room_id"
+            >
+<!--                <field name="partner_id"/>-->
+            </calendar>
+        </field>
+    </record>
+
+     <record id="view_hotel_housekeeping_kanban" model="ir.ui.view">
+        <field name="name">hotel.housekeeping.kanban</field>
+        <field name="model">hotel.housekeeping</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <templates>
+                    <!--                    <field name="day"-->
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="room_id"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <!--                                                                <widget name="web_ribbon" title="3 DAYS" bg_color="bg-danger">-->
+<!--                                <div t-attf-class="ribbon ribbon-top-right">-->
+<!--                                    <span t-attf-class="ribbon-{{ record.state.raw_value }}">-->
+<!--&lt;!&ndash;                                        <t t-esc="record.state.raw_value"/>&ndash;&gt;-->
+<!--                                    </span>-->
+<!--                                </div>-->
+                                <!--                                </widget>-->
+                                <br/>
+                                <h4>
+                                    <field name="inspector_id"/>
+                                </h4>
+                                <br/>
+                                <b>Clean Type:</b>
+                                <field name="clean_type"/>
+                                <br/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!-- Tree view of hotel housekeeping -->
     <record id="view_hotel_housekeeping_tree" model="ir.ui.view">
         <field name="name">hotel.housekeeping.tree</field>
@@ -201,12 +257,19 @@
     </record>
 
     <!-- Action for hotel housekeeping -->
-    <record id="open_hotel_housekeeping_form_tree" model="ir.actions.act_window">
+<!--    <record id="open_hotel_housekeeping_form_tree" model="ir.actions.act_window">-->
+<!--        <field name="name">Housekeeping Services</field>-->
+<!--        <field name="res_model">hotel.housekeeping</field>-->
+<!--        <field name="binding_view_types">form</field>-->
+<!--        <field name="view_mode">kanban,tree,form,calendar</field>-->
+<!--        <field name="view_id" ref="view_hotel_housekeeping_tree" />-->
+<!--    </record>-->
+
+     <record id="open_hotel_housekeeping_form_tree" model="ir.actions.act_window">
         <field name="name">Housekeeping Services</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">hotel.housekeeping</field>
-        <field name="binding_view_types">form</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_hotel_housekeeping_tree" />
+        <field name="view_mode">kanban,tree,form,calendar</field>
     </record>
     <menuitem
         id="menu_housekeeping"
