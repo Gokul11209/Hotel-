@@ -1,0 +1,9 @@
+<odoo noupdate="1">
+    <!-- Sequences for hotel folio -->
+    <record id="seq_hotel_folio" model="ir.sequence">
+        <field name="name">Hotel Proforma</field>
+        <field name="code">hotel.folio</field>
+        <field name="prefix">Proforma/</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>
