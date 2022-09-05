@@ -25,15 +25,18 @@
         "views/hotel_folio_state.xml",
         "views/guest_reservations.xml",
         "views/payment_mode_view.xml",
+        "views/time_based_room_reserve.xml",
         # "views/assets.xml",
     ],
     'assets': {
         'web.assets_qweb': [
             'hotel_extended/static/src/xml/hotel_room_summary.xml',
+            'hotel_extended/static/src/xml/hotel_time_room_summary.xml',
         ],
         'web.assets_backend': [
             'hotel_extended/static/src/css/room_summary.css',
             'hotel_extended/static/src/js/hotel_room_summary.js',
+            # 'hotel_extended/static/src/js/time_based_room_summary.js',
         ],
     },
     "external_dependencies": {"python": ["python-dateutil"]},
