@@ -35,8 +35,9 @@
         ],
         'web.assets_backend': [
             'hotel_extended/static/src/css/room_summary.css',
+            'hotel_extended/static/src/css/reserve_summary_button.css',
+            'hotel_extended/static/src/js/time_room_summary.js',
             'hotel_extended/static/src/js/hotel_room_summary.js',
-            # 'hotel_extended/static/src/js/time_based_room_summary.js',
         ],
     },
     "external_dependencies": {"python": ["python-dateutil"]},

@@ -61,7 +61,7 @@ class MakeFolioWizard(models.TransientModel):
     _name = "wizard.make.folio"
     _description = "Allow to generate the folio"
 
-    grouped = fields.Boolean("Group the Folios")
+    grouped = fields.Boolean("Group the Proformas")
 
     def make_folios(self):
         reservation_obj = self.env["hotel.reservation"]
@@ -73,7 +73,7 @@ class MakeFolioWizard(models.TransientModel):
         ]
         return {
             "domain": "[('id','in', [" + ",".join(map(str, newinv)) + "])]",
-            "name": "Folios",
+            "name": "Proforma",
             "view_type": "form",
             "view_mode": "tree,form",
             "res_model": "hotel.folio",

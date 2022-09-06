@@ -124,9 +124,9 @@ class HotelReservation(models.Model):
         "hotel_folio_reservation_rel",
         "order_id",
         "invoice_id",
-        string="Folio",
+        string="Proforma",
     )
-    no_of_folio = fields.Integer("No. Folio", compute='_compute_folio_count')
+    no_of_folio = fields.Integer("No. Proforma", compute='_compute_folio_count')
     reservation_cancel_remarks = fields.Text(string='Reservation Cancel Remarks')
     reservation_cancel_remarks2 = fields.Text(string='Reservation Cancel Remarks')
     booking_hrs = fields.Float(string='Hrs', compute='_calculate_hrs', store=True)

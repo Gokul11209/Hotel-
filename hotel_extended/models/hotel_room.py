@@ -179,6 +179,7 @@ class RoomReservationSummary(models.Model):
                     room_detail.update({"floor": room.floor_id.name or "","name": room.name or ""})
                     if not room.room_reservation_line_ids and not room.room_line_ids:
                         for chk_date in date_range_list:
+                            print("==============Date===========",type(chk_date))
                             room_list_stats.append(
                                 {
                                     "state": "Free",
@@ -337,6 +338,8 @@ class RoomReservationSummary(models.Model):
                             )
                     else:
                         for chk_date in date_range_list:
+                            print("==============Date===========",type(chk_date))
+
                             reserve_draft_id = self.env["hotel.reservation"].search(
                                 [
                                     ("checkin", "<=", chk_date),
@@ -474,4 +477,12 @@ class RoomReservationSummary(models.Model):
             # print(main_header)
             # print(all_room_detail)
         return res
+
+    def name_get(self):
+        result = []
+        for rec in self:
+            name = rec.name
+            result.append((rec.room_categ_id.id, name))
+        return result
+
 

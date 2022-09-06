@@ -9,14 +9,31 @@
                     <h2>Room Reservation Summary</h2>
                 </header>
                 <sheet>
-                    <group colspan="4" col="4">
-                         <button name="%(hotel_extended.action_hotel_reservation_summary)d"
-                                string="Date"
-                                type="action" class="oe_highlight"/>
-                        <button name="%(hotel_extended.action_hotel_time_based_reservation_summary)d"
-                                string="Time"
-                                type="action" class="oe_highlight"/>
-                    </group>
+                    <div class="reserve_summary_button">
+                        <group>
+                            <button name="%(hotel_extended.action_hotel_reservation_summary)d"
+                                    icon="fa-calendar"
+                                    type="action"
+                                    class="summary_btn">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                Date Based Reservation
+                            </button>
+                            <button name="%(hotel_extended.action_hotel_time_based_reservation_summary)d"
+                                    type="action"
+                                    icon="fa-clock-o"
+                                    class="summary_btn">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <!--                                <i class="icon"><img src="/hotel_extended/static/src/css/icon.png"/></i>-->
+                                Time Based Reservation
+                            </button>
+                        </group>
+                    </div>
                 </sheet>
             </form>
         </field>
@@ -39,14 +56,6 @@
                 </header>
                 <sheet>
                     <group colspan="4" col="4">
-                        <div>
-                            <label for="date_from" string="Summary Period"/>
-                            <field name="date_from" class="oe_inline"
-                                   widget="daterange" options="{'related_end_date': 'date_to'}"/>
-                            to
-                            <field name="date_to" class="oe_inline"
-                                   widget="daterange" options="{'related_start_date': 'date_to'}"/>
-                        </div>
                         <field name="date_today"/>
                     </group>
                     <group colspan="4" col="4">

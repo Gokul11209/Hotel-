@@ -14,11 +14,6 @@
                 </t>
                 <t t-foreach="widget.get('room_summary')" t-as="detail">
                     <tr id="table_row">
-<!--                        <td style="text-align:center;" class="table_floor table_room">-->
-<!--                            <div class="table_row_header">-->
-<!--                                <t t-esc="detail.floor"/>-->
-<!--                            </div>-->
-<!--                        </td>-->
                         <td style="text-align:center;" class="table_room">
                             <div class="table_row_header">
                                 <t t-esc="detail.name"/>

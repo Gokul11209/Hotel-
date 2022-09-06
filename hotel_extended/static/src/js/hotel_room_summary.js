@@ -1,4 +1,4 @@
-odoo.define("hotel_reservation.hotel_room_summary", function (require) {
+odoo.define("hotel_extended.hotel_room_summary", function (require) {
     "use strict";
 
     var core = require("web.core");
@@ -66,6 +66,7 @@ odoo.define("hotel_reservation.hotel_room_summary", function (require) {
                         room_id: $(this).attr("data"),
                         date: $(this).attr("date"),
                         default_adults: 1,
+
                     },
                 });
             });

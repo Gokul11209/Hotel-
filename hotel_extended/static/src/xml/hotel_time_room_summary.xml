@@ -30,6 +30,7 @@
                                         class="table_free"
                                         t-att-data="status.room_id"
                                         t-att-date="status.date"
+                                        t-att-entry="status.entry"
                                         style="text-align:center;"
                                 >
                                     <t t-esc="status.state"/>
