@@ -57,20 +57,57 @@ odoo.define("hotel_extended.time_hotel_room_summary", function (require) {
         load_form: function () {
             var self = this;
             this.$el.find(".table_free").bind("click", function () {
-                self.do_action({
-                    type: "ir.actions.act_window",
-                    res_model: "quick.room.reservation",
-                    views: [[false, "form"]],
-                    target: "new",
-                    context:{
-                        room_id: $(this).attr("data"),
-                        time: $(this).attr("time"),
-                        date: $(this).attr("date"),
-                        entry: $(this).attr("entry"),
-                        default_adults: 1,
-                        default_active: true,
-                    },
-                });
+                const d = new Date();
+                let hour = d.getHours();
+                let hour_2 = hour.toString();
+                var year = d.getFullYear().toString();
+                var month =d.getMonth() + 1;
+                var day = d.getDate().toString();
+
+                var d1 = d.toString();
+                var month_1 = month.toString();
+                var full_date = year + "-0" + month_1 + "-0" + day + " "
+                console.log(full_date,"================",$(this).attr("date"))
+                if ($(this).attr("date") <= full_date){
+                    if ($(this).attr("entry") <= hour_2){
+                    console.log("=========================================", $(this).attr("entry"), typeof(hour_2))
+                    alert(
+                    "Alert-Warning!,  Dear Guest, you cannot reserve the past time, Reservation will be available from current time onwards,");
+                    }
+                    else{
+                        self.do_action({
+                            type: "ir.actions.act_window",
+                            res_model: "quick.room.reservation",
+                            views: [[false, "form"]],
+                            target: "new",
+                            context:{
+                                room_id: $(this).attr("data"),
+                                time: $(this).attr("time"),
+                                date: $(this).attr("date"),
+                                entry: $(this).attr("entry"),
+                                default_adults: 1,
+                                default_active: true,
+                                },
+                            })
+                        }
+
+                }
+                else{
+                    self.do_action({
+                        type: "ir.actions.act_window",
+                        res_model: "quick.room.reservation",
+                        views: [[false, "form"]],
+                        target: "new",
+                        context:{
+                            room_id: $(this).attr("data"),
+                            time: $(this).attr("time"),
+                            date: $(this).attr("date"),
+                            entry: $(this).attr("entry"),
+                            default_adults: 1,
+                            default_active: true,
+                        },
+                    });
+                }
 
             });
             this.$el.find(".table_reserved").bind("click", function () {

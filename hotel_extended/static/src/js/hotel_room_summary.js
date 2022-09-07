@@ -56,19 +56,38 @@ odoo.define("hotel_extended.hotel_room_summary", function (require) {
 
         load_form: function () {
             var self = this;
-            this.$el.find(".table_free").bind("click", function () {
-                self.do_action({
-                    type: "ir.actions.act_window",
-                    res_model: "quick.room.reservation",
-                    views: [[false, "form"]],
-                    target: "new",
-                    context: {
-                        room_id: $(this).attr("data"),
-                        date: $(this).attr("date"),
-                        default_adults: 1,
+            var d = new Date();
+            var year = d.getFullYear().toString();
+            var month =d.getMonth() + 1;
+            var day = d.getDate().toString();
 
-                    },
-                });
+            var d1 = d.toString();
+            var month_1 = month.toString();
+
+            const myArray = d1.split(" ");
+
+            var full_date = year + "-0" + month_1 + "-0" + day + " " + myArray[4]
+
+            this.$el.find(".table_free").bind("click", function () {
+                if ($(this).attr("date") < full_date){
+                    console.log($(this).attr("date"),"=================================",full_date,"=========",typeof(year))
+                    alert(
+                    "Alert-Warning!,  Dear Guest, you cannot reserve the past time, Reservation will be available from current time onwards,");
+                    }
+                else{
+                    self.do_action({
+                        type: "ir.actions.act_window",
+                        res_model: "quick.room.reservation",
+                        views: [[false, "form"]],
+                        target: "new",
+                        context:{
+                            room_id: $(this).attr("data"),
+                            date: $(this).attr("date"),
+                            default_adults: 1,
+                        },
+                    });
+                }
+
             });
             this.$el.find(".table_reserved").bind("click", function () {
                 var res_id = $(this).data("id");

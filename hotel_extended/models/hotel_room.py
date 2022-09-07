@@ -167,11 +167,15 @@ class RoomReservationSummary(models.Model):
                 date_range_list.append(temp_date.strftime(dt))
                 temp_date = temp_date + timedelta(days=1)
             all_detail.append(summary_header_list)
-            domain = [('floor_id', '=', self.room_categ_id.ids),
-                      ('room_categ_id', '=', self.room_category.ids)]
-            room_ids = room_obj.search(domain)
+            domain = []
+
+            if self.room_categ_id:
+                domain = [('floor_id', '=', self.room_categ_id.ids)]
+            elif self.room_category:
+                domain = [('room_categ_id', '=', self.room_category.ids)]
+
             all_room_detail = []
-            if self.room_categ_id and self.room_category:
+            if self.room_categ_id or self.room_category:
                 room_ids = room_obj.search(domain)
                 for room in room_ids:
                     room_detail = {}
@@ -179,7 +183,6 @@ class RoomReservationSummary(models.Model):
                     room_detail.update({"floor": room.floor_id.name or "","name": room.name or ""})
                     if not room.room_reservation_line_ids and not room.room_line_ids:
                         for chk_date in date_range_list:
-                            print("==============Date===========",type(chk_date))
                             room_list_stats.append(
                                 {
                                     "state": "Free",
@@ -197,7 +200,6 @@ class RoomReservationSummary(models.Model):
                                     ("state", "=", "draft"),
                                 ]
                             )
-                            print('=============================================', reserve_draft_id)
                             ch_dt = chk_date[:10] + " 23:59:59"
                             ttime = datetime.strptime(ch_dt, dt)
                             c = ttime.replace(tzinfo=timezone).astimezone(
@@ -338,7 +340,6 @@ class RoomReservationSummary(models.Model):
                             )
                     else:
                         for chk_date in date_range_list:
-                            print("==============Date===========",type(chk_date))
 
                             reserve_draft_id = self.env["hotel.reservation"].search(
                                 [

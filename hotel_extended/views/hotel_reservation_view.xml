@@ -437,15 +437,15 @@
                 <sheet>
                     <field name="guest_creation" widget="statusbar" options="{'horizontal': True, 'clickable': '1',}"
                            required="1"/>
-                    <field name="active"/>
+                    <field name="active" invisible="1"/>
                     <br/>
                     <field name="room_image" widget='image' class="oe_avatar"
                            attrs="{'invisible': [('guest_creation', '=', 'new')]}"/>
                     <group colspan="4" col="4" attrs="{'invisible': [('guest_creation', '=', 'new')]}">
                         <field name="search_mobile"/>
                         <field name="reserve_date"/>
-                        <field name="check_in_time" attrs="{'invisible': [('active', '==', 'True')]}"/>
-                        <field name="check_out_time" attrs="{'invisible': [('active', '==', 'True')]}"/>
+                        <field name="check_in_time" attrs="{'invisible': [('active', '!=', True)]}"/>
+                        <field name="check_out_time" attrs="{'invisible': [('active', '!=', True)]}"/>
                         <field name="partner_id" readonly="1" force_save="1"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
@@ -460,10 +460,10 @@
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                         <field name="check_in"
                                options="{'no_open': True, 'no_create': True}"
-                               attrs="{'invisible': [('active', '!=', 'True')]}"/>
+                               attrs="{'invisible': [('active', '==', True)]}"/>
                         <field name="check_out"
                                options="{'no_open': True, 'no_create': True}"
-                                attrs="{'invisible': [('active', '!=', 'True')]}"/>
+                                attrs="{'invisible': [('active', '==', True)]}"/>
 
                         <field name="partner_invoice_id" readonly="1" force_save="1"
                                options="{'no_open': True, 'no_create': True}"

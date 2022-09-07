@@ -157,6 +157,7 @@ class HotelReservation(models.Model):
                 raise ValidationError(_("Alert!,Reference of {self.reservation_id.name} Check Out Date Should be"
                                         "less than the Check In Date"))
 
+
     @api.constrains("checkin", "checkout")
     def _check_dates(self):
         if self.checkin > self.checkout:

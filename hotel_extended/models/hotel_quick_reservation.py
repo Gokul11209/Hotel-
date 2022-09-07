@@ -300,6 +300,12 @@ class QuickRoomReservation(models.TransientModel):
                 print("THe final result is", datetime_object_2)
 
             for res in self:
+                date_time_1 = datetime.datetime.strptime(datetime_object, "%Y-%m-%d %H:%M:%S")
+                date_time_2 = datetime.datetime.strptime(datetime_object_2, "%Y-%m-%d %H:%M:%S")
+                datetime_object_11 = date_time_1 - timedelta(hours=5, minutes=30)
+                datetime_object_12 = date_time_2 - timedelta(hours=5, minutes=30)
+                print(datetime_object_11, "===============", datetime_object_12)
+
                 if self.advance_amt == 0:
                     print('*************ZERO******************')
                     rec = hotel_res_obj.create(
@@ -308,8 +314,8 @@ class QuickRoomReservation(models.TransientModel):
                             "partner_invoice_id": res.partner_invoice_id.id,
                             "partner_order_id": res.partner_order_id.id,
                             "partner_shipping_id": res.partner_shipping_id.id,
-                            "checkin": datetime_object,
-                            "checkout": datetime_object_2,
+                            "checkin": datetime_object_11,
+                            "checkout": datetime_object_12,
                             "company_id": res.company_id.id,
                             "pricelist_id": res.pricelist_id.id,
                             "adults": res.adults,
@@ -333,8 +339,8 @@ class QuickRoomReservation(models.TransientModel):
                         "partner_invoice_id": res.partner_invoice_id.id,
                         "partner_order_id": res.partner_order_id.id,
                         "partner_shipping_id": res.partner_shipping_id.id,
-                        "checkin": datetime_object,
-                        "checkout": datetime_object_2,
+                        "checkin": datetime_object_11,
+                        "checkout": datetime_object_12,
                         "company_id": res.company_id.id,
                         "pricelist_id": res.pricelist_id.id,
                         "adults": res.adults,
@@ -354,19 +360,20 @@ class QuickRoomReservation(models.TransientModel):
                     })
                     hotel_res_obj_new = self.env["hotel.reservation"].search([
                         ("partner_id", "=", res.partner_id.id),
-                        ("checkin", "=", datetime_object),
-                        ("checkout", "=", datetime_object_2),
+                        ("checkin", "=", datetime_object_11),
+                        ("checkout", "=", datetime_object_12),
                         ("adults", "=", res.adults),
                         # ("reservation_line.name", "=", res.room_id.name),
                     ])
                     vals = {
                         "room_id": res.room_id.id,
-                        "check_in": datetime_object,
-                        "check_out": datetime_object_2,
+                        "check_in": datetime_object_11,
+                        "check_out": datetime_object_12,
                         "state": "assigned",
                         "status": "confirm",
                         "reservation_id": hotel_res_obj_new.id,
                     }
+                    print(vals)
                     self.room_id.room_reservation_line_ids.sudo().create(vals)
 
 
