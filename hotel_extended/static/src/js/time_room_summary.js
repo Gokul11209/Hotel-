@@ -58,18 +58,31 @@ odoo.define("hotel_extended.time_hotel_room_summary", function (require) {
             var self = this;
             this.$el.find(".table_free").bind("click", function () {
                 const d = new Date();
-                let hour = d.getHours();
-                let hour_2 = hour.toString();
+                var hour = d.getHours();
+                var hour_2 = hour.toString();
+                var minutes = d.getMinutes();
+                var min = minutes.toString();
+
                 var year = d.getFullYear().toString();
                 var month =d.getMonth() + 1;
                 var day = d.getDate().toString();
 
                 var d1 = d.toString();
                 var month_1 = month.toString();
-                var full_date = year + "-0" + month_1 + "-0" + day + " "
-                console.log(full_date,"================",$(this).attr("date"))
+                var day_day = day.length;
+                if(day_day ==  1){
+                    var full_date = year + "-0" + month_1 + "-0" + day + " "
+                }else{
+                    var full_date = year + "-0" + month_1  + "-" + day + " "
+                }
+
+                var full_time = hour_2 + ":" + min + ":00"
+
+
+
+                console.log(full_date,"================",$(this).attr("date"),"===",$(this).attr("entry"),full_time)
                 if ($(this).attr("date") <= full_date){
-                    if ($(this).attr("entry") <= hour_2){
+                    if ($(this).attr("entry") < full_time){
                     console.log("=========================================", $(this).attr("entry"), typeof(hour_2))
                     alert(
                     "Alert-Warning!,  Dear Guest, you cannot reserve the past time, Reservation will be available from current time onwards,");

@@ -11,7 +11,7 @@
     "depends": ["hotel"],
     "demo": ["views/hotel_housekeeping_data.xml"],
     "data": [
-        "security/security.xml",
+        # "security/security.xml",
         "security/ir.model.access.csv",
         "views/report_hotel_housekeeping.xml",
         "views/hotel_housekeeping_view.xml",

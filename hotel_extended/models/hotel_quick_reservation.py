@@ -3,6 +3,7 @@ from datetime import datetime
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
+import datetime
 
 
 
@@ -20,6 +21,10 @@ class QuickRoomReservation(models.TransientModel):
         "hotel.room",
         string="Room"
     )
+    room_category = fields.Many2one(related='room_id.room_categ_id', string='Room Category')
+    room_floor_id = fields.Many2one(related='room_id.floor_id', string='Floor')
+    room_capacity = fields.Integer(related='room_id.capacity', string='Room Capacity')
+    room_no = fields.Char(related='room_id.room_no', string='Room No')
     company_id = fields.Many2one(
         "res.company",
         string="Hotel",
@@ -52,6 +57,7 @@ class QuickRoomReservation(models.TransientModel):
         related='room_id.image_1920'
     )
     adults = fields.Integer("Adults")
+    children = fields.Integer("Children")
     guest_creation = fields.Selection(
         [("exist", "Exist"),
          ("new", "New")],
@@ -93,6 +99,26 @@ class QuickRoomReservation(models.TransientModel):
     reserve_date = fields.Date(string="Date")
     check_in_time = fields.Char(string="Check In Time")
     check_out_time = fields.Char(string="Check Out Time")
+    room_price = fields.Float(related='room_id.standard_price', string="Price")
+    hrs_selection = fields.Selection([
+        ('12', '12 Hours'),
+        ('24', '24 Hours'),],
+        string='Hours',
+    )
+
+
+    @api.onchange('hrs_selection')
+    def calculate_hours(self):
+        if self.hrs_selection == str(12):
+            time = str(self.check_in_time)
+            time_12 = datetime.datetime.strptime(time, "%H:%M")
+            twelve_hrs_time = time_12 - timedelta(hours=12, minutes=00)
+            twelve_hrs_time = str(twelve_hrs_time).split()[-1]
+            twelve_hrs_time_1 = twelve_hrs_time.split(":")
+            twelve_hrs_time_12 = twelve_hrs_time_1[0] + ":" + twelve_hrs_time_1[1]
+            self.check_out_time = twelve_hrs_time_12
+        elif self.hrs_selection == str(24):
+            self.check_out_time = self.check_in_time
 
 
     @api.onchange('search_mobile')
@@ -173,7 +199,9 @@ class QuickRoomReservation(models.TransientModel):
         if "date" in keys:
             res.update({"reserve_date": self._context["date"]})
         if "entry" in keys:
-            res.update({"check_in_time":self._context["entry"]})
+            res.update({"check_in_time": self._context["entry"]})
+        if "date" in keys:
+            res.update({"check_in": self._context["date"]})
         if "room_id" in keys:
             roomid = self._context["room_id"]
             res.update({"room_id": int(roomid)})
@@ -187,6 +215,7 @@ class QuickRoomReservation(models.TransientModel):
         @param self: The object pointer
         @return: new record set for hotel reservation.
         """
+        global datetime_object_2
         hotel_advance_pay = self.env["account.payment"]
         hotel_res_obj = self.env["hotel.reservation"]
         for i in self:
@@ -215,6 +244,7 @@ class QuickRoomReservation(models.TransientModel):
                             "partner_shipping_id": res.partner_shipping_id.id,
                             "checkin": res.check_in,
                             "checkout": res.check_out,
+                            "reservation_hrs_selection": res.hrs_selection,
                             "company_id": res.company_id.id,
                             "pricelist_id": res.pricelist_id.id,
                             "adults": res.adults,
@@ -241,6 +271,7 @@ class QuickRoomReservation(models.TransientModel):
                         "partner_shipping_id": res.partner_shipping_id.id,
                         "checkin": res.check_in,
                         "checkout": res.check_out,
+                        "reservation_hrs_selection": res.hrs_selection,
                         "company_id": res.company_id.id,
                         "pricelist_id": res.pricelist_id.id,
                         "adults": res.adults,
@@ -304,6 +335,8 @@ class QuickRoomReservation(models.TransientModel):
                 date_time_2 = datetime.datetime.strptime(datetime_object_2, "%Y-%m-%d %H:%M:%S")
                 datetime_object_11 = date_time_1 - timedelta(hours=5, minutes=30)
                 datetime_object_12 = date_time_2 - timedelta(hours=5, minutes=30)
+                if self.hrs_selection == str(24):
+                    datetime_object_12 = date_time_2 + timedelta(hours=29, minutes=30)
                 print(datetime_object_11, "===============", datetime_object_12)
 
                 if self.advance_amt == 0:
@@ -316,6 +349,7 @@ class QuickRoomReservation(models.TransientModel):
                             "partner_shipping_id": res.partner_shipping_id.id,
                             "checkin": datetime_object_11,
                             "checkout": datetime_object_12,
+                            "reservation_hrs_selection": res.hrs_selection,
                             "company_id": res.company_id.id,
                             "pricelist_id": res.pricelist_id.id,
                             "adults": res.adults,
@@ -341,6 +375,7 @@ class QuickRoomReservation(models.TransientModel):
                         "partner_shipping_id": res.partner_shipping_id.id,
                         "checkin": datetime_object_11,
                         "checkout": datetime_object_12,
+                        "reservation_hrs_selection": res.hrs_selection,
                         "company_id": res.company_id.id,
                         "pricelist_id": res.pricelist_id.id,
                         "adults": res.adults,
@@ -397,4 +432,5 @@ class QuickRoomReservation(models.TransientModel):
                 self.write({
                     'guest_creation': 'exist',
                     'partner_id': partner.id,
+                    'search_mobile': val.mobile,
                 })

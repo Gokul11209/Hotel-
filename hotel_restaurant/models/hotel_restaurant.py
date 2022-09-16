@@ -179,7 +179,7 @@ class HotelRestaurantReservation(models.Model):
             ("cancel", "Cancelled"),
             ("order", "Order Created"),
         ],
-        "state",
+        "State",
         required=True,
         readonly=True,
         copy=False,

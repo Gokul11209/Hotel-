@@ -80,15 +80,15 @@
                                    attrs="{'required': [('partner_id', '!=', False)]}"/>
                             <field
                                     name="partner_order_id"
-                                    domain="[('parent_id','=',partner_id)]"
-                            />
+                                    domain="[('parent_id','=',partner_id)]"/>
+                            <field name="reservation_hrs_selection" readonly="1"/>
                             <newline/>
                             <field
                                     name="partner_invoice_id"
                                     domain="[('parent_id','=',partner_id)]"
                             />
                             <field
-                                    name="advance_payment"/>
+                                    name="advance_payment" attrs="{'readonly': [('state', '=', 'done')]}"/>
                             <field
                                     name="partner_shipping_id"
                                     domain="[('parent_id','=',partner_id)]"
@@ -102,7 +102,7 @@
                             <field name="children"/>
                             <field name="booking_hrs" force_save="1"/>
                             <field name="days" force_save="1" readonly='1'/>
-                            <field name="proof_type" force_save="1"/>
+                            <field name="proof_type" force_save="1" attrs="{'readonly': [('state', '=', 'done')]}"/>
                         </group>
                     </group>
                     <notebook>
@@ -201,10 +201,23 @@
                                 <b>Children:</b>
                                 <field name="children"/>
                                 <br/>
+                                <t t-if="record.reservation_hrs_selection.raw_value">
+                                    <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-success"
+                                          style="font-size:15px;">
+                                        <field name="reservation_hrs_selection"/>
+                                    </span>
+                                </t>
                                 <t t-if="record.days.raw_value">
                                     <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"
                                           style="font-size:15px;">
                                         <field name="days"/>
+                                    </span>
+                                </t>
+                                <t t-elif="record.booking_hrs.raw_value">
+                                    <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"
+                                          style="font-size:15px;">
+                                        <field name="booking_hrs"/>
+                                        <span>Hrs/Mints</span>
                                     </span>
                                 </t>
                                 <span>
@@ -444,6 +457,10 @@
                     <group colspan="4" col="4" attrs="{'invisible': [('guest_creation', '=', 'new')]}">
                         <field name="search_mobile"/>
                         <field name="reserve_date"/>
+                         <field name="company_id"
+                               options="{'no_open': True, 'no_create': True}"
+                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                        <field name="hrs_selection"/>
                         <field name="check_in_time" attrs="{'invisible': [('active', '!=', True)]}"/>
                         <field name="check_out_time" attrs="{'invisible': [('active', '!=', True)]}"/>
                         <field name="partner_id" readonly="1" force_save="1"
@@ -452,19 +469,28 @@
                         <field name="room_id" readonly="1"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="company_id"
+                        <field name="room_no" readonly="1"
+                               options="{'no_open': True, 'no_create': True}"
+                               attrs="{'required': [('guest_creation', '=', 'exist')]}" invisible="1"/>
+                        <field name="room_no" readonly="1"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="pricelist_id"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+
+                        <field name="room_price" widget="badge" decoration-success="room_price != 0 "
+                               readonly="1"/>
+                        <field name="room_category" readonly="1"
+                               options="{'no_open': True, 'no_create': True}"/>
+                        <field name="room_floor_id" readonly="1"
+                               options="{'no_open': True, 'no_create': True}"/>
+                        <field name="room_capacity" readonly="1"
+                               options="{'no_open': True, 'no_create': True}"/>
+
                         <field name="check_in"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'invisible': [('active', '==', True)]}"/>
                         <field name="check_out"
                                options="{'no_open': True, 'no_create': True}"
-                                attrs="{'invisible': [('active', '==', True)]}"/>
-
+                               attrs="{'invisible': [('active', '==', True)]}"/>
                         <field name="partner_invoice_id" readonly="1" force_save="1"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
@@ -486,11 +512,14 @@
                         <field name="journal" attrs="{'required': [('guest_creation', '=', 'exist')]}"
                                options="{'no_create': True}"/>
                         <field name="adults" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                         <field name="pricelist_id"
+                               options="{'no_open': True, 'no_create': True}"
+                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                        <field name="children" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                         <field name="advance_amt" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                         <field name="add_proof_type" readonly="1" force_save="1"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                         <field name="add_proof" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-
                     </group>
                     <group colspan="4" col="4" attrs="{'invisible': [('guest_creation', '=', 'exist')]}">
                         <field name="guest_type" widget="radio" options="{'horizontal': True, 'clickable': '1',}"

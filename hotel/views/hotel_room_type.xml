@@ -12,6 +12,7 @@
                         <field name="name" />
                         <field name="categ_id" select="1" />
                         <field name="child_ids" invisible="1" />
+                        <field name="short_code"/>
                     </group>
                 </sheet>
             </form>

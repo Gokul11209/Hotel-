@@ -12,6 +12,7 @@ class HotelFloor(models.Model):
 
     name = fields.Char("Floor Name", required=True, index=True)
     sequence = fields.Integer("sequence", default=10)
+    short_code = fields.Char(string="Prefix")
 
     @api.constrains('name')
     def _check_floor_name(self):
@@ -45,6 +46,7 @@ class HotelRoom(models.Model):
         help="At which floor the room is located.",
         ondelete="restrict",
     )
+    short_code = fields.Char(string="Prefix")
     max_adult = fields.Integer()
     max_child = fields.Integer()
     room_categ_id = fields.Many2one(
@@ -57,6 +59,7 @@ class HotelRoom(models.Model):
         [('book', 'Booked'), ("available", "Available"), ("occupied", "Occupied")],
         default="available",
     )
+    room_no = fields.Char(string="Room No")
     capacity = fields.Integer(required=True)
     room_line_ids = fields.One2many(
         "folio.room.line", "room_id", string="Room Reservation Line"
@@ -145,6 +148,7 @@ class HotelRoomType(models.Model):
         copy=False,
         ondelete="restrict",
     )
+    short_code = fields.Char(string="Prefix")
 
     @api.constrains('name')
     def _check_room_type_name(self):
@@ -240,6 +244,7 @@ class HotelRoomAmenitiesType(models.Model):
     child_ids = fields.One2many(
         "hotel.room.amenities.type", "amenity_id", "Amenities Child Categories"
     )
+
     product_categ_id = fields.Many2one(
         "product.category",
         "Product Category",
