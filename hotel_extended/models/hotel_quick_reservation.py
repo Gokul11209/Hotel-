@@ -101,24 +101,37 @@ class QuickRoomReservation(models.TransientModel):
     check_out_time = fields.Char(string="Check Out Time")
     room_price = fields.Float(related='room_id.list_price', string="Price")
     hrs_selection = fields.Selection([
+        ('short', 'Short Close'),
         ('12', '12 Hours'),
         ('24', '24 Hours'),],
         string='Hours',
     )
+    manuly_enter_hrs = fields.Integer(string="Time")
+    company_currency = fields.Many2one(related='company_id.currency_id',string="Currency")
 
 
     @api.onchange('hrs_selection')
     def calculate_hours(self):
+        time = str(self.check_in_time)
+        time_1 = datetime.datetime.strptime(time, "%H:%M")
         if self.hrs_selection == str(12):
-            time = str(self.check_in_time)
-            time_12 = datetime.datetime.strptime(time, "%H:%M")
-            twelve_hrs_time = time_12 - timedelta(hours=12, minutes=00)
+            twelve_hrs_time = time_1 + timedelta(hours=12, minutes=00)
             twelve_hrs_time = str(twelve_hrs_time).split()[-1]
             twelve_hrs_time_1 = twelve_hrs_time.split(":")
             twelve_hrs_time_12 = twelve_hrs_time_1[0] + ":" + twelve_hrs_time_1[1]
             self.check_out_time = twelve_hrs_time_12
         elif self.hrs_selection == str(24):
             self.check_out_time = self.check_in_time
+    @api.onchange('manuly_enter_hrs')
+    def manuly_enter_hours(self):
+        time = str(self.check_in_time)
+        time_1 = datetime.datetime.strptime(time, "%H:%M")
+        if self.hrs_selection == 'short':
+            enter_time = time_1 + timedelta(hours=self.manuly_enter_hrs, minutes=00)
+            enter_time = str(enter_time).split()[-1]
+            enter_time_1 = enter_time.split(":")
+            enter_time_100 = enter_time_1[0] + ":" + enter_time_1[1]
+            self.check_out_time = enter_time_100
 
 
     @api.onchange('search_mobile')

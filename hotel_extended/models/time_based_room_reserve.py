@@ -77,17 +77,17 @@ class TimeBasedRoomReserve(models.Model):
                   "time_interval")  # noqa C901 (function is too complex)
     def get_room_summary_for_day(self):  # noqa C901 (function is too complex)
         import datetime
-        start = "00:00:00"
-        end = "23:59:59"
+        start = "00:00"
+        end = "23:59"
         if self.time_interval:
             delta = datetime.timedelta(minutes=int(self.time_interval))
-        start = datetime.datetime.strptime(start, '%H:%M:%S')
-        end = datetime.datetime.strptime(end, '%H:%M:%S')
+        start = datetime.datetime.strptime(start, '%H:%M')
+        end = datetime.datetime.strptime(end, '%H:%M')
         t = start
         summary_header_list = []
         if self.time_interval:
             while t <= end:
-                interval = datetime.datetime.strftime(t, '%H:%M:%S')
+                interval = datetime.datetime.strftime(t, '%H:%M')
                 summary_header_list.append(interval)
                 t += delta
         global reserve_checkin_date, reserve_checkout_date
@@ -222,18 +222,15 @@ class TimeBasedRoomReserve(models.Model):
                         else:
                             if not self.time_interval:
                                 if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
-                                    print(chk_date,reserve_checkin_date,reserve_checkout_date)
                                     for entry in summary_header_list:
                                         m2 = datetime.datetime.strptime(entry, '%I %p')
                                         m3 = str(m2).split(':')[0].split(' ')[-1]
                                         reserve_checkin_time = str(reserve_checkin_time).split(':')[0]
                                         reserve_checkout_time = str(reserve_checkout_time).split(':')[0]
                                         if reserve_checkin_time <= m3 <= reserve_checkout_time:
-                                            print(reserve_checkin_time, m3, reserve_checkout_time)
                                             for i in room_list_stats:
                                                 if i["state"] == 'Free' and str(i['date']) == str(chk_date) \
                                                         and i['entry'] == m3 + ':' + '00':
-                                                    print(i)
                                                     i.update(
                                                         {
                                                             "state": "Reserved",
@@ -246,16 +243,13 @@ class TimeBasedRoomReserve(models.Model):
                                                     )
                             else:
                                 if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
-                                    print(chk_date,reserve_checkin_date,reserve_checkout_date)
                                     for entry in summary_header_list:
                                         reserve_checkin_time = str(reserve_checkin_time)
                                         reserve_checkout_time = str(reserve_checkout_time)
                                         if reserve_checkin_time <= entry <= reserve_checkout_time:
-                                            print(reserve_checkin_time, entry, reserve_checkout_time)
                                             for i in room_list_stats:
                                                 if i["state"] == 'Free' and str(i['date']) == str(chk_date) \
                                                         and i['entry'] == entry:
-                                                    print(i)
                                                     i.update(
                                                         {
                                                             "state": "Reserved",
@@ -287,7 +281,7 @@ class TimeBasedRoomReserve(models.Model):
                                     "state": "Free",
                                     "date": str(chk_date),
                                     "room_id": room.id,
-                                    "entry": entry,
+                                    "entry":  m3 + ':' + '00',
                                 }
                             )
 

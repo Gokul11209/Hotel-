@@ -457,10 +457,15 @@
                     <group colspan="4" col="4" attrs="{'invisible': [('guest_creation', '=', 'new')]}">
                         <field name="search_mobile"/>
                         <field name="reserve_date"/>
-                         <field name="company_id"
+                        <field name="company_id"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="hrs_selection"/>
+                        <label for="hrs_selection"/>
+                        <div class="o_row no-gutters d-flex">
+                            <field name="hrs_selection" class="oe_inline"/>
+                            <field name="manuly_enter_hrs" placeholder="Enter Time"
+                                   attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>
+                        </div>
                         <field name="check_in_time" attrs="{'invisible': [('active', '!=', True)]}"/>
                         <field name="check_out_time" attrs="{'invisible': [('active', '!=', True)]}"/>
                         <field name="partner_id" readonly="1" force_save="1"
@@ -475,15 +480,20 @@
                         <field name="room_no" readonly="1"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                        <label for="room_price"/>
+                        <div>
+                            <field name="room_price" class="oe_inline"
+                                   widget="badge" decoration-success="room_price != 0 "
+                                   readonly="1"/>/
+                            <field name="company_currency"/>
+                        </div>
 
-                        <field name="room_price" widget="badge" decoration-success="room_price != 0 "
-                               readonly="1"/>
                         <field name="room_category" readonly="1"
                                options="{'no_open': True, 'no_create': True}"/>
-                        
+
                         <field name="room_floor_id" readonly="1"
                                options="{'no_open': True, 'no_create': True}"/>
-                       
+
                         <field name="room_capacity" readonly="1"
                                options="{'no_open': True, 'no_create': True}"/>
 
@@ -515,7 +525,7 @@
                         <field name="journal" attrs="{'required': [('guest_creation', '=', 'exist')]}"
                                options="{'no_create': True}"/>
                         <field name="adults" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                         <field name="pricelist_id"
+                        <field name="pricelist_id"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                         <field name="children" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
