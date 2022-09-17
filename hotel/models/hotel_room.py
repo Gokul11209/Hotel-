@@ -244,7 +244,6 @@ class HotelRoomAmenitiesType(models.Model):
     child_ids = fields.One2many(
         "hotel.room.amenities.type", "amenity_id", "Amenities Child Categories"
     )
-
     product_categ_id = fields.Many2one(
         "product.category",
         "Product Category",

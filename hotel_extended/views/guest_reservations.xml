@@ -16,7 +16,7 @@
         <field name="name">customer.register.tree</field>
         <field name="model">customer.register</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree default_order='name desc'>
                 <field name="name"/>
                 <field name="mobile"/>
                 <field name="email"/>
@@ -125,7 +125,7 @@
         <field name="name">identity.register.tree</field>
         <field name="model">identity.register</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree default_order='name desc'>
                 <field name="name"/>
             </tree>
         </field>

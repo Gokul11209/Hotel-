@@ -21,6 +21,7 @@ class ChooseSummary(models.Model):
     name = fields.Char(string="Chose Summary")
     image = fields.Binary(string="Image")
 
+
     def name_get(self):
         result = []
         for rec in self:
@@ -124,7 +125,7 @@ class TimeBasedRoomReserve(models.Model):
                         ]
                     )
                     for reserve_val in room.room_reservation_line_ids:
-                        print("111111111111111111111111111111111111",room.id)
+                       
                         reserve_checkin = reserve_val.check_in + timedelta(hours=5, minutes=30)
                         reserve_checkout = reserve_val.check_out + timedelta(hours=5, minutes=30)
                         reserve_checkin_date = reserve_checkin.date()
@@ -217,6 +218,7 @@ class TimeBasedRoomReserve(models.Model):
                                                 "entry": entry,
                                             }
                                         )
+                           
                         else:
                             if not self.time_interval:
                                 if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
@@ -289,6 +291,7 @@ class TimeBasedRoomReserve(models.Model):
                                 }
                             )
 
+                
 
                 room_detail.update({"value": room_list_stats})
                 all_room_detail.append(room_detail)

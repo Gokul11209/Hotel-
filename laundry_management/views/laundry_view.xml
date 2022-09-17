@@ -42,11 +42,14 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_id"/>
+                                <field name="res_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
                                 <field name="partner_invoice_id" context="{'default_type':'invoice'}"
-                                       attrs="{'readonly': [('state','in',('done','return','cancel'))]}"/>
+                                       attrs="{'readonly': [('state','in',('done','return','cancel'))]}"
+                                       options="{'no_open': True, 'no_create': True}"/>
                                 <field name="partner_shipping_id" context="{'default_type':'delivery'}"
-                                       attrs="{'readonly': [('state','in',('done','return','cancel'))]}"/>
+                                       attrs="{'readonly': [('state','in',('done','return','cancel'))]}"
+                                       options="{'no_open': True, 'no_create': True}"/>
                             </group>
                             <group>
                                 <field name="order_date" attrs="{'readonly': [('state','!=','draft')]}"/>

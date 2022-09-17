@@ -17,3 +17,5 @@ access_payment_mode,payment.mode,model_payment_mode,,1,1,1,1
 access_hotel_management_cancel_remarks,hotel.management.cancel.remarks,model_hotel_management_cancel_remarks,,1,1,1,1
 access_time_based_room_reserve,time.based.room.reserve,model_time_based_room_reserve,,1,1,1,1
 access_choose_summary,choose.summary,model_choose_summary,,1,1,1,1
+access_house_keeping_details,house.keeping.details,model_house_keeping_details,,1,1,1,1
+access_laundry_details,laundry.details,model_laundry_details,,1,1,1,1

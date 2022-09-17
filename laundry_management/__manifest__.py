@@ -29,7 +29,7 @@
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',
     'website': "https://www.cybrosys.com",
-    'depends': ['base', 'mail', 'sale', 'account', 'uom'],
+    'depends': ['base', 'mail', 'sale', 'account', 'uom','hotel'],
     'data': [
         'data/data.xml',
         'security/laundry_security.xml',

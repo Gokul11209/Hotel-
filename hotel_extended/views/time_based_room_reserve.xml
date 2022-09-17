@@ -4,7 +4,7 @@
         <field name="name">choose.summary.form</field>
         <field name="model">choose.summary</field>
         <field name="arch" type="xml">
-            <form string="Room Reservation">
+            <form string="Room Reservation" create="false" duplicate="false" edit="false">
                 <header>
                     <h2>Room Reservation Summary</h2>
                 </header>

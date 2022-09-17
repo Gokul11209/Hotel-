@@ -287,6 +287,7 @@ class HotelReservation(models.Model):
         vals["reservation_no"] = (
                 self.env["ir.sequence"].next_by_code("hotel.reservation") or "New"
         )
+
         return super(HotelReservation, self).create(vals)
 
     def check_overlap(self, date1, date2):

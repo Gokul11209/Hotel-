@@ -269,7 +269,7 @@
         <field name="name">hotel.folio.tree</field>
         <field name="model">hotel.folio</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree default_order='name desc'>
                 <field name="checkin_date"/>
                 <field name="checkout_date"/>
                 <field name="name"/>
