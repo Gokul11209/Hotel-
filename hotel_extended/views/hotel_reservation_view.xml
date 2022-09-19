@@ -88,7 +88,7 @@
                                     domain="[('parent_id','=',partner_id)]"
                             />
                             <field
-                                    name="advance_payment" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                    name="advance_payment" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
                             <field
                                     name="partner_shipping_id"
                                     domain="[('parent_id','=',partner_id)]"
@@ -460,9 +460,9 @@
                         <field name="company_id"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <label for="hrs_selection"/>
+                        <label for="hrs_selection" attrs="{'invisible': [('active', '!=', True)]}"/>
                         <div class="o_row no-gutters d-flex">
-                            <field name="hrs_selection" class="oe_inline"/>
+                            <field name="hrs_selection" class="oe_inline" attrs="{'invisible': [('active', '!=', True)]}"/>
                             <field name="manuly_enter_hrs" placeholder="Enter Time"
                                    attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>
                         </div>

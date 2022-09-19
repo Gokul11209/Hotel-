@@ -69,7 +69,7 @@ odoo.define("hotel_extended.hotel_room_summary", function (require) {
             if (day_day == 1){
                 var full_date = year + "-0" + month_1 + "-0" + day + " " + myArray[4]
             }else{
-                var full_date = year + "-0" + month_1  + day + " " + myArray[4]
+                var full_date = year + "-0" + month_1  +"-"+ day + " " + myArray[4]
             }
 
 
@@ -89,6 +89,7 @@ odoo.define("hotel_extended.hotel_room_summary", function (require) {
                             room_id: $(this).attr("data"),
                             date: $(this).attr("date"),
                             default_adults: 1,
+                            active:true,
                         },
                     });
                 }
@@ -96,6 +97,7 @@ odoo.define("hotel_extended.hotel_room_summary", function (require) {
             });
             this.$el.find(".table_reserved").bind("click", function () {
                 var res_id = $(this).data("id");
+                console.log("====================",$(this).data("id"))
                 self.do_action({
                     type: "ir.actions.act_window",
                     res_model: "hotel.reservation",

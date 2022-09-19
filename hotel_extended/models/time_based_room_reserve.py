@@ -133,6 +133,7 @@ class TimeBasedRoomReserve(models.Model):
                         reserve_checkout_date = reserve_checkout.date()
                         reserve_checkout_time = reserve_checkout.time()
                         if room.id not in room_num_ids:
+                            print("==================",reserve_val.reservation_id.id)
                             room_num_ids.add(room.id)
                             if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
                                 for entry in summary_header_list:
@@ -147,9 +148,10 @@ class TimeBasedRoomReserve(models.Model):
                                                     "state": "Reserved",
                                                     "date": str(chk_date),
                                                     "room_id": room.id,
+                                                    "floor_id": room.floor_id.id,
                                                     "is_draft": "No",
                                                     "data_model": "",
-                                                    "data_id": 0,
+                                                    "data_id": reserve_val.reservation_id.id or 0,
                                                 }
                                             )
                                         else:
@@ -172,9 +174,10 @@ class TimeBasedRoomReserve(models.Model):
                                                     "state": "Reserved",
                                                     "date": str(chk_date),
                                                     "room_id": room.id,
+                                                    "floor_id": room.floor_id.id,
                                                     "is_draft": "No",
                                                     "data_model": "",
-                                                    "data_id": 0,
+                                                    "data_id": reserve_val.reservation_id.id or 0,
                                                 }
                                             )
                                         else:
@@ -229,16 +232,17 @@ class TimeBasedRoomReserve(models.Model):
                                         reserve_checkout_time = str(reserve_checkout_time).split(':')[0]
                                         if reserve_checkin_time <= m3 <= reserve_checkout_time:
                                             for i in room_list_stats:
-                                                if i["state"] == 'Free' and str(i['date']) == str(chk_date) \
+                                                if i['state'] == 'Free' and str(i['date']) == str(chk_date) \
                                                         and i['entry'] == m3 + ':' + '00':
                                                     i.update(
                                                         {
                                                             "state": "Reserved",
                                                             "date": str(chk_date),
                                                             "room_id": room.id,
+                                                            "floor_id": room.floor_id.id,
                                                             "is_draft": "No",
                                                             "data_model": "",
-                                                            "data_id": 0,
+                                                            "data_id": reserve_val.reservation_id.id or 0,
                                                         }
                                                     )
                             else:
@@ -248,16 +252,17 @@ class TimeBasedRoomReserve(models.Model):
                                         reserve_checkout_time = str(reserve_checkout_time)
                                         if reserve_checkin_time <= entry <= reserve_checkout_time:
                                             for i in room_list_stats:
-                                                if i["state"] == 'Free' and str(i['date']) == str(chk_date) \
+                                                if i['state'] == 'Free' and str(i['date']) == str(chk_date) \
                                                         and i['entry'] == entry:
                                                     i.update(
                                                         {
                                                             "state": "Reserved",
                                                             "date": str(chk_date),
                                                             "room_id": room.id,
+                                                            "floor_id": room.floor_id.id,
                                                             "is_draft": "No",
                                                             "data_model": "",
-                                                            "data_id": 0,
+                                                            "data_id": reserve_val.reservation_id.id or 0,
                                                         }
                                                     )
 
@@ -289,8 +294,10 @@ class TimeBasedRoomReserve(models.Model):
 
                 room_detail.update({"value": room_list_stats})
                 all_room_detail.append(room_detail)
+
         summary_header_list.insert(0, "Rooms")
         main_header.append({"header": summary_header_list})
+
         self.summary_header = str(main_header)
         self.room_summary = str(all_room_detail)
 

@@ -164,8 +164,9 @@ class RoomReservationSummary(models.Model):
                     + str(temp_date.strftime("%d"))
                 )
                 summary_header_list.append(val)
-                date_range_list.append(temp_date.strftime(dt))
                 temp_date = temp_date + timedelta(days=1)
+                date_range_list.append(temp_date.strftime(dt))
+
             all_detail.append(summary_header_list)
             domain = []
 
@@ -472,6 +473,9 @@ class RoomReservationSummary(models.Model):
 
                     room_detail.update({"value": room_list_stats})
                     all_room_detail.append(room_detail)
+                    for i in room_list_stats:
+                        if i['state'] == 'Free':
+                            print(i)
             main_header.append({"header": summary_header_list})
             self.summary_header = str(main_header)
             self.room_summary = str(all_room_detail)

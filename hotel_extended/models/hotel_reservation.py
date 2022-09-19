@@ -137,6 +137,7 @@ class HotelReservation(models.Model):
     proof_type = fields.Binary(string='Proof')
 
     reservation_hrs_selection = fields.Selection([
+        ('short', 'Short Close'),
         ('12', '12 Hours'),
         ('24', '24 Hours'),
     ])
@@ -204,7 +205,6 @@ class HotelReservation(models.Model):
         ctx = dict(self._context) or {}
         ctx.update({"duplicate": True})
         return super(HotelReservation, self.with_context(ctx)).copy()
-
 
     # @api.constrains("reservation_line", "adults", "children")
     def _check_reservation_rooms(self):
@@ -557,7 +557,6 @@ class HotelReservation(models.Model):
         else:
             action = {"type": "ir.actions.act_window_close"}
         return action
-
 
 
 #
