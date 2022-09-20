@@ -20,6 +20,7 @@
         "report/room_max_report_template.xml",
         "report/hotel_reservation_report_template.xml",
         "report/report_view.xml",
+        "report/guest_proforma_report.xml",
         "wizard/hotel_reservation_wizard.xml",
         "views/hotel_reservation_view.xml",
         "views/hotel_folio_state.xml",

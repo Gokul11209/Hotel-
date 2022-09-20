@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!--    <record id="hotel_folio_form" model="ir.ui.view">-->
-<!--        <field name="name">hotel.folio.form.inherit</field>-->
-<!--        <field name="model">hotel.folio</field>-->
-<!--        <field name="inherit_id" ref="hotel.view_hotel_folio_form"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr="//field[@name='state']" position="replace">-->
-<!--                <field name="state"  widget="statusbar"/>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
+    <record id="hotel_folio_form" model="ir.ui.view">
+        <field name="name">hotel.folio.form.inherit</field>
+        <field name="model">hotel.folio</field>
+        <field name="inherit_id" ref="hotel.view_hotel_folio_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="House Keeping">
+                    <field name="hotel_house_keeping_orders_ids" readonly="1">
+                        <tree editable="bottom" create="0" delete="0">
+                            <field name="current_date"/>
+                            <field name="clean_type"/>
+                            <field name="room_id"/>
+                            <field name="inspector_id"/>
+                            <field name="inspect_date_time"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Laundry Order">
+                    <field name="hotel_laundry_orders_ids" readonly="1">
+                        <tree editable="bottom" create="0" delete="0">
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="order_date"/>
+                            <field name="laundry_person"/>
+                            <field name="total_amount"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
 
     <record id="sale_order_state_form" model="ir.ui.view">
         <field name="name">sale.order.form.inherit</field>
@@ -17,7 +38,7 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='state']" position="replace">
-                <field name="state"  widget="statusbar"/>
+                <field name="state" widget="statusbar"/>
             </xpath>
             <xpath expr="//field[@name='state']" position="attributes">
                 <attribute name="statusbar_visible">"draft,sale,done,cancel"</attribute>

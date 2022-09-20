@@ -102,7 +102,7 @@ class QuickRoomReservation(models.TransientModel):
     hrs_selection = fields.Selection([
         ('short', 'Short Close'),
         ('12', '12 Hours'),
-        ('24', '24 Hours'), ],
+        ('24', '24 Hours'),],
         string='Hours',
     )
     manuly_enter_hrs = fields.Integer(string="Time")
@@ -253,8 +253,6 @@ class QuickRoomReservation(models.TransientModel):
                 }
             )
         hotel_advance_pay.action_post()
-        print("===============================111111")
-        print("===============================111111")
         res_partner = self.env['res.partner'].sudo().search([
             ('name', '=', self.partner_id.name)])
         print("=====================", res_partner)
@@ -278,7 +276,7 @@ class QuickRoomReservation(models.TransientModel):
                             "pricelist_id": res.pricelist_id.id,
                             "adults": res.adults,
                             "children": res.children,
-                            "proof_type": res.add_proof,
+                            "proof_type":res.add_proof,
                             "advance_payment": res.advance_amt,
                             "reservation_line": [
                                 (
@@ -307,7 +305,7 @@ class QuickRoomReservation(models.TransientModel):
                         "adults": res.adults,
                         "children": res.children,
                         "proof_type": res.add_proof,
-                        "state": "confirm",
+                        "state":"confirm",
                         "advance_payment": res.advance_amt,
                         "reservation_line": [
                             (
@@ -320,7 +318,7 @@ class QuickRoomReservation(models.TransientModel):
                             )
                         ],
                     })
-                    hotel_res_obj_new = self.env["hotel.reservation"].search([
+                    hotel_res_obj_new= self.env["hotel.reservation"].search([
                         ("partner_id", "=", res.partner_id.id),
                         ("checkin", "=", res.check_in),
                         ("checkout", "=", res.check_out),

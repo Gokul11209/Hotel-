@@ -365,6 +365,22 @@ class Washing(models.Model):
                 break
         if f == 0:
             self.laundry_obj.laundry_obj.state = 'done'
+            folio_id = self.env["hotel.folio"].search([("reservation_id", "=", self.laundry_obj.laundry_obj.res_id.id)])
+            if folio_id:
+                line_vals = []
+                vals = [0, 0, {
+                    "name": self.laundry_obj.laundry_obj.name,
+                    "partner_id": self.laundry_obj.laundry_obj.partner_id.id,
+                    "order_date": self.laundry_obj.laundry_obj.order_date,
+                    "laundry_person": self.laundry_obj.laundry_obj.laundry_person.id,
+                    "total_amount": self.laundry_obj.laundry_obj.total_amount,
+                }]
+                line_vals.append(vals)
+            else:
+                raise ValidationError(_("Alert!, Please Create a Folio against the Reservation"))
+            folio_id.update({
+                'hotel_laundry_orders_ids': line_vals,
+            })
         laundry_obj1 = self.search([('laundry_obj', '=', self.laundry_obj.id)])
         f1 = 0
         for each in laundry_obj1:
@@ -373,6 +389,28 @@ class Washing(models.Model):
                 break
         if f1 == 0:
             self.laundry_obj.state = 'done'
+
+        hsl_obj = self.env["hotel.service.line"]
+        so_line_obj = self.env["sale.order.line"]
+        for res_order in self:
+            values = {
+                "product_id": res_order.menucard_id.product_id.id,
+                "name": res_order.description,
+                "product_uom_qty": res_order.qty or 0,
+                "price_unit": res_order.item_rate,
+                "price_subtotal":res_order.total_amount,
+            }
+        # self.env["hotel.service.line"].sudo().create(values)
+    #         sol_rec = so_line_obj.create(values)
+    #         hsl_obj.create(
+    #             {
+    #                 "folio_id": res_order.folio_id.id,
+    #                 "service_line_id": sol_rec.id,
+    #             }
+    #         )
+    #         res_order.folio_id.write(
+    #             {"hotel_reservation_orders_ids": [(4, res_order.id)]}
+    #         )
 
     @api.depends('product_line')
     def get_total(self):
