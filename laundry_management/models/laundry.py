@@ -390,28 +390,6 @@ class Washing(models.Model):
         if f1 == 0:
             self.laundry_obj.state = 'done'
 
-        hsl_obj = self.env["hotel.service.line"]
-        so_line_obj = self.env["sale.order.line"]
-        for res_order in self:
-            values = {
-                "product_id": res_order.menucard_id.product_id.id,
-                "name": res_order.description,
-                "product_uom_qty": res_order.qty or 0,
-                "price_unit": res_order.item_rate,
-                "price_subtotal":res_order.total_amount,
-            }
-        # self.env["hotel.service.line"].sudo().create(values)
-    #         sol_rec = so_line_obj.create(values)
-    #         hsl_obj.create(
-    #             {
-    #                 "folio_id": res_order.folio_id.id,
-    #                 "service_line_id": sol_rec.id,
-    #             }
-    #         )
-    #         res_order.folio_id.write(
-    #             {"hotel_reservation_orders_ids": [(4, res_order.id)]}
-    #         )
-
     @api.depends('product_line')
     def get_total(self):
         total = 0

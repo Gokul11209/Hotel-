@@ -21,7 +21,6 @@ class ChooseSummary(models.Model):
     name = fields.Char(string="Chose Summary")
     image = fields.Binary(string="Image")
 
-
     def name_get(self):
         result = []
         for rec in self:
@@ -125,7 +124,6 @@ class TimeBasedRoomReserve(models.Model):
                         ]
                     )
                     for reserve_val in room.room_reservation_line_ids:
-                       
                         reserve_checkin = reserve_val.check_in + timedelta(hours=5, minutes=30)
                         reserve_checkout = reserve_val.check_out + timedelta(hours=5, minutes=30)
                         reserve_checkin_date = reserve_checkin.date()
@@ -133,7 +131,7 @@ class TimeBasedRoomReserve(models.Model):
                         reserve_checkout_date = reserve_checkout.date()
                         reserve_checkout_time = reserve_checkout.time()
                         if room.id not in room_num_ids:
-                            print("==================",reserve_val.reservation_id.id)
+                            print("==================", reserve_val.reservation_id.id,chk_date)
                             room_num_ids.add(room.id)
                             if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
                                 for entry in summary_header_list:
@@ -142,6 +140,7 @@ class TimeBasedRoomReserve(models.Model):
                                         # m3 = str(m2).split(':')[0].split(' ')[-1]
                                         reserve_checkin_time = str(reserve_checkin_time)
                                         reserve_checkout_time = str(reserve_checkout_time)
+
                                         if reserve_checkin_time <= entry <= reserve_checkout_time:
                                             room_list_stats.append(
                                                 {
@@ -168,6 +167,7 @@ class TimeBasedRoomReserve(models.Model):
                                         m3 = str(m2).split(':')[0].split(' ')[-1]
                                         reserve_checkin_time = str(reserve_checkin_time).split(':')[0]
                                         reserve_checkout_time = str(reserve_checkout_time).split(':')[0]
+                                        print(reserve_checkin_time, m3, reserve_checkout_time)
                                         if reserve_checkin_time <= m3 <= reserve_checkout_time:
                                             room_list_stats.append(
                                                 {
@@ -221,7 +221,7 @@ class TimeBasedRoomReserve(models.Model):
                                                 "entry": entry,
                                             }
                                         )
-                           
+
                         else:
                             if not self.time_interval:
                                 if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
@@ -286,11 +286,9 @@ class TimeBasedRoomReserve(models.Model):
                                     "state": "Free",
                                     "date": str(chk_date),
                                     "room_id": room.id,
-                                    "entry":  m3 + ':' + '00',
+                                    "entry": m3 + ':' + '00',
                                 }
                             )
-
-                
 
                 room_detail.update({"value": room_list_stats})
                 all_room_detail.append(room_detail)

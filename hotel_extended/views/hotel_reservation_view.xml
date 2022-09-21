@@ -454,85 +454,168 @@
                     <br/>
                     <field name="room_image" widget='image' class="oe_avatar"
                            attrs="{'invisible': [('guest_creation', '=', 'new')]}"/>
-                    <group colspan="4" col="4" attrs="{'invisible': [('guest_creation', '=', 'new')]}">
-                        <field name="search_mobile"/>
-                        <field name="reserve_date"/>
-                        <field name="company_id"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <label for="hrs_selection" attrs="{'invisible': [('active', '!=', True)]}"/>
-                        <div class="o_row no-gutters d-flex">
-                            <field name="hrs_selection" class="oe_inline" attrs="{'invisible': [('active', '!=', True)]}"/>
-                            <field name="manuly_enter_hrs" placeholder="Enter Time"
-                                   attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>
-                        </div>
-                        <field name="check_in_time" attrs="{'invisible': [('active', '!=', True)]}"/>
-                        <field name="check_out_time" attrs="{'invisible': [('active', '!=', True)]}"/>
-                        <field name="partner_id" readonly="1" force_save="1"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="room_id" readonly="1"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="room_no" readonly="1"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}" invisible="1"/>
-                        <field name="room_no" readonly="1"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <label for="room_price"/>
-                        <div>
-                            <field name="room_price" class="oe_inline"
-                                   widget="badge" decoration-success="room_price != 0 "
-                                   readonly="1"/>/
-                            <field name="company_currency"/>
-                        </div>
+                    <group attrs="{'invisible': [('guest_creation', '=', 'new')]}">
+                        <group>
+                            <field name="room_image" widget='image' class="oe_avatar"/>
+                            <field name="room_amenities_ids"
+                                   widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="room_id" readonly="1"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="room_no" readonly="1"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <label for="room_price"/>
+                            <div>
+                                <field name="room_price" class="oe_inline"
+                                       widget="badge" decoration-success="room_price != 0 "
+                                       readonly="1"/>/
+                                <field name="company_currency"/>
+                            </div>
 
-                        <field name="room_category" readonly="1"
-                               options="{'no_open': True, 'no_create': True}"/>
+                            <field name="room_category" readonly="1"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                            <field name="room_floor_id" readonly="1"
+                                   options="{'no_open': True, 'no_create': True}"/>
 
-                        <field name="room_floor_id" readonly="1"
-                               options="{'no_open': True, 'no_create': True}"/>
+                            <field name="room_capacity" readonly="1"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="search_mobile"/>
+                            <field name="date_today" readonly="1"/>
 
-                        <field name="room_capacity" readonly="1"
-                               options="{'no_open': True, 'no_create': True}"/>
-
-                        <field name="check_in"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'invisible': [('active', '==', True)]}"/>
-                        <field name="check_out"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'invisible': [('active', '==', True)]}"/>
-
-                        <field name="partner_invoice_id" readonly="1" force_save="1"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="partner_order_id" readonly="1" force_save="1"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <label for="choose_payment_mode"/>
-                        <div>
-                            <field name="choose_payment_mode" class="oe_inline"
-                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"
+                            <field name="partner_id" readonly="1" force_save="1"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="partner_invoice_id" readonly="1" force_save="1"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="partner_order_id" readonly="1" force_save="1"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="partner_shipping_id" readonly="1" force_save="1"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="journal" attrs="{'required': [('guest_creation', '=', 'exist')]}"
                                    options="{'no_create': True}"/>
-                            <field name="payment_mode_img" widget='image' class="oe_avatar oe_inline"
-                                   attrs="{'invisible': [('guest_creation', '=', 'new')]}"/>
-                        </div>
+                            <field name="pricelist_id"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                        </group>
+                        <group>
+                            <field name="adults" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="children" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <label for="hrs_selection" attrs="{'invisible': [('active', '!=', True)]}"/>
+                            <div class="o_row no-gutters d-flex">
+                                <field name="hrs_selection" class="oe_inline"
+                                       attrs="{'invisible': [('active', '!=', True)]}"/>
+                                <field name="manuly_enter_hrs" placeholder="Enter Time"
+                                       attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>
+                            </div>
+                            <field name="check_in_time" />
+                            <field name="check_out_time" />
+                            <field name="check_in"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'invisible': [('active', '==', True)]}"/>
+                            <field name="check_out"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'invisible': [('active', '==', True)]}"/>
+                            <field name="advance_amt" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <label for="choose_payment_mode"
+                                   attrs="{'invisible': [('guest_creation', '!=', 'exist')]}"/>
+                            <div class="o_row no-gutters d-flex">
 
-                        <field name="partner_shipping_id" readonly="1" force_save="1"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="journal" attrs="{'required': [('guest_creation', '=', 'exist')]}"
-                               options="{'no_create': True}"/>
-                        <field name="adults" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="pricelist_id"
-                               options="{'no_open': True, 'no_create': True}"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="children" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="advance_amt" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="add_proof_type" readonly="1" force_save="1"
-                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                        <field name="add_proof" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                                <field name="choose_payment_mode" class="oe_inline"
+                                       attrs="{'required': [('guest_creation', '=', 'exist')]}"
+                                       options="{'no_create': True}"/>
+                                <field name="payment_mode_img" widget='image' class="oe_avatar oe_inline"
+                                       attrs="{'invisible': [('guest_creation', '=', 'new')]}"/>
+                            </div>
+                            <field name="add_proof" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                        </group>
+
+
+                        <!--                                                <field name="reserve_date"/>-->
+                        <!--                        <field name="company_id"-->
+<!--                        <reserve_date!&#45;&#45;                               options="{'no_open': True, 'no_create': True}"&ndash;&gt;-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                        <label for="hrs_selection" attrs="{'invisible': [('active', '!=', True)]}"/>-->
+                        <!--                        <div class="o_row no-gutters d-flex">-->
+                        <!--                            <field name="hrs_selection" class="oe_inline"-->
+                        <!--                                   attrs="{'invisible': [('active', '!=', True)]}"/>-->
+                        <!--                            <field name="manuly_enter_hrs" placeholder="Enter Time"-->
+                        <!--                                   attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>-->
+                        <!--                        </div>-->
+                        <!--                        <field name="check_in_time" attrs="{'invisible': [('active', '!=', True)]}"/>-->
+                        <!--                        <field name="check_out_time" attrs="{'invisible': [('active', '!=', True)]}"/>-->
+                        <!--                        <field name="partner_id" readonly="1" force_save="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                        <field name="room_id" readonly="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                        <field name="room_no" readonly="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}" invisible="1"/>-->
+                        <!--                        <field name="room_no" readonly="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                        <label for="room_price"/>-->
+                        <!--                        <div>-->
+                        <!--                            <field name="room_price" class="oe_inline"-->
+                        <!--                                   widget="badge" decoration-success="room_price != 0 "-->
+                        <!--                                   readonly="1"/>/-->
+                        <!--                            <field name="company_currency"/>-->
+                        <!--                        </div>-->
+
+                        <!--                        <field name="room_category" readonly="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"/>-->
+
+                        <!--                        <field name="room_floor_id" readonly="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"/>-->
+
+                        <!--                        <field name="room_capacity" readonly="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"/>-->
+
+                        <!--                                                <field name="check_in"-->
+                        <!--                                                       options="{'no_open': True, 'no_create': True}"-->
+                        <!--                                                       attrs="{'invisible': [('active', '==', True)]}"/>-->
+                        <!--                                                <field name="check_out"-->
+                        <!--                                                       options="{'no_open': True, 'no_create': True}"-->
+                        <!--                                                       attrs="{'invisible': [('active', '==', True)]}"/>-->
+
+                        <!--                        <field name="partner_invoice_id" readonly="1" force_save="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                        <field name="partner_order_id" readonly="1" force_save="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                        <label for="choose_payment_mode"/>-->
+                        <!--                                                <div>-->
+                        <!--                                                    <field name="choose_payment_mode" class="oe_inline"-->
+                        <!--                                                           attrs="{'required': [('guest_creation', '=', 'exist')]}"-->
+                        <!--                                                           options="{'no_create': True}"/>-->
+                        <!--                                                    <field name="payment_mode_img" widget='image' class="oe_avatar oe_inline"-->
+                        <!--                                                           attrs="{'invisible': [('guest_creation', '=', 'new')]}"/>-->
+                        <!--                                                </div>-->
+
+                        <!--                        <field name="partner_shipping_id" readonly="1" force_save="1"-->
+                        <!--                               options="{'no_open': True, 'no_create': True}"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                                                <field name="journal" attrs="{'required': [('guest_creation', '=', 'exist')]}"-->
+                        <!--                                                       options="{'no_create': True}"/>-->
+                        <!--                                                                        <field name="adults" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                                                <field name="pricelist_id"-->
+                        <!--                                                       options="{'no_open': True, 'no_create': True}"-->
+                        <!--                                                       attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                                                                        <field name="children" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                                                                        <field name="advance_amt" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                        <field name="add_proof_type" readonly="1" force_save="1"-->
+                        <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
+                        <!--                                                <field name="add_proof" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
 
                     </group>
                     <group colspan="4" col="4" attrs="{'invisible': [('guest_creation', '=', 'exist')]}">
@@ -549,14 +632,19 @@
                         <field name="valid_proof"/>
                     </group>
                     <notebook>
-                        <page string="Aminities"
+                        <page name="room_summary" string="Time Room Summary"
                               attrs="{'invisible': [('guest_creation', '=', 'new')]}">
-                            <group>
-                                <field name="room_amenities_ids"
-                                       colspan="4"
-                                       nolabel="1"
-                                       widget="many2many_tags"/>
-                            </group>
+<!--                            <label for="time_interval"/>-->
+<!--                            <div>-->
+<!--&lt;!&ndash;                                <field name="time_interval" class="oe_inline"/>&ndash;&gt;-->
+<!--                            </div>-->
+                            <field name="summary_header" colspan="4" invisible="1"/>
+                                <field
+                                        name="room_summary"
+                                        colspan="4"
+                                        invisible="0"
+                                        widget="TimeDashboard"
+                                />
                         </page>
                     </notebook>
                 </sheet>

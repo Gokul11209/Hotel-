@@ -188,6 +188,7 @@ class RoomReservationSummary(models.Model):
                                 {
                                     "state": "Free",
                                     "date": chk_date,
+                                    "box_date": str(chk_date).split(" ")[0],
                                     "room_id": room.id,
                                     "floor_id": room.floor_id.id,
                                 }
@@ -293,6 +294,7 @@ class RoomReservationSummary(models.Model):
                                     {
                                         "state": "Reserved",
                                         "date": chk_date,
+                                        "box_date": str(chk_date).split(" ")[0],
                                         "room_id": room.id,
                                         "floor_id": room.floor_id.id,
                                         "is_draft": "No",
@@ -305,6 +307,7 @@ class RoomReservationSummary(models.Model):
                                     {
                                         "state": "Draft",
                                         "date": chk_date,
+                                        "box_date": str(chk_date).split(" ")[0],
                                         "room_id": room.id,
                                         "is_draft": "Yes",
                                         "data_model": "",
@@ -316,6 +319,7 @@ class RoomReservationSummary(models.Model):
                                     {
                                         "state": "Free",
                                         "date": chk_date,
+                                        "box_date": str(chk_date).split(" ")[0],
                                         "room_id": room.id,
                                         "floor_id": room.floor_id.id,
                                     }
@@ -335,6 +339,7 @@ class RoomReservationSummary(models.Model):
                                 {
                                     "state": "Free",
                                     "date": chk_date,
+                                    "box_date": str(chk_date).split(" ")[0],
                                     "room_id": room.id,
                                     "floor_id": room.floor_id.id,
                                 }
@@ -441,6 +446,7 @@ class RoomReservationSummary(models.Model):
                                     {
                                         "state": "Reserved",
                                         "date": chk_date,
+                                        "box_date": str(chk_date).split(" ")[0],
                                         "room_id": room.id,
                                         "floor_id": room.floor_id.id,
                                         "is_draft": "No",
@@ -453,6 +459,7 @@ class RoomReservationSummary(models.Model):
                                     {
                                         "state": "Draft",
                                         "date": chk_date,
+                                        "box_date": str(chk_date).split(" ")[0],
                                         "room_id": room.id,
                                         "is_draft": "Yes",
                                         "data_model": "",
@@ -465,6 +472,7 @@ class RoomReservationSummary(models.Model):
                                     {
                                         "state": "Free",
                                         "date": chk_date,
+                                        "box_date": str(chk_date).split(" ")[0],
                                         "room_id": room.id,
                                         "floor_id": room.floor_id.id,
 
@@ -473,14 +481,10 @@ class RoomReservationSummary(models.Model):
 
                     room_detail.update({"value": room_list_stats})
                     all_room_detail.append(room_detail)
-                    for i in room_list_stats:
-                        if i['state'] == 'Free':
-                            print(i)
             main_header.append({"header": summary_header_list})
             self.summary_header = str(main_header)
             self.room_summary = str(all_room_detail)
-            # print(main_header)
-            # print(all_room_detail)
+
         return res
 
     def name_get(self):

@@ -24,6 +24,7 @@
                                 <td
                                         class="table_free"
                                         t-att-data="status.room_id"
+                                        t-att-box_date="status.box_date"
                                         t-att-date="status.date"
                                         style="text-align:center;"
                                 >
