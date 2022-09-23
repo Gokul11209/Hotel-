@@ -1,5 +1,7 @@
 # See LICENSE file for full copyright and licensing details.
 import logging
+
+from datetime import date
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -194,6 +196,7 @@ class RoomReservationSummary(models.Model):
                                 }
                             )
                     else:
+                        import datetime
                         for chk_date in date_range_list:
                             reserve_draft_id = self.env["hotel.reservation"].search(
                                 [
@@ -203,7 +206,7 @@ class RoomReservationSummary(models.Model):
                                 ]
                             )
                             ch_dt = chk_date[:10] + " 23:59:59"
-                            ttime = datetime.strptime(ch_dt, dt)
+                            ttime = datetime.datetime.strptime(ch_dt, dt)
                             c = ttime.replace(tzinfo=timezone).astimezone(
                                 pytz.timezone("UTC")
                             )
@@ -219,8 +222,8 @@ class RoomReservationSummary(models.Model):
                             )
                             if not reservline_ids:
                                 sdt = dt
-                                chk_date = datetime.strptime(chk_date, sdt)
-                                chk_date = datetime.strftime(
+                                chk_date = datetime.datetime.strptime(chk_date, sdt)
+                                chk_date = datetime.datetime.strftime(
                                     chk_date - timedelta(days=1), sdt
                                 )
                                 reservline_ids = reservation_line_obj.search(
@@ -345,6 +348,7 @@ class RoomReservationSummary(models.Model):
                                 }
                             )
                     else:
+                        import datetime
                         for chk_date in date_range_list:
 
                             reserve_draft_id = self.env["hotel.reservation"].search(
@@ -354,8 +358,8 @@ class RoomReservationSummary(models.Model):
                                     ("state", "=", "draft"),
                                 ]
                             )
-                            ch_dt = chk_date[:10] + " 23:59:59"
-                            ttime = datetime.strptime(ch_dt, dt)
+                            ch_dt = chk_date[:10] + " 00:00:00"
+                            ttime = datetime.datetime.strptime(ch_dt, dt)
                             c = ttime.replace(tzinfo=timezone).astimezone(
                                 pytz.timezone("UTC")
                             )
@@ -371,10 +375,10 @@ class RoomReservationSummary(models.Model):
                             )
                             if not reservline_ids:
                                 sdt = dt
-                                chk_date = datetime.strptime(chk_date, sdt)
-                                chk_date = datetime.strftime(
-                                    chk_date - timedelta(days=1), sdt
-                                )
+                                chk_date = datetime.datetime.strptime(chk_date, sdt)
+                                # chk_date = datetime.strftime(
+                                #     chk_date - timedelta(days=1), sdt
+                                # )
                                 reservline_ids = reservation_line_obj.search(
                                     [
                                         ("id", "in", reserline_ids),
@@ -439,6 +443,12 @@ class RoomReservationSummary(models.Model):
                                     ("status", "not in", chk_state),
                                 ]
                             )
+                            if str(chk_date).split(" ")[0] == str(date.today()):
+                                import datetime
+                                chk_date = str(datetime.datetime.now()).split(".")[0]
+                            else:
+                                chk_date = str(chk_date).split(" ")[0] + " 00:00:00"
+
                             if reservline_ids or folio_resrv_ids:
                                 if hasattr(reservline_ids, 'reservation_id') and reservline_ids.reservation_id:
                                     reservation_id = reservline_ids.reservation_id

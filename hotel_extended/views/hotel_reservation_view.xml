@@ -452,13 +452,21 @@
                            required="1"/>
                     <field name="active" invisible="1"/>
                     <br/>
-                    <field name="room_image" widget='image' class="oe_avatar"
-                           attrs="{'invisible': [('guest_creation', '=', 'new')]}"/>
+                    <group>
+                        <field name="room_image" widget='image' class="oe_avatar" nolabel="1"
+                               attrs="{'invisible': [('guest_creation', '=', 'new')]}"/>
+                    </group>
+                    <div class="row" attrs="{'invisible': [('guest_creation', '=', 'new')]}">
+                        <div class="col-8"></div>
+                        <diV align="right" class="col-3">
+                            <field name="room_amenities_ids" widget="many2many_tags"/>
+                        </diV>
+                    </div>
                     <group attrs="{'invisible': [('guest_creation', '=', 'new')]}">
                         <group>
                             <field name="room_image" widget='image' class="oe_avatar"/>
-                            <field name="room_amenities_ids"
-                                   widget="many2many_tags"/>
+                            <field name="remaining_time"/>
+
                         </group>
                         <group>
                             <field name="room_id" readonly="1"
@@ -472,7 +480,8 @@
                                 <field name="room_price" class="oe_inline"
                                        widget="badge" decoration-success="room_price != 0 "
                                        readonly="1"/>/
-                                <field name="company_currency"/>
+                                <field name="company_currency" force_save="1"/>
+
                             </div>
 
                             <field name="room_category" readonly="1"
@@ -483,6 +492,7 @@
                             <field name="room_capacity" readonly="1"
                                    options="{'no_open': True, 'no_create': True}"/>
                         </group>
+                        <separator/>
                         <group>
                             <field name="search_mobile"/>
                             <field name="date_today" readonly="1"/>
@@ -499,7 +509,7 @@
                             <field name="partner_shipping_id" readonly="1" force_save="1"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                            <field name="journal" attrs="{'required': [('guest_creation', '=', 'exist')]}"
+                            <field name="journal" invisible="1" attrs="{'required': [('guest_creation', '=', 'exist')]}"
                                    options="{'no_create': True}"/>
                             <field name="pricelist_id"
                                    options="{'no_open': True, 'no_create': True}"
@@ -508,15 +518,15 @@
                         <group>
                             <field name="adults" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                             <field name="children" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                            <label for="hrs_selection" attrs="{'invisible': [('active', '!=', True)]}"/>
+                            <label for="hrs_selection"  attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                             <div class="o_row no-gutters d-flex">
                                 <field name="hrs_selection" class="oe_inline"
-                                       attrs="{'invisible': [('active', '!=', True)]}"/>
+                                       attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                                 <field name="manuly_enter_hrs" placeholder="Enter Time"
                                        attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>
                             </div>
-                            <field name="check_in_time" />
-                            <field name="check_out_time" />
+                            <field name="check_in_time" attrs="{'invisible': [('active', '!=', True)]}"/>
+                            <field name="check_out_time" attrs="{'invisible': [('active', '!=', True)]}"/>
                             <field name="check_in"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'invisible': [('active', '==', True)]}"/>
@@ -540,15 +550,15 @@
 
                         <!--                                                <field name="reserve_date"/>-->
                         <!--                        <field name="company_id"-->
-<!--                        <reserve_date!&#45;&#45;                               options="{'no_open': True, 'no_create': True}"&ndash;&gt;-->
+                        <!--                        <reserve_date!&#45;&#45;                               options="{'no_open': True, 'no_create': True}"&ndash;&gt;-->
                         <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
                         <!--                        <label for="hrs_selection" attrs="{'invisible': [('active', '!=', True)]}"/>-->
-                        <!--                        <div class="o_row no-gutters d-flex">-->
-                        <!--                            <field name="hrs_selection" class="oe_inline"-->
-                        <!--                                   attrs="{'invisible': [('active', '!=', True)]}"/>-->
-                        <!--                            <field name="manuly_enter_hrs" placeholder="Enter Time"-->
-                        <!--                                   attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>-->
-                        <!--                        </div>-->
+                        <!--                                                <div class="o_row no-gutters d-flex">-->
+                        <!--                                                    <field name="hrs_selection" class="oe_inline"-->
+                        <!--                                                           attrs="{'invisible': [('active', '!=', True)]}"/>-->
+                        <!--                                                    <field name="manuly_enter_hrs" placeholder="Enter Time"-->
+                        <!--                                                           attrs="{'invisible': [('hrs_selection', '!=', 'short')]}"/>-->
+                        <!--                                                </div>-->
                         <!--                        <field name="check_in_time" attrs="{'invisible': [('active', '!=', True)]}"/>-->
                         <!--                        <field name="check_out_time" attrs="{'invisible': [('active', '!=', True)]}"/>-->
                         <!--                        <field name="partner_id" readonly="1" force_save="1"-->
@@ -634,17 +644,17 @@
                     <notebook>
                         <page name="room_summary" string="Time Room Summary"
                               attrs="{'invisible': [('guest_creation', '=', 'new')]}">
-<!--                            <label for="time_interval"/>-->
-<!--                            <div>-->
-<!--&lt;!&ndash;                                <field name="time_interval" class="oe_inline"/>&ndash;&gt;-->
-<!--                            </div>-->
+                            <!--                            <label for="time_interval"/>-->
+                            <!--                            <div>-->
+                            <!--&lt;!&ndash;                                <field name="time_interval" class="oe_inline"/>&ndash;&gt;-->
+                            <!--                            </div>-->
                             <field name="summary_header" colspan="4" invisible="1"/>
-                                <field
-                                        name="room_summary"
-                                        colspan="4"
-                                        invisible="0"
-                                        widget="TimeDashboard"
-                                />
+                            <field
+                                    name="room_summary"
+                                    colspan="4"
+                                    invisible="0"
+                                    widget="TimeDashboard"
+                            />
                         </page>
                     </notebook>
                 </sheet>

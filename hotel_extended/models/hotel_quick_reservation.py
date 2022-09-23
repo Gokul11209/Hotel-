@@ -3,6 +3,8 @@ from datetime import datetime
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
+from datetime import date
+
 import datetime
 
 
@@ -106,51 +108,86 @@ class QuickRoomReservation(models.TransientModel):
         string='Hours',
     )
     manuly_enter_hrs = fields.Integer(string="Time")
-    company_currency = fields.Many2one(related='company_id.currency_id', string="Currency")
+    company_currency = fields.Many2one(related='company_id.currency_id', string="Currency", )
 
     summary_header = fields.Text("Summary Header")
     room_summary = fields.Text("Room Summary")
     date_today = fields.Date("Date", default=lambda self: fields.Date.today())
     time_interval = fields.Char('Time Interval')
+    remaining_time = fields.Float(string="Remaining Time", compute="_compute_remain_hrs")
+
+    @api.depends('remaining_time', 'guest_creation')
+    def _compute_remain_hrs(self):
+        day_full_time = 86400.0
+        room_obj = self.env["hotel.room"].search([('room_no', '=', self.room_no)])
+        for reserve_val in room_obj.room_reservation_line_ids:
+            reserve_checkin = reserve_val.check_in + timedelta(hours=5, minutes=30)
+            reserve_checkout = reserve_val.check_out + timedelta(hours=5, minutes=30)
+            cit = reserve_checkin.date()
+            cot = reserve_checkout.date()
+            if self.date_today == cit and self.date_today == cot:
+                import datetime
+                time = str(reserve_val.check_out - reserve_val.check_in)
+                date_time = datetime.datetime.strptime(time, "%H:%M:%S")
+                a_timedelta = date_time - datetime.datetime(1900, 1, 1)
+                seconds = a_timedelta.total_seconds()
+                day_full_time = day_full_time - seconds
+                time_1 = day_full_time / 3600
+                self.remaining_time = int(time_1)
+                print(seconds,"===========",time,"===========",seconds,"========",int(time_1))
+
+
+    @api.onchange('choose_payment_mode')
+    def change_journal(self):
+        journal = self.env['account.journal'].sudo().search([
+            ('name', '=', self.choose_payment_mode.name)])
+        for rec in journal:
+            print('+++++++++', rec.name)
+            self.update({
+                'journal': journal
+            })
+        self.company_currency = self.env.company.currency_id
+
+    @api.onchange('adults', 'children')
+    def capacity_validation(self):
+        total = self.children + self.adults
+        if int(self.room_capacity) == int(total):
+            pass
+        if int(self.room_capacity) < int(total):
+            raise ValidationError(_(' Alert!!.. Room Capacity is Greater then Adults & children'))
 
     @api.onchange('hrs_selection')
     def calculate_hours(self):
         if self.hrs_selection == str(12):
-            time = str(self.check_in_time)
-            time_1 = datetime.datetime.strptime(time, "%H:%M")
-            twelve_hrs_time = time_1 + timedelta(hours=12, minutes=00)
-            twelve_hrs_time = str(twelve_hrs_time).split()[-1]
-            twelve_hrs_time_1 = twelve_hrs_time.split(":")
-            twelve_hrs_time_12 = twelve_hrs_time_1[0] + ":" + twelve_hrs_time_1[1]
-            self.check_out_time = twelve_hrs_time_12
+            time = str(self.check_in)
+            datetime_object = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+            cot = datetime_object + timedelta(hours=12, minutes=00)
+            self.check_out = cot
         elif self.hrs_selection == str(24):
-            self.check_out_time = self.check_in_time
+            time = str(self.check_in)
+            datetime_object = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+            cot = datetime_object + timedelta(hours=24, minutes=00)
+            self.check_out = cot
 
     @api.onchange('manuly_enter_hrs')
     def manuly_enter_hours(self):
         if self.hrs_selection == 'short':
-            time = str(self.check_in_time)
-            time_1 = datetime.datetime.strptime(time, "%H:%M")
-            enter_time = time_1 + timedelta(hours=self.manuly_enter_hrs, minutes=00)
-            enter_time = str(enter_time).split()[-1]
-            enter_time_1 = enter_time.split(":")
-            enter_time_100 = enter_time_1[0] + ":" + enter_time_1[1]
-            self.check_out_time = enter_time_100
+            time = str(self.check_in)
+            datetime_object = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+            cot = datetime_object + timedelta(hours=self.manuly_enter_hrs, minutes=00)
+            self.check_out = cot
 
-    # @api.onchange('manuly_enter_hrs')
-    # def manuly_enter_hours(self):
-    #     if self.hrs_selection == 'short':
-    #         time = str(self.check_in_time)
-    #         first_ele = time.split(":")[0]
-    #         if float(first_ele) + float(self.manuly_enter_hrs) >= 24.00:
-    #             raise ValidationError(_('Your Time Grater than day so please go Date Based Reservation'))
-    #         else:
-    #             time_1 = datetime.datetime.strptime(time, "%H:%M")
-    #             enter_time = time_1 + timedelta(hours=self.manuly_enter_hrs, minutes=00)
-    #             enter_time = str(enter_time).split()[-1]
-    #             enter_time_1 = enter_time.split(":")
-    #             enter_time_100 = enter_time_1[0] + ":" + enter_time_1[1]
-    #             self.check_out_time = enter_time_100
+    @api.onchange('check_in', 'check_out')
+    def validation_reserve(self):
+        room_obj = self.env["hotel.room"].search([('room_no', '=', self.room_no)])
+        if self.check_out:
+            for i in room_obj.room_reservation_line_ids:
+                if i.check_in < self.check_in < i.check_out:
+                    raise ValidationError(_('Alert!!.. Already Room Is Booking In Your Check In Time'))
+                elif i.check_in < self.check_out < i.check_out:
+                    raise ValidationError(_('Alert!!.. Already Room Is Booking In Your Check Out Time'))
+                elif self.check_in < i.check_in < self.check_out:
+                    raise ValidationError(_('Alert!!.. Already Room Is Booking In Your Check In Time'))
 
     @api.onchange('search_mobile')
     def _compute_mobile(self):
@@ -226,15 +263,22 @@ class QuickRoomReservation(models.TransientModel):
         """
         res = super(QuickRoomReservation, self).default_get(fields)
         keys = self._context.keys()
-        print("===============================", keys, "==================", self._context.values())
+        # print("===============================", keys, "==================", self._context.values())
         if "date" in keys:
             res.update({"reserve_date": self._context["date"]})
         if "box_date" in keys:
-            res.update({"date_today":self._context["box_date"]})
+            res.update({"date_today": self._context["box_date"]})
         if "entry" in keys:
             res.update({"check_in_time": self._context["entry"]})
         if "date" in keys:
-            res.update({"check_in": self._context["date"]})
+            if str(date.today()) == str(self._context["date"]).split(" ")[0]:
+                now = str(datetime.datetime.now()).split(".")[0]
+                current_time = datetime.datetime.strptime(now, "%Y-%m-%d %H:%M:%S")
+            else:
+                time = self._context["date"]
+                datetime_object = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+                current_time = datetime_object - timedelta(hours=5, minutes=30)
+            res.update({"check_in": current_time})
         if "room_id" in keys:
             roomid = self._context["room_id"]
             res.update({"room_id": int(roomid)})
@@ -493,7 +537,7 @@ class QuickRoomReservation(models.TransientModel):
             "target": "new",
         }
 
-    @api.onchange("date_today","time_interval")
+    @api.onchange("date_today", "time_interval")
     def get_room_summary_for_day_in_one_room(self):
         import datetime
         start = "00:00"
@@ -526,7 +570,7 @@ class QuickRoomReservation(models.TransientModel):
                 summary_header_list.append(time[1])
         if self.date_today:
             room_ids = room_obj.search(domain)
-            print("================",room_ids)
+            print("================", room_ids)
             for room in room_ids:
                 print("************************")
                 room_detail = {}
@@ -544,7 +588,7 @@ class QuickRoomReservation(models.TransientModel):
                         if room.id not in room_num_ids:
                             room_num_ids.add(room.id)
                             if chk_date == reserve_checkin_date and chk_date == reserve_checkin_date:
-                                print(chk_date,reserve_checkin_date,reserve_checkin_date)
+                                print(chk_date, reserve_checkin_date, reserve_checkin_date)
                                 for entry in summary_header_list:
                                     m2 = datetime.datetime.strptime(entry, '%I %p')
                                     m3 = str(m2).split(':')[0].split(' ')[-1]
@@ -572,6 +616,58 @@ class QuickRoomReservation(models.TransientModel):
                                             }
                                         )
 
+                            if reserve_checkin_date <= chk_date <= reserve_checkout_date:
+                                # Equal to checkout date
+                                if chk_date == reserve_checkout_date and chk_date != reserve_checkin_date:
+                                    chk_out_time = str(reserve_checkin_time).split(':')[0]
+                                    for i in room_list_stats:
+                                        if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
+                                                i['entry'] <= chk_out_time + ':' + '00':
+                                            i.update(
+                                                {
+                                                    "state": "Reserved",
+                                                    "date": str(chk_date),
+                                                    "room_id": room.id,
+                                                    "floor_id": room.floor_id.id,
+                                                    "is_draft": "No",
+                                                    "data_model": "",
+                                                    "data_id": reserve_val.reservation_id.id or 0,
+                                                }
+                                            )
+                                elif chk_date != reserve_checkin_date and chk_date != reserve_checkout_date:
+                                    for i in room_list_stats:
+                                        if i['state'] == 'Free' and str(i['date']) == str(chk_date):
+                                            i.update(
+                                                {
+                                                    "state": "Reserved",
+                                                    "date": str(chk_date),
+                                                    "room_id": room.id,
+                                                    "floor_id": room.floor_id.id,
+                                                    "is_draft": "No",
+                                                    "data_model": "",
+                                                    "data_id": reserve_val.reservation_id.id or 0,
+                                                }
+                                            )
+
+                                # Equal to checkin date
+                                elif chk_date == reserve_checkin_date and chk_date != reserve_checkout_date:
+                                    chk_in_time = str(reserve_checkin_time).split(':')[0]
+                                    for i in room_list_stats:
+                                        if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
+                                                i['entry'] >= chk_in_time + ':' + '00':
+                                            i.update(
+                                                {
+                                                    "state": "Reserved",
+                                                    "date": str(chk_date),
+                                                    "room_id": room.id,
+                                                    "floor_id": room.floor_id.id,
+                                                    "is_draft": "No",
+                                                    "data_model": "",
+                                                    "data_id": reserve_val.reservation_id.id or 0,
+                                                }
+                                            )
+
+
                             else:
                                 for entry in summary_header_list:
                                     m2 = datetime.datetime.strptime(entry, '%I %p')
@@ -584,6 +680,81 @@ class QuickRoomReservation(models.TransientModel):
                                             "entry": m3 + ':' + '00',
                                         }
                                     )
+
+                        if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
+                            for entry in summary_header_list:
+                                m2 = datetime.datetime.strptime(entry, '%I %p')
+                                m3 = str(m2).split(':')[0].split(' ')[-1]
+                                reserve_checkin_time = str(reserve_checkin_time).split(':')[0]
+                                reserve_checkout_time = str(reserve_checkout_time).split(':')[0]
+                                if reserve_checkin_time <= m3 <= reserve_checkout_time:
+                                    for i in room_list_stats:
+                                        if i['state'] == 'Free' and str(i['date']) == str(chk_date) \
+                                                and i['entry'] == m3 + ':' + '00':
+                                            i.update(
+                                                {
+                                                    "state": "Reserved",
+                                                    "date": str(chk_date),
+                                                    "room_id": room.id,
+                                                    "floor_id": room.floor_id.id,
+                                                    "is_draft": "No",
+                                                    "data_model": "",
+                                                    "data_id": reserve_val.reservation_id.id or 0,
+                                                }
+                                            )
+
+                        if reserve_checkin_date <= chk_date <= reserve_checkout_date:
+                            # Equal to checkout date
+                            if chk_date == reserve_checkout_date and chk_date != reserve_checkin_date:
+                                chk_out_time = str(reserve_checkin_time).split(':')[0]
+                                for i in room_list_stats:
+                                    if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
+                                            i['entry'] <= chk_out_time + ':' + '00':
+                                        i.update(
+                                            {
+                                                "state": "Reserved",
+                                                "date": str(chk_date),
+                                                "room_id": room.id,
+                                                "floor_id": room.floor_id.id,
+                                                "is_draft": "No",
+                                                "data_model": "",
+                                                "data_id": reserve_val.reservation_id.id or 0,
+                                            }
+                                        )
+                            elif chk_date != reserve_checkin_date and chk_date != reserve_checkout_date:
+                                for i in room_list_stats:
+                                    if i['state'] == 'Free' and str(i['date']) == str(chk_date):
+                                        i.update(
+                                            {
+                                                "state": "Reserved",
+                                                "date": str(chk_date),
+                                                "room_id": room.id,
+                                                "floor_id": room.floor_id.id,
+                                                "is_draft": "No",
+                                                "data_model": "",
+                                                "data_id": reserve_val.reservation_id.id or 0,
+                                            }
+                                        )
+
+                            # Equal to checkin date
+                            elif chk_date == reserve_checkin_date and chk_date != reserve_checkout_date:
+                                chk_in_time = str(reserve_checkin_time).split(':')[0]
+                                for i in room_list_stats:
+                                    if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
+                                            i['entry'] >= chk_in_time + ':' + '00':
+                                        i.update(
+                                            {
+                                                "state": "Reserved",
+                                                "date": str(chk_date),
+                                                "room_id": room.id,
+                                                "floor_id": room.floor_id.id,
+                                                "is_draft": "No",
+                                                "data_model": "",
+                                                "data_id": reserve_val.reservation_id.id or 0,
+                                            }
+                                        )
+
+
                         else:
                             if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
                                 for entry in summary_header_list:
@@ -594,7 +765,7 @@ class QuickRoomReservation(models.TransientModel):
                                     print(reserve_checkin_time, m3, reserve_checkout_time)
                                     if reserve_checkin_time <= m3 <= reserve_checkout_time:
                                         for i in room_list_stats:
-                                            if i['state'] == 'Free' and str(i['date']) == str(chk_date)\
+                                            if i['state'] == 'Free' and str(i['date']) == str(chk_date) \
                                                     and i['entry'] == m3 + ":00":
                                                 i.update(
                                                     {
