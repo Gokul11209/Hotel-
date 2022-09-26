@@ -125,6 +125,10 @@ class RoomReservationSummary(models.Model):
             "target": "new",
         }
 
+    def button_room_summary_refresh(self):
+        self.get_room_summary()
+        self.date_to += timedelta(seconds=1)
+
     @api.onchange("date_from", "date_to","room_categ_id","room_category","room_summary")  # noqa C901 (function is too complex)
     def get_room_summary(self):  # noqa C901 (function is too complex)
         """
@@ -338,6 +342,10 @@ class RoomReservationSummary(models.Model):
                     room_detail.update({"floor": room.floor_id.name or "", "name": room.name or ""})
                     if not room.room_reservation_line_ids and not room.room_line_ids:
                         for chk_date in date_range_list:
+                            datetime_object = datetime.datetime.strptime(chk_date, '%Y-%m-%d %H:%M:%S')
+                            datetime_object =datetime_object- timedelta(hours=24, minutes=00)
+                            print(datetime_object)
+                            chk_date = str(datetime_object)
                             room_list_stats.append(
                                 {
                                     "state": "Free",
@@ -376,7 +384,7 @@ class RoomReservationSummary(models.Model):
                             if not reservline_ids:
                                 sdt = dt
                                 chk_date = datetime.datetime.strptime(chk_date, sdt)
-                                # chk_date = datetime.strftime(
+                                # chk_date = datetime.datetime.strftime(
                                 #     chk_date - timedelta(days=1), sdt
                                 # )
                                 reservline_ids = reservation_line_obj.search(
@@ -394,8 +402,8 @@ class RoomReservationSummary(models.Model):
                                     if room_list_stats:
                                         count = 0
                                         for rlist in room_list_stats:
-                                            cidst = datetime.strftime(cid, dt)
-                                            codst = datetime.strftime(cod, dt)
+                                            cidst = datetime.datetime.strftime(cid, dt)
+                                            codst = datetime.datetime.strftime(cod, dt)
                                             rm_id = res_room.room_id.id
                                             ci = rlist.get("date") >= cidst
                                             co = rlist.get("date") <= codst
@@ -491,6 +499,7 @@ class RoomReservationSummary(models.Model):
 
                     room_detail.update({"value": room_list_stats})
                     all_room_detail.append(room_detail)
+                    # print(room_detail)
             main_header.append({"header": summary_header_list})
             self.summary_header = str(main_header)
             self.room_summary = str(all_room_detail)

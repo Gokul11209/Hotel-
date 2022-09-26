@@ -69,9 +69,9 @@
                 <sheet>
                     <group>
                         <group>
+                            <field name="room_id" />
                             <field name="current_date" />
                             <field name="clean_type" />
-                            <field name="room_id" />
                         </group>
                         <group>
                             <field name="inspector_id" />

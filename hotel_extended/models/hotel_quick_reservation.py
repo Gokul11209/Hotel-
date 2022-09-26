@@ -114,27 +114,32 @@ class QuickRoomReservation(models.TransientModel):
     room_summary = fields.Text("Room Summary")
     date_today = fields.Date("Date", default=lambda self: fields.Date.today())
     time_interval = fields.Char('Time Interval')
-    remaining_time = fields.Float(string="Remaining Time", compute="_compute_remain_hrs")
+    remaining_time = fields.Char(string="Remaining Time", compute="_compute_remain_hrs")
 
     @api.depends('remaining_time', 'guest_creation')
     def _compute_remain_hrs(self):
-        day_full_time = 86400.0
+        ConvertedSec = 86400.0
         room_obj = self.env["hotel.room"].search([('room_no', '=', self.room_no)])
-        for reserve_val in room_obj.room_reservation_line_ids:
-            reserve_checkin = reserve_val.check_in + timedelta(hours=5, minutes=30)
-            reserve_checkout = reserve_val.check_out + timedelta(hours=5, minutes=30)
-            cit = reserve_checkin.date()
-            cot = reserve_checkout.date()
-            if self.date_today == cit and self.date_today == cot:
-                import datetime
-                time = str(reserve_val.check_out - reserve_val.check_in)
-                date_time = datetime.datetime.strptime(time, "%H:%M:%S")
-                a_timedelta = date_time - datetime.datetime(1900, 1, 1)
-                seconds = a_timedelta.total_seconds()
-                day_full_time = day_full_time - seconds
-                time_1 = day_full_time / 3600
-                self.remaining_time = int(time_1)
-                print(seconds,"===========",time,"===========",seconds,"========",int(time_1))
+        if room_obj.room_reservation_line_ids:
+            for reserve_val in room_obj.room_reservation_line_ids:
+                reserve_checkin = reserve_val.check_in + timedelta(hours=5, minutes=30)
+                reserve_checkout = reserve_val.check_out + timedelta(hours=5, minutes=30)
+                cit = reserve_checkin.date()
+                cot = reserve_checkout.date()
+                if self.date_today == cit and self.date_today == cot:
+                    import datetime
+                    time = str(reserve_val.check_out - reserve_val.check_in)
+                    date_time = datetime.datetime.strptime(time, "%H:%M:%S")
+                    a_timedelta = date_time - datetime.datetime(1900, 1, 1)
+                    seconds = a_timedelta.total_seconds()
+                    ConvertedSec = ConvertedSec - seconds
+                    day_full_time = str(datetime.timedelta(seconds=ConvertedSec))
+                    self.remaining_time = day_full_time
+                    print(seconds,"===========",time,"===========",day_full_time,"========")
+                else:
+                    self.remaining_time = "24:00:00"
+        else:
+            self.remaining_time = "24:00:00"
 
 
     @api.onchange('choose_payment_mode')

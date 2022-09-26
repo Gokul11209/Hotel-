@@ -416,6 +416,7 @@
                             to
                             <field name="date_to" class="oe_inline"
                                    widget="daterange" options="{'related_start_date': 'date_to'}"/>
+                            <button name="button_room_summary_refresh" string="Refresh" type="object"/>
                         </div>
                     </group>
                     <group colspan="4" col="4">
@@ -465,7 +466,9 @@
                     <group attrs="{'invisible': [('guest_creation', '=', 'new')]}">
                         <group>
                             <field name="room_image" widget='image' class="oe_avatar"/>
-                            <field name="remaining_time"/>
+                            <field name="remaining_time"
+                                   widget="badge" decoration-success="remaining_time != '00:00:00'"
+                                   readonly="1"/>
 
                         </group>
                         <group>

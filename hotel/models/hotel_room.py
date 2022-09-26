@@ -76,13 +76,21 @@ class HotelRoom(models.Model):
     # attachment_ids = fields.Binary("Attachment")
     # image = fields.Binary(string="Image")
 
-
-
     @api.model
     def create(self, vals):
         if "room_categ_id" in vals:
             room_categ = self.env["hotel.room.type"].browse(vals.get("room_categ_id"))
             vals.update({"categ_id": room_categ.product_categ_id.id})
+            floor = self.floor_id.short_code
+            category = self.room_categ_id.short_code
+            room = self.short_code
+            print(floor, category, room)
+
+            vals["room_no"] = str(floor) + '/' + str(self.room_no) + '/' + str(room)
+            # vals["room_no"] = floor + '/' + category + '/' + room + '/' + (
+            #         self.env["ir.sequence"].next_by_code("hotel.room") or "New"
+            # )
+
         return super(HotelRoom, self).create(vals)
 
     @api.constrains("capacity")

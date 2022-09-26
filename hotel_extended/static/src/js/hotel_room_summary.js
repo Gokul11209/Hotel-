@@ -67,9 +67,9 @@ odoo.define("hotel_extended.hotel_room_summary", function (require) {
             const myArray = d1.split(" ");
             var day_day=day.length;
             if (day_day == 1){
-                var full_date = year + "-0" + month_1 + "-0" + day + " " + myArray[4]
+                var full_date = year + "-0" + month_1 + "-0" + day + " " + "00:00:00"
             }else{
-                var full_date = year + "-0" + month_1  +"-"+ day + " " + myArray[4]
+                var full_date = year + "-0" + month_1  +"-"+ day + " " + "00:00:00"
             }
 
 

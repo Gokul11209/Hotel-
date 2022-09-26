@@ -403,7 +403,8 @@
                         <group colspan="4" col="4">
                             <field name="is_folio"/>
                             <newline/>
-                            <field name="reservation_id"/>
+                            <field name="res_id"/>
+                            <field name="guest_name"/>
                             <field
                                     name="folio_id"
                                     attrs="{'invisible': [('is_folio','=',False)]}"

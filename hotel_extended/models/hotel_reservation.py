@@ -269,7 +269,7 @@ class HotelReservation(models.Model):
                 room_code = val.reserve.room_no
                 # type_code = val.reserve.room_categ_id.short_code
                 floor_code = val.reserve.floor_id.short_code
-                self.reservation_no = room_code + '/' + floor_code + '/' + self.reservation_no
+                self.reservation_no = room_code + '/' + self.reservation_no
             # vals["reservation_no"] = (
             #         self.env["ir.sequence"].next_by_code("hotel.reservation") or "New"
             # )

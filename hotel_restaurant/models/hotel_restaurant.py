@@ -5,7 +5,6 @@ from odoo.exceptions import ValidationError
 
 
 class HotelRestaurantTables(models.Model):
-
     _name = "hotel.restaurant.tables"
     _description = "Includes Hotel Restaurant Table"
 
@@ -28,7 +27,6 @@ class HotelRestaurantTables(models.Model):
 
 
 class HotelRestaurantReservation(models.Model):
-
     _name = "hotel.restaurant.reservation"
     _description = "Includes Hotel Restaurant Reservation"
     _rec_name = "reservation_id"
@@ -241,7 +239,6 @@ class HotelRestaurantReservation(models.Model):
 
 
 class HotelRestaurantKitchenOrderTickets(models.Model):
-
     _name = "hotel.restaurant.kitchen.order.tickets"
     _description = "Includes Hotel Restaurant Order"
     _rec_name = "order_number"
@@ -268,7 +265,6 @@ class HotelRestaurantKitchenOrderTickets(models.Model):
 
 
 class HotelRestaurantOrder(models.Model):
-
     _name = "hotel.restaurant.order"
     _description = "Includes Hotel Restaurant Order"
     _rec_name = "order_no"
@@ -303,7 +299,7 @@ class HotelRestaurantOrder(models.Model):
             sale.amount_total = 0.0
             if sale.amount_subtotal:
                 sale.amount_total = (
-                    sale.amount_subtotal + (sale.amount_subtotal * sale.tax) / 100
+                        sale.amount_subtotal + (sale.amount_subtotal * sale.tax) / 100
                 )
 
     def done_cancel(self):
@@ -415,7 +411,6 @@ class HotelRestaurantOrder(models.Model):
         "Rest",
     )
 
-
     @api.model
     def create(self, vals):
         """
@@ -513,7 +508,6 @@ class HotelRestaurantOrder(models.Model):
 
 
 class HotelReservationOrder(models.Model):
-
     _name = "hotel.reservation.order"
     _description = "Reservation Order"
     _rec_name = "order_number"
@@ -530,7 +524,7 @@ class HotelReservationOrder(models.Model):
                 line.price_subtotal for line in sale.order_list_ids
             )
             sale.amount_total = (
-                sale.amount_subtotal + (sale.amount_subtotal * sale.tax) / 100
+                    sale.amount_subtotal + (sale.amount_subtotal * sale.tax) / 100
             )
 
     def reservation_generate_kot(self):
@@ -675,20 +669,29 @@ class HotelReservationOrder(models.Model):
         "Rest",
     )
     state = fields.Selection(
-        [("draft", "Draft"), ("order", "Order Created"), ("done", "Done"),("cancel","Cancel")],
+        [("draft", "Draft"), ("order", "Order Created"), ("done", "Done"), ("cancel", "Cancel")],
         "State",
         required=True,
         readonly=True,
         default="draft",
     )
-    folio_id = fields.Many2one("hotel.folio", "Folio No")
+    folio_id = fields.Many2one('hotel.folio', "Folio No")
     is_folio = fields.Boolean(
         "Is a Hotel Guest??", help="is guest reside in hotel or not"
     )
+    res_id = fields.Many2one("hotel.reservation", "Reservation ID")
+    guest_name = fields.Many2one(string="Guest", related='res_id.partner_id')
 
     order_cancel_remarks = fields.Text(string='Order Cancel Remarks')
-    order_cancel_remarks_2= fields.Text(string='Order Cancel Remarks')
+    order_cancel_remarks_2 = fields.Text(string='Order Cancel Remarks')
 
+    @api.onchange('res_id')
+    def fetch_folio_id(self):
+        id = self.env['hotel.folio'].sudo().search([
+            ('reservation_id', '=', self.res_id.id)])
+        for i in id:
+            if self.res_id:
+                self.folio_id = i.id
 
     def hotel_management_order_cancel(self):
         view_id = self.env['hotel.management.order.cancel']
@@ -702,6 +705,7 @@ class HotelReservationOrder(models.Model):
             'view_id': self.env.ref('hotel_restaurant.hotel_management_order_cancel_remarks_wizard', False).id,
             'target': 'new',
         }
+
     def order_cancel(self):
         """
         This method is used to change the state
@@ -725,7 +729,6 @@ class HotelReservationOrder(models.Model):
 
 
 class HotelRestaurantOrderList(models.Model):
-
     _name = "hotel.restaurant.order.list"
     _description = "Includes Hotel Restaurant Order"
 
