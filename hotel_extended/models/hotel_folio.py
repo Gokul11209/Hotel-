@@ -128,8 +128,12 @@ class HouseKeepingDetails(models.Model):
         ],
         "Clean Type",
     )
+    # room_id = fields.Many2one(
+    #     "hotel.room",
+    #     "Room No",
+    # )
     room_id = fields.Many2one(
-        "hotel.room",
+        "hotel.reservation",
         "Room No",
     )
     inspector_id = fields.Many2one(

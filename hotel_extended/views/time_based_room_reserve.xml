@@ -11,7 +11,7 @@
                 <sheet>
                     <div class="reserve_summary_button">
                         <group>
-                            <button name="%(hotel_extended.action_hotel_reservation_summary)d"
+                            <button name="%(action_hotel_reservation_summary)d"
                                     icon="fa-calendar"
                                     type="action"
                                     class="summary_btn">
@@ -21,7 +21,7 @@
                                 <span></span>
                                 Date Based Reservation
                             </button>
-                            <button name="%(hotel_extended.action_hotel_time_based_reservation_summary)d"
+                            <button name="%(action_hotel_time_based_reservation_summary)d"
                                     type="action"
                                     icon="fa-clock-o"
                                     class="summary_btn">

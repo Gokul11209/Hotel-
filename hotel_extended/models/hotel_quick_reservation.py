@@ -103,6 +103,7 @@ class QuickRoomReservation(models.TransientModel):
     room_price = fields.Float(related='room_id.list_price', string="Price")
     hrs_selection = fields.Selection([
         ('short', 'Short Close'),
+        ('free_hrs', 'Free Hours'),
         ('12', '12 Hours'),
         ('24', '24 Hours'), ],
         string='Hours',
@@ -116,31 +117,66 @@ class QuickRoomReservation(models.TransientModel):
     time_interval = fields.Char('Time Interval')
     remaining_time = fields.Char(string="Remaining Time", compute="_compute_remain_hrs")
 
+    """ 
+    Onchange function for Selected Room Category the price has been 
+    updated based on Selected price-list 
+    """
+    @api.onchange('pricelist_id', 'room_price')
+    def room_price_list(self):
+        if self.pricelist_id:
+            price_info_id = self.env['product.pricelist'].sudo().search([('id', '=', self.pricelist_id.id)])
+            if self.pricelist_id:
+                for price_list in price_info_id.item_ids:
+                    if self.room_category.name == price_list.categ_id.name:
+                        self.room_price = price_list.fixed_price
+
     @api.depends('remaining_time', 'guest_creation')
     def _compute_remain_hrs(self):
         ConvertedSec = 86400.0
         room_obj = self.env["hotel.room"].search([('room_no', '=', self.room_no)])
         if room_obj.room_reservation_line_ids:
             for reserve_val in room_obj.room_reservation_line_ids:
+                print(ConvertedSec)
                 reserve_checkin = reserve_val.check_in + timedelta(hours=5, minutes=30)
                 reserve_checkout = reserve_val.check_out + timedelta(hours=5, minutes=30)
                 cit = reserve_checkin.date()
                 cot = reserve_checkout.date()
-                if self.date_today == cit and self.date_today == cot:
+                if cit <= self.date_today <= cot:
                     import datetime
-                    time = str(reserve_val.check_out - reserve_val.check_in)
-                    date_time = datetime.datetime.strptime(time, "%H:%M:%S")
-                    a_timedelta = date_time - datetime.datetime(1900, 1, 1)
-                    seconds = a_timedelta.total_seconds()
-                    ConvertedSec = ConvertedSec - seconds
-                    day_full_time = str(datetime.timedelta(seconds=ConvertedSec))
-                    self.remaining_time = day_full_time
-                    print(seconds,"===========",time,"===========",day_full_time,"========")
+                    if self.date_today == cot and self.date_today != cit:
+                        time = str(reserve_checkout.time())
+                        date_time = datetime.datetime.strptime(time, "%H:%M:%S")
+                        a_timedelta = date_time - datetime.datetime(1900, 1, 1)
+                        seconds = a_timedelta.total_seconds()
+                        ConvertedSec = ConvertedSec - seconds
+                        day_full_time = str(datetime.timedelta(seconds=ConvertedSec))
+                        self.remaining_time = day_full_time
+                    elif self.date_today == cit and self.date_today != cot:
+                        time = str(reserve_checkin.time())
+                        date_time = datetime.datetime.strptime(time, "%H:%M:%S")
+                        a_timedelta = date_time - datetime.datetime(1900, 1, 1)
+                        seconds = a_timedelta.total_seconds()
+                        row_seconds = 86400.0 - seconds
+                        ConvertedSec = ConvertedSec - row_seconds
+                        day_full_time = str(datetime.timedelta(seconds=ConvertedSec))
+                        self.remaining_time = day_full_time
+                        print(seconds, "===========", ConvertedSec, "+====", time, "===========", day_full_time,
+                              "========")
+                    elif self.date_today == cit and self.date_today == cot:
+                        print("==========================Gokul")
+                        time = str(reserve_val.check_out - reserve_val.check_in)
+                        date_time = datetime.datetime.strptime(time, "%H:%M:%S")
+                        a_timedelta = date_time - datetime.datetime(1900, 1, 1)
+                        seconds = a_timedelta.total_seconds()
+                        ConvertedSec = ConvertedSec - seconds
+                        day_full_time = str(datetime.timedelta(seconds=ConvertedSec))
+                        self.remaining_time = day_full_time
+                        print(seconds, "===========", time, "===========", day_full_time, "========")
+
                 else:
                     self.remaining_time = "24:00:00"
         else:
             self.remaining_time = "24:00:00"
-
 
     @api.onchange('choose_payment_mode')
     def change_journal(self):
@@ -390,113 +426,113 @@ class QuickRoomReservation(models.TransientModel):
                         "reservation_id": hotel_res_obj_new.id,
                     }
                     # self.env["hotel.room.reservation.line"].create(vals)
-                    self.room_id.room_reservation_line_ids.create(vals)
-
-        if self.reserve_date and self.check_in_time and self.check_out_time:
-            ref_date1 = self.reserve_date
-            chk_in_time = self.check_in_time
-            chk_out_time = self.check_out_time
-            import datetime
-            d11 = str(ref_date1)
-            print("================ Zero =====================", self.reserve_date)
-            dt21 = datetime.datetime.strptime(d11, '%Y-%m-%d')
-            date1 = dt21.strftime("%Y-%m-%d")
-            print("The date format is", date1, type(date1))
-            d22 = str(chk_in_time)
-            dt22 = datetime.datetime.strptime(d22, "%H:%M")
-            check_in_time = dt22.strftime("%H:%M")
-            datetime_object = date1 + ' ' + check_in_time + ":00"
-            print("THe final result is", datetime_object)
-
-            if self.check_out_time:
-                d33 = str(chk_out_time)
-                dt33 = datetime.datetime.strptime(d33, "%H:%M")
-                check_out_time = dt33.strftime("%H:%M")
-                datetime_object_2 = date1 + ' ' + check_out_time + ":00"
-                print("THe final result is", datetime_object_2)
-
-            for res in self:
-                date_time_1 = datetime.datetime.strptime(datetime_object, "%Y-%m-%d %H:%M:%S")
-                date_time_2 = datetime.datetime.strptime(datetime_object_2, "%Y-%m-%d %H:%M:%S")
-                datetime_object_11 = date_time_1 - timedelta(hours=5, minutes=30)
-                datetime_object_12 = date_time_2 - timedelta(hours=5, minutes=30)
-                if self.hrs_selection == str(24):
-                    datetime_object_12 = date_time_2 + timedelta(hours=29, minutes=30)
-                print(datetime_object_11, "===============", datetime_object_12)
-
-                if self.advance_amt == 0:
-                    print('*************ZERO******************')
-                    rec = hotel_res_obj.create(
-                        {
-                            "partner_id": res.partner_id.id,
-                            "partner_invoice_id": res.partner_invoice_id.id,
-                            "partner_order_id": res.partner_order_id.id,
-                            "partner_shipping_id": res.partner_shipping_id.id,
-                            "checkin": datetime_object_11,
-                            "checkout": datetime_object_12,
-                            "reservation_hrs_selection": res.hrs_selection,
-                            "company_id": res.company_id.id,
-                            "pricelist_id": res.pricelist_id.id,
-                            "adults": res.adults,
-                            "children": res.children,
-                            "proof_type": res.add_proof,
-                            "advance_payment": res.advance_amt,
-                            "reservation_line": [
-                                (
-                                    0,
-                                    0,
-                                    {
-                                        "reserve": [(6, 0, res.room_id.ids)],
-                                        "name": res.room_id.name or " ",
-                                    },
-                                )
-                            ],
-                        }
-                    )
-                else:
-                    hotel_res_obj.create({
-                        "partner_id": res.partner_id.id,
-                        "partner_invoice_id": res.partner_invoice_id.id,
-                        "partner_order_id": res.partner_order_id.id,
-                        "partner_shipping_id": res.partner_shipping_id.id,
-                        "checkin": datetime_object_11,
-                        "checkout": datetime_object_12,
-                        "reservation_hrs_selection": res.hrs_selection,
-                        "company_id": res.company_id.id,
-                        "pricelist_id": res.pricelist_id.id,
-                        "adults": res.adults,
-                        "children": res.children,
-                        "proof_type": res.add_proof,
-                        "state": "confirm",
-                        "advance_payment": res.advance_amt,
-                        "reservation_line": [
-                            (
-                                0,
-                                0,
-                                {
-                                    "reserve": [(6, 0, res.room_id.ids)],
-                                    "name": res.room_id.name or " ",
-                                },
-                            )
-                        ],
-                    })
-                    hotel_res_obj_new = self.env["hotel.reservation"].search([
-                        ("partner_id", "=", res.partner_id.id),
-                        ("checkin", "=", datetime_object_11),
-                        ("checkout", "=", datetime_object_12),
-                        ("adults", "=", res.adults),
-                        # ("reservation_line.name", "=", res.room_id.name),
-                    ])
-                    vals = {
-                        "room_id": res.room_id.id,
-                        "check_in": datetime_object_11,
-                        "check_out": datetime_object_12,
-                        "state": "assigned",
-                        "status": "confirm",
-                        "reservation_id": hotel_res_obj_new.id,
-                    }
-                    print(vals)
                     self.room_id.room_reservation_line_ids.sudo().create(vals)
+
+        # if self.reserve_date and self.check_in_time and self.check_out_time:
+        #     ref_date1 = self.reserve_date
+        #     chk_in_time = self.check_in_time
+        #     chk_out_time = self.check_out_time
+        #     import datetime
+        #     d11 = str(ref_date1)
+        #     print("================ Zero =====================", self.reserve_date)
+        #     dt21 = datetime.datetime.strptime(d11, '%Y-%m-%d')
+        #     date1 = dt21.strftime("%Y-%m-%d")
+        #     print("The date format is", date1, type(date1))
+        #     d22 = str(chk_in_time)
+        #     dt22 = datetime.datetime.strptime(d22, "%H:%M")
+        #     check_in_time = dt22.strftime("%H:%M")
+        #     datetime_object = date1 + ' ' + check_in_time + ":00"
+        #     print("THe final result is", datetime_object)
+        #
+        #     if self.check_out_time:
+        #         d33 = str(chk_out_time)
+        #         dt33 = datetime.datetime.strptime(d33, "%H:%M")
+        #         check_out_time = dt33.strftime("%H:%M")
+        #         datetime_object_2 = date1 + ' ' + check_out_time + ":00"
+        #         print("THe final result is", datetime_object_2)
+        #
+        #     for res in self:
+        #         date_time_1 = datetime.datetime.strptime(datetime_object, "%Y-%m-%d %H:%M:%S")
+        #         date_time_2 = datetime.datetime.strptime(datetime_object_2, "%Y-%m-%d %H:%M:%S")
+        #         datetime_object_11 = date_time_1 - timedelta(hours=5, minutes=30)
+        #         datetime_object_12 = date_time_2 - timedelta(hours=5, minutes=30)
+        #         if self.hrs_selection == str(24):
+        #             datetime_object_12 = date_time_2 + timedelta(hours=29, minutes=30)
+        #         print(datetime_object_11, "===============", datetime_object_12)
+        #
+        #         if self.advance_amt == 0:
+        #             print('*************ZERO******************')
+        #             rec = hotel_res_obj.create(
+        #                 {
+        #                     "partner_id": res.partner_id.id,
+        #                     "partner_invoice_id": res.partner_invoice_id.id,
+        #                     "partner_order_id": res.partner_order_id.id,
+        #                     "partner_shipping_id": res.partner_shipping_id.id,
+        #                     "checkin": datetime_object_11,
+        #                     "checkout": datetime_object_12,
+        #                     "reservation_hrs_selection": res.hrs_selection,
+        #                     "company_id": res.company_id.id,
+        #                     "pricelist_id": res.pricelist_id.id,
+        #                     "adults": res.adults,
+        #                     "children": res.children,
+        #                     "proof_type": res.add_proof,
+        #                     "advance_payment": res.advance_amt,
+        #                     "reservation_line": [
+        #                         (
+        #                             0,
+        #                             0,
+        #                             {
+        #                                 "reserve": [(6, 0, res.room_id.ids)],
+        #                                 "name": res.room_id.name or " ",
+        #                             },
+        #                         )
+        #                     ],
+        #                 }
+        #             )
+        #         else:
+        #             hotel_res_obj.create({
+        #                 "partner_id": res.partner_id.id,
+        #                 "partner_invoice_id": res.partner_invoice_id.id,
+        #                 "partner_order_id": res.partner_order_id.id,
+        #                 "partner_shipping_id": res.partner_shipping_id.id,
+        #                 "checkin": datetime_object_11,
+        #                 "checkout": datetime_object_12,
+        #                 "reservation_hrs_selection": res.hrs_selection,
+        #                 "company_id": res.company_id.id,
+        #                 "pricelist_id": res.pricelist_id.id,
+        #                 "adults": res.adults,
+        #                 "children": res.children,
+        #                 "proof_type": res.add_proof,
+        #                 "state": "confirm",
+        #                 "advance_payment": res.advance_amt,
+        #                 "reservation_line": [
+        #                     (
+        #                         0,
+        #                         0,
+        #                         {
+        #                             "reserve": [(6, 0, res.room_id.ids)],
+        #                             "name": res.room_id.name or " ",
+        #                         },
+        #                     )
+        #                 ],
+        #             })
+        #             hotel_res_obj_new = self.env["hotel.reservation"].search([
+        #                 ("partner_id", "=", res.partner_id.id),
+        #                 ("checkin", "=", datetime_object_11),
+        #                 ("checkout", "=", datetime_object_12),
+        #                 ("adults", "=", res.adults),
+        #                 # ("reservation_line.name", "=", res.room_id.name),
+        #             ])
+        #             vals = {
+        #                 "room_id": res.room_id.id,
+        #                 "check_in": datetime_object_11,
+        #                 "check_out": datetime_object_12,
+        #                 "state": "assigned",
+        #                 "status": "confirm",
+        #                 "reservation_id": hotel_res_obj_new.id,
+        #             }
+        #             print(vals)
+        #             self.room_id.room_reservation_line_ids.sudo().create(vals)
 
         return rec
 
@@ -583,6 +619,17 @@ class QuickRoomReservation(models.TransientModel):
                 chk_date = self.date_today
                 room_detail.update({"name": room.name or ""})
                 if room.room_reservation_line_ids:
+                    for entry in summary_header_list:
+                        m2 = datetime.datetime.strptime(entry, '%I %p')
+                        m3 = str(m2).split(':')[0].split(' ')[-1]
+                        room_list_stats.append(
+                            {
+                                "state": "Free",
+                                "date": str(chk_date),
+                                "room_id": room.id,
+                                "entry": m3 + ':' + '00',
+                            }
+                        )
                     for reserve_val in room.room_reservation_line_ids:
                         reserve_checkin = reserve_val.check_in + timedelta(hours=5, minutes=30)
                         reserve_checkout = reserve_val.check_out + timedelta(hours=5, minutes=30)
@@ -600,26 +647,32 @@ class QuickRoomReservation(models.TransientModel):
                                     reserve_checkin_time = str(reserve_checkin_time).split(':')[0]
                                     reserve_checkout_time = str(reserve_checkout_time).split(':')[0]
                                     if reserve_checkin_time <= m3 <= reserve_checkout_time:
-                                        room_list_stats.append(
-                                            {
-                                                "state": "Reserved",
-                                                "date": str(chk_date),
-                                                "room_id": room.id,
-                                                "floor_id": room.floor_id.id,
-                                                "is_draft": "No",
-                                                "data_model": "",
-                                                "data_id": reserve_val.reservation_id.id or 0,
-                                            }
-                                        )
+                                        print(reserve_checkin_time, m3, reserve_checkout_time)
+                                        for i in room_list_stats:
+                                            if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
+                                                    i['entry'] == m3 + ':' + '00':
+                                                i.update(
+                                                    {
+                                                        "state": "Reserved",
+                                                        "date": str(chk_date),
+                                                        "room_id": room.id,
+                                                        "floor_id": room.floor_id.id,
+                                                        "is_draft": "No",
+                                                        "data_model": "",
+                                                        "data_id": reserve_val.reservation_id.id or 0,
+                                                    }
+                                                )
                                     else:
-                                        room_list_stats.append(
-                                            {
-                                                "state": "Free",
-                                                "date": str(chk_date),
-                                                "room_id": room.id,
-                                                "entry": m3 + ":00",
-                                            }
-                                        )
+                                        for i in room_list_stats:
+                                            if i['state'] == 'Free' and str(i['date']) == str(chk_date):
+                                                i.update(
+                                                    {
+                                                        "state": "Free",
+                                                        "date": str(chk_date),
+                                                        "room_id": room.id,
+                                                        "entry": m3 + ":00",
+                                                    }
+                                                )
 
                             if reserve_checkin_date <= chk_date <= reserve_checkout_date:
                                 # Equal to checkout date
@@ -627,7 +680,7 @@ class QuickRoomReservation(models.TransientModel):
                                     chk_out_time = str(reserve_checkin_time).split(':')[0]
                                     for i in room_list_stats:
                                         if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
-                                                i['entry'] <= chk_out_time + ':' + '00':
+                                                i['entry'] < chk_out_time + ':' + '00':
                                             i.update(
                                                 {
                                                     "state": "Reserved",
@@ -659,7 +712,7 @@ class QuickRoomReservation(models.TransientModel):
                                     chk_in_time = str(reserve_checkin_time).split(':')[0]
                                     for i in room_list_stats:
                                         if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
-                                                i['entry'] >= chk_in_time + ':' + '00':
+                                                i['entry'] > chk_in_time + ':' + '00':
                                             i.update(
                                                 {
                                                     "state": "Reserved",
@@ -672,19 +725,18 @@ class QuickRoomReservation(models.TransientModel):
                                                 }
                                             )
 
-
-                            else:
-                                for entry in summary_header_list:
-                                    m2 = datetime.datetime.strptime(entry, '%I %p')
-                                    m3 = str(m2).split(':')[0].split(' ')[-1]
-                                    room_list_stats.append(
-                                        {
-                                            "state": "Free",
-                                            "date": str(chk_date),
-                                            "room_id": room.id,
-                                            "entry": m3 + ':' + '00',
-                                        }
-                                    )
+                            # else:
+                            #     for entry in summary_header_list:
+                            #         m2 = datetime.datetime.strptime(entry, '%I %p')
+                            #         m3 = str(m2).split(':')[0].split(' ')[-1]
+                            #         room_list_stats.append(
+                            #             {
+                            #                 "state": "Free",
+                            #                 "date": str(chk_date),
+                            #                 "room_id": room.id,
+                            #                 "entry": m3 + ':' + '00',
+                            #             }
+                            #         )
 
                         if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
                             for entry in summary_header_list:
@@ -760,29 +812,6 @@ class QuickRoomReservation(models.TransientModel):
                                         )
 
 
-                        else:
-                            if chk_date == reserve_checkin_date and chk_date == reserve_checkout_date:
-                                for entry in summary_header_list:
-                                    m2 = datetime.datetime.strptime(entry, '%I %p')
-                                    m3 = str(m2).split(':')[0].split(' ')[-1]
-                                    reserve_checkin_time = str(reserve_checkin_time).split(":")[0]
-                                    reserve_checkout_time = str(reserve_checkout_time).split(":")[0]
-                                    print(reserve_checkin_time, m3, reserve_checkout_time)
-                                    if reserve_checkin_time <= m3 <= reserve_checkout_time:
-                                        for i in room_list_stats:
-                                            if i['state'] == 'Free' and str(i['date']) == str(chk_date) \
-                                                    and i['entry'] == m3 + ":00":
-                                                i.update(
-                                                    {
-                                                        "state": "Reserved",
-                                                        "date": str(chk_date),
-                                                        "room_id": room.id,
-                                                        "floor_id": room.floor_id.id,
-                                                        "is_draft": "No",
-                                                        "data_model": "",
-                                                        "data_id": reserve_val.reservation_id.id or 0,
-                                                    }
-                                                )
                 else:
                     for entry in summary_header_list:
                         m2 = datetime.datetime.strptime(entry, '%I %p')

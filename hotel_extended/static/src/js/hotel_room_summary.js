@@ -75,7 +75,7 @@ odoo.define("hotel_extended.hotel_room_summary", function (require) {
 
             this.$el.find(".table_free").bind("click", function () {
                 if ($(this).attr("date") <= full_date){
-                    console.log($(this).attr("date"),$(this).attr("box_date"),"=================================",full_date,"=========",typeof(year))
+//                    console.log($(this).attr("date"),$(this).attr("box_date"),"=================================",full_date,"=========",typeof(year))
                     alert(
                     "Alert-Warning!,  Dear Guest, you cannot reserve the past time, Reservation will be available from current time onwards,");
                     }
@@ -117,7 +117,7 @@ odoo.define("hotel_extended.hotel_room_summary", function (require) {
             );
         },
         _onFieldChanged: function (event) {
-        console.log('Js csalledd My widgetttttttt>>>>>141414>>>>')
+//        console.log('Js csalledd My widgetttttttt>>>>>141414>>>>')
             this._super();
             this.lastChangeEvent = event;
             this.set({

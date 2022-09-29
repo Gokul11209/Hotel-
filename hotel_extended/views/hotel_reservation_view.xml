@@ -416,7 +416,8 @@
                             to
                             <field name="date_to" class="oe_inline"
                                    widget="daterange" options="{'related_start_date': 'date_to'}"/>
-                            <button name="button_room_summary_refresh" string="Refresh" type="object"/>
+                            <br/>
+                            <button name="button_room_summary_refresh" string="Refresh" type="object" icon="fa-refresh" class="oe_highlight"/>
                         </div>
                     </group>
                     <group colspan="4" col="4">
@@ -514,6 +515,7 @@
                                    attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                             <field name="journal" invisible="1" attrs="{'required': [('guest_creation', '=', 'exist')]}"
                                    options="{'no_create': True}"/>
+                            <field name="add_proof_type" readonly="1" force_save="1"/>
                             <field name="pricelist_id"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
@@ -534,6 +536,8 @@
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'invisible': [('active', '==', True)]}"/>
                             <field name="check_out"
+                                   readonly="1"
+                                   force_save="1"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'invisible': [('active', '==', True)]}"/>
                             <field name="advance_amt" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
@@ -626,7 +630,7 @@
                         <!--                                                       attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
                         <!--                                                                        <field name="children" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
                         <!--                                                                        <field name="advance_amt" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
-                        <!--                        <field name="add_proof_type" readonly="1" force_save="1"-->
+<!--                                                <field name="add_proof_type" readonly="1" force_save="1"-->
                         <!--                               attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
                         <!--                                                <field name="add_proof" attrs="{'required': [('guest_creation', '=', 'exist')]}"/>-->
 

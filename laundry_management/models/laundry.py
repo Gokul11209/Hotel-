@@ -169,7 +169,28 @@ class LaundryManagement(models.Model):
 
             return value
 
+    def get_service_order_line_items(self):
+        line_vals = []
+        for line in self.order_lines:
+            if line:
+                vals = [0, 0, {
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': line.qty,
+                    'name': self.name + '/' + line.product_id.name,
+                    'price_unit': line.washing_type.amount,
+                }]
+                line_vals.append(vals)
+        return line_vals
+
+    def done_state(self):
+        folio_id = self.env['hotel.folio'].sudo().search([('reservation_id', '=', self.res_id.id)])
+        folio_id.sudo().write({
+            'service_line_ids': self.get_service_order_line_items(),
+        })
+
+
     name = fields.Char(string="Label", copy=False)
+    # proforma_id = fields.Many2one('hotel.folio', string="Proforma")
     invoice_status = fields.Selection([
         ('upselling', 'Upselling Opportunity'),
         ('invoiced', 'Fully Invoiced'),
@@ -325,6 +346,7 @@ class ExtraWork(models.Model):
 
 class Washing(models.Model):
     _name = 'washing.washing'
+    _description = 'Laundry Work Order'
 
     def start_wash(self):
         if not self.laundry_works:

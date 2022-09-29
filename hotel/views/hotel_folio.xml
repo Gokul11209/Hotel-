@@ -43,6 +43,14 @@
                             class="oe_highlight"
                             help="If a Hotel Folio is done, you cannot modify it manually anymore. However, you will still be able to invoice or deliver. This is used to freeze the Hotel Folio."
                     />
+                    <button
+                            name="create_folio_invoice"
+                            type="object"
+                            string="Create Folio Invoice"
+                            states="sale"
+                            class="oe_highlight"
+                            help="If a Hotel Folio is done, you cannot modify it manually anymore. However, you will still be able to invoice or deliver. This is used to freeze the Hotel Folio."
+                    />
                     <field
                             name="state"
                             select="2"

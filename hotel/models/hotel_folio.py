@@ -282,8 +282,6 @@ class HotelFolio(models.Model):
     def action_done(self):
         self.write({"state": "done"})
 
-
-
     def action_confirm(self):
         for order in self.order_id:
             order.state = "sale"
@@ -294,6 +292,65 @@ class HotelFolio(models.Model):
             config_parameter_obj = self.env["ir.config_parameter"]
             if config_parameter_obj.sudo().get_param("sale.auto_done_setting"):
                 self.order_id.action_done()
+
+    def create_folio_invoice(self):
+        """This is the function for creating customer invoice
+        from the picking"""
+        global invoice
+        for folio in self:
+            current_user = self.env.uid
+            # if picking_id.picking_type_id.code == 'outgoing':
+            #     customer_journal_id = picking_id.env['ir.config_parameter'].sudo().get_param(
+            #         'stock_move_invoice.customer_journal_id') or False
+            #     if not customer_journal_id:
+            #         raise UserError(_("Alert!, Please configure the journal from settings"))
+            invoice_line_list = []
+            invoice_service_line_list = []
+            for move_ids_without_package in folio.room_line_ids:
+                vals = (0, 0, {
+                    'name': move_ids_without_package.name,
+                    'product_id': move_ids_without_package.product_id.id,
+                    'price_unit': move_ids_without_package.price_unit,
+                    'account_id': move_ids_without_package.product_id.property_account_income_id.id if move_ids_without_package.product_id.property_account_income_id
+                    else move_ids_without_package.product_id.categ_id.property_account_income_categ_id.id,
+                    # 'tax_ids': [(6, 0, [folio.company_id.account_sale_tax_id.id])],
+                    'quantity': move_ids_without_package.product_uom_qty,
+                })
+            for service_lines in folio.service_line_ids:
+                service_vals = (0, 0, {
+                    'name': service_lines.name,
+                    'product_id': service_lines.product_id.id,
+                    'price_unit': service_lines.price_unit,
+                    'account_id': service_lines.product_id.property_account_income_id.id if service_lines.product_id.property_account_income_id
+                    else service_lines.product_id.categ_id.property_account_income_categ_id.id,
+                    # 'tax_ids': [(6, 0, [folio.company_id.account_sale_tax_id.id])],
+                    'quantity': service_lines.product_uom_qty,
+                })
+                invoice_line_list.append(service_vals)
+            invoice_line_list.append(vals)
+            invoice = folio.env['account.move'].sudo().create({
+                'move_type': 'out_invoice',
+                'invoice_origin': folio.name,
+                'invoice_user_id': current_user,
+                'narration': folio.name,
+                'partner_id': folio.partner_id.id,
+                'partner_shipping_id': folio.partner_invoice_id.id,
+                'currency_id': folio.env.user.company_id.currency_id.id,
+                'journal_id': 1,
+                'payment_reference': folio.name,
+                'l10n_in_gst_treatment': 'consumer',
+                'ref': folio.name,
+                'folio_id': folio.id,
+                'invoice_line_ids': invoice_line_list
+            })
+            # invoice = folio.env['account.move'].sudo().write({
+            #     'invoice_line_ids': invoice_service_line_list
+            # })
+            # sale_sr = self.env['hotel.folio'].sudo().search([('folio_id', '=', self.id)])
+            # sale_sr.write({
+            #     'hotel_invoice_id': invoice.id,
+            # })
+            return invoice
 
     def action_cancel_draft(self):
         """
@@ -846,3 +903,10 @@ class HotelServiceLine(models.Model):
         @param default: dict of default values to be set
         """
         return self.service_line_id.copy_data(default=default)
+
+
+class AccountMove(models.Model):
+    _inherit = 'account.move'
+
+    folio_id = fields.Many2one('hotel.folio', string='Folio')
+    sale_id = fields.Many2one('sale.order', string='Sale Folio')

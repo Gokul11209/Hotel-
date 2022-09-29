@@ -110,6 +110,36 @@ class HotelHousekeeping(models.Model):
         """
         self.write({"state": "cancel", "quality": False})
 
+    def get_service_order_line_items(self):
+        line_vals = []
+        # for line in self.activity_line_ids:
+        if self.activity_line_ids:
+            vals = [0, 0, {
+                'product_id': 12,
+                'product_uom_qty': len(self.activity_line_ids),
+                # 'name': line.housekeeper_id.name,
+
+            }]
+            line_vals.append(vals)
+        return line_vals
+
+    def proforma_housekeeping_activity(self):
+        line_vals = []
+        # for line in self.activity_line_ids:
+        if self.room_id:
+            vals = [0, 0, {
+                'current_date': self.current_date,
+                'clean_type': self.clean_type,
+                'room_id': self.room_id.id,
+                'inspector_id': self.inspector_id.id,
+                'inspect_date_time': self.inspect_date_time,
+
+            }]
+            line_vals.append(vals)
+        return line_vals
+
+
+
     def room_done(self):
         """
         This method is used to change the state
@@ -117,29 +147,22 @@ class HotelHousekeeping(models.Model):
         ---------------------------------------
         @param self: object pointer
         """
+
+        folio_id = self.env['hotel.folio'].sudo().search([('reservation_id', '=', self.room_id.id)])
+        folio_id.sudo().write({
+            'hotel_house_keeping_orders_ids': self.proforma_housekeeping_activity(),
+            'service_line_ids': self.get_service_order_line_items(),
+        })
         if not self.quality:
             raise ValidationError(_("Alert!, Please update quality of work!"))
+
+        # else:
+        #     raise ValidationError(_("Alert!, Please Create a Folio against the Reservation"))
         self.write({"state": "done"})
 
-        folio_id = self.env["hotel.folio"].search([("reservation_id", "=", self.room_id.id)])
-        if folio_id:
-            line_vals = []
-            vals = {
-                "current_date": self.current_date,
-                "clean_type": self.clean_type,
-                "room_id": self.room_id.id,
-                "inspector_id": self.inspector_id.id,
-                "inspect_date_time": self.inspect_date_time,
-            }
-            print("============", vals)
-            folio_id.hotel_house_keeping_orders_ids.sudo().create(vals)
-            # line_vals.append(vals)
-        else:
-            raise ValidationError(_("Alert!, Please Create a Folio against the Reservation"))
 
-        # folio_id.update({
-        #     'hotel_house_keeping_orders_ids': line_vals,
-        # })
+
+
 
     def room_inspect(self):
         """

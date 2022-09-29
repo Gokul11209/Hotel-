@@ -335,6 +335,7 @@ class RoomReservationSummary(models.Model):
                     room_detail.update({"value": room_list_stats})
                     all_room_detail.append(room_detail)
             else:
+                import datetime
                 room_ids = room_obj.search([])
                 for room in room_ids:
                     room_detail = {}
@@ -344,7 +345,7 @@ class RoomReservationSummary(models.Model):
                         for chk_date in date_range_list:
                             datetime_object = datetime.datetime.strptime(chk_date, '%Y-%m-%d %H:%M:%S')
                             datetime_object =datetime_object- timedelta(hours=24, minutes=00)
-                            print(datetime_object)
+                            # print(datetime_object)
                             chk_date = str(datetime_object)
                             room_list_stats.append(
                                 {
@@ -462,7 +463,7 @@ class RoomReservationSummary(models.Model):
                                     reservation_id = reservline_ids.reservation_id
                                 room_list_stats.append(
                                     {
-                                        "state": "Reserved",
+                                        "state": "Reservation",
                                         "date": chk_date,
                                         "box_date": str(chk_date).split(" ")[0],
                                         "room_id": room.id,

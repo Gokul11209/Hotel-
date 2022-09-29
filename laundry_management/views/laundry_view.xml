@@ -17,6 +17,8 @@
                     <header>
                         <button name="confirm_order" class="oe_highlight" string="Confirm Order" type="object"
                                 states="draft"/>
+                        <button name="done_state" class="oe_highlight" string="Done" type="object"
+                                states="done"/>
                         <button name="create_invoice" class="oe_highlight" string="Create Invoice" type="object"
                                 attrs="{'invisible': ['|',('invoice_status', '=', 'invoiced'), ('state', '!=', 'done')]}"/>
                         <button name="return_dress" string="Return" class="oe_highlight" type="object" states="done"/>

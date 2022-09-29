@@ -138,6 +138,7 @@ class HotelReservation(models.Model):
 
     reservation_hrs_selection = fields.Selection([
         ('short', 'Short Close'),
+        ('free_hrs', 'Free Hours'),
         ('12', '12 Hours'),
         ('24', '24 Hours'),
     ])
@@ -157,7 +158,7 @@ class HotelReservation(models.Model):
             m = (tot_sec % 3600) // 60
             duration_hour = ("%d.%d" % (h, m))
             self.booking_hrs = float(duration_hour)
-            if self.booking_hrs > 24.00:
+            if self.booking_hrs >= 24.00:
                 self.days = timedelta
             else:
                 self.days = False

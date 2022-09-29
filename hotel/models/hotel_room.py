@@ -76,22 +76,20 @@ class HotelRoom(models.Model):
     # attachment_ids = fields.Binary("Attachment")
     # image = fields.Binary(string="Image")
 
-    @api.model
-    def create(self, vals):
-        if "room_categ_id" in vals:
-            room_categ = self.env["hotel.room.type"].browse(vals.get("room_categ_id"))
-            vals.update({"categ_id": room_categ.product_categ_id.id})
+    def generate_hotel_room_sequence(self):
+        if self.room_categ_id or self.floor_id:
             floor = self.floor_id.short_code
             category = self.room_categ_id.short_code
             room = self.short_code
-            print(floor, category, room)
+            room_number = str(floor) + '/' + str(category) + '/' + str(room) + '/' +str(self.room_no)
+            if self.room_no and floor and category and room:
+                self.room_no = room_number
+            else:
+                raise ValidationError(
+                    _('Alert !!  Mr.%s - The Room is Not mentioned the Room Category,Floor & Room Prefix.\n'
+                      'Please check it.....') % (
+                        self.env.user.name))
 
-            vals["room_no"] = str(floor) + '/' + str(self.room_no) + '/' + str(room)
-            # vals["room_no"] = floor + '/' + category + '/' + room + '/' + (
-            #         self.env["ir.sequence"].next_by_code("hotel.room") or "New"
-            # )
-
-        return super(HotelRoom, self).create(vals)
 
     @api.constrains("capacity")
     def _check_capacity(self):

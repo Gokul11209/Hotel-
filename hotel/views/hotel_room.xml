@@ -86,7 +86,14 @@
                                 <field name="short_code"/>
                                 <field name="floor_id" string="Floor"/>
                                 <field name="room_categ_id" select="1"/>
-                                <field name="room_no" required="1"/>
+                                <label for="room_no"/>
+                                <div>
+                                    <field name="room_no" required="1"/>
+                                    <span> </span>
+                                    <button name="generate_hotel_room_sequence" string="Generate Room No" type="object" class="oe_highlight"/>
+                                </div>
+
+
                                 <field
                                         name="product_manager"
                                         select="2"

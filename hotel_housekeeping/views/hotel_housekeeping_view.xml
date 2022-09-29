@@ -64,6 +64,8 @@
                     >
                         <i class="fa-search" />
                     </button>
+<!--                    <button name="done_state" class="oe_highlight" string="Done" type="object"-->
+<!--                                states="done"/>-->
                     <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
