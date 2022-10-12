@@ -23,7 +23,8 @@
                                 attrs="{'invisible': ['|',('invoice_status', '=', 'invoiced'), ('state', '!=', 'done')]}"/>
                         <button name="return_dress" string="Return" class="oe_highlight" type="object" states="done"/>
                         <button name="hotel_landry_cancel" string="Cancel" type="object" states="draft,order"/>
-                        <button name="set_as_draft" class="oe_highlight"  string="Sat Draft" type="object" states="cancel"/>
+                        <button name="set_as_draft" class="oe_highlight" string="Sat Draft" type="object"
+                                states="cancel"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,order,done,return,cancel"/>
                     </header>
                     <sheet>
@@ -44,7 +45,9 @@
                         </div>
                         <group>
                             <group>
-                                <field name="res_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="laundry_activity_type" widget="radio" options="{'horizontal': True}"/>
+                                <field name="res_id" attrs="{'invisible': [('laundry_activity_type', '=', 'internal')]}" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="hotel_laundary_room_id" attrs="{'invisible': [('laundry_activity_type', '=', 'external')]}" force_save="1"/>
                                 <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
                                 <field name="partner_invoice_id" context="{'default_type':'invoice'}"
                                        attrs="{'readonly': [('state','in',('done','return','cancel'))]}"

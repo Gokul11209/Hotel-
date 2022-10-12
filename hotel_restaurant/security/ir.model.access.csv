@@ -12,6 +12,10 @@ access_hotel_restaurant_kitchen_order_tickets,hotel.restaurant.kitchen.order.tic
 access_hotel_restaurant_order,hotel.restaurant.order,model_hotel_restaurant_order,hotel.group_hotel_user,1,1,1,1
 access_hotel_reservation_order,hotel.reservation.order,model_hotel_reservation_order,hotel.group_hotel_user,1,1,1,1
 access_hotel_restaurant_order_list,hotel.restaurant.order.list,model_hotel_restaurant_order_list,hotel.group_hotel_user,1,1,1,1
+access_hotel_bar_tables,hotel.bar.tables,model_hotel_bar_tables,hotel.group_hotel_user,1,1,1,1
+access_hotel_bar_reservation,hotel.bar.reservation,model_hotel_bar_reservation,hotel.group_hotel_user,1,1,1,1
+access_hotel_bar_order,hotel.bar.order,model_hotel_bar_order,hotel.group_hotel_user,1,1,1,1
+access_hotel_bar_order_list,hotel.bar.order.list,model_hotel_bar_order_list,hotel.group_hotel_user,1,1,1,1
 access_wizard_hotel_restaurant,access_wizard_hotel_restaurant,model_wizard_hotel_restaurant,base.group_user,1,1,1,1
 access_folio_rest_reservation,access_folio_rest_reservation,model_folio_rest_reservation,base.group_user,1,1,1,1
 access_hotel_management_table_cancel,hotel.management.table.cancel,model_hotel_management_table_cancel,,1,1,1,1

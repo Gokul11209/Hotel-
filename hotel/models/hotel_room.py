@@ -73,6 +73,10 @@ class HotelRoom(models.Model):
     image5 = fields.Binary('Upload Image')
     image6 = fields.Binary('Upload Image')
 
+    user_room_count = fields.Integer(string="Reservation", compute='get_use_room_count')
+    user_laundary_count = fields.Integer(string="Laundry", compute='get_use_laundry_count')
+
+
     # attachment_ids = fields.Binary("Attachment")
     # image = fields.Binary(string="Image")
 
@@ -81,7 +85,7 @@ class HotelRoom(models.Model):
             floor = self.floor_id.short_code
             category = self.room_categ_id.short_code
             room = self.short_code
-            room_number = str(floor) + '/' + str(category) + '/' + str(room) + '/' +str(self.room_no)
+            room_number = str(floor) + '/' + str(category) + '/' + str(room) + '/' + str(self.room_no)
             if self.room_no and floor and category and room:
                 self.room_no = room_number
             else:
@@ -90,12 +94,50 @@ class HotelRoom(models.Model):
                       'Please check it.....') % (
                         self.env.user.name))
 
-
     @api.constrains("capacity")
     def _check_capacity(self):
         for room in self:
             if room.capacity <= 0:
                 raise ValidationError(_("Alert!, The Room - %s capacity must be more than 0.") % room.name)
+
+    def get_use_room_count(self):
+        self.user_room_count = self.env['hotel.housekeeping'].sudo().search_count([
+            ('hotel_room_id.name', '=', self.name) , ('floor_id.name', '=', self.floor_id.name)])
+
+    def smart_room_button_count(self):
+        self.sudo().ensure_one()
+        context = dict(self._context or {})
+        active_model = context.get('active_model')
+        form_view = self.sudo().env.ref('hotel_housekeeping.view_hotel_housekeeping_form')
+        tree_view = self.sudo().env.ref('hotel_housekeeping.view_hotel_housekeeping_tree')
+        kanban_view = self.sudo().env.ref('hotel_housekeeping.view_hotel_housekeeping_kanban')
+        return {
+            'name': _('House Keeeping Service'),
+            'res_model': 'hotel.housekeeping',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'kanban,tree,form',
+            'views': [(tree_view.id, 'tree'), (form_view.id, 'form') , (kanban_view.id, 'kanban')],
+            'domain': [('hotel_room_id.name', '=', self.name)],
+        }
+
+    def get_use_laundry_count(self):
+        self.user_laundary_count = self.env['laundry.order'].sudo().search_count([
+            ('hotel_laundary_room_id.name', '=', self.name)])
+
+    def smart_laundry_button_count(self):
+        self.sudo().ensure_one()
+        context = dict(self._context or {})
+        active_model = context.get('active_model')
+        form_view = self.sudo().env.ref('laundry_management.laundry_order_form_view')
+        tree_view = self.sudo().env.ref('laundry_management.laundry_order_tree_view')
+        return {
+            'name': _(' Laundry Order'),
+            'res_model': 'laundry.order',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'views': [(tree_view.id, 'tree'), (form_view.id, 'form')],
+            'domain': [('hotel_laundary_room_id.name', '=', self.name)],
+        }
 
     @api.onchange("isroom")
     def _isroom_change(self):

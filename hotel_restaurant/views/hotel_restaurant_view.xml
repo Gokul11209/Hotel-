@@ -361,14 +361,14 @@
                             icon="fa-arrow-right"
                             class="oe_highlight"
                     />
-                    <button
-                            string="Generate KOT"
-                            name="reservation_update_kot"
-                            type="object"
-                            states="order"
-                            icon="fa-arrow-right"
-                            class="oe_highlight"
-                    />
+<!--                    <button-->
+<!--                            string="Generate KOT"-->
+<!--                            name="reservation_update_kot"-->
+<!--                            type="object"-->
+<!--                            states="draft"-->
+<!--                            icon="fa-arrow-right"-->
+<!--                            class="oe_highlight"-->
+<!--                    />-->
                     <button
                             string="Done"
                             name="done_kot"

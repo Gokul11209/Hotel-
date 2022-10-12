@@ -233,6 +233,15 @@ class LaundryManagement(models.Model):
     total_amount = fields.Float(compute='get_total', string='Total', store=1)
     currency_id = fields.Many2one("res.currency", string="Currency")
     note = fields.Text(string='Terms and conditions')
+    laundry_activity_type = fields.Selection(
+        [
+            ("internal", "Internal laundry "),
+            ("external", " External laundry"),
+        ],
+        "Activity Type", default='external',
+        required=True)
+    hotel_laundary_room_id = fields.Many2one("hotel.room", "Ref No")
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('order', 'Laundry Order'),
