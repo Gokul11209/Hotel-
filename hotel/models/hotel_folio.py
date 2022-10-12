@@ -112,8 +112,6 @@ class HotelFolio(models.Model):
 
     folio_cancel_remarks = fields.Text(string=' Proforma Cancel Remarks')
     folio_cancel_remarks_2 = fields.Text(string=' Proforma Cancel Remarks')
-    invoice_folio_count = fields.Integer(string="Invoice Count", compute='invoice_count_folio')
-
 
     def action_cancel(self):
         """
@@ -295,25 +293,6 @@ class HotelFolio(models.Model):
             if config_parameter_obj.sudo().get_param("sale.auto_done_setting"):
                 self.order_id.action_done()
 
-    def invoice_count_folio(self):
-        self.invoice_folio_count = self.env['account.move'].sudo().search_count([
-            ('payment_reference', '=', self.name)])
-
-    def invoice_button_view(self):
-        self.sudo().ensure_one()
-        context = dict(self._context or {})
-        active_model = context.get('active_model')
-        form_view = self.sudo().env.ref('account.view_move_form')
-        tree_view = self.sudo().env.ref('account.view_out_invoice_tree')
-        return {
-            'name': _('Folio Invoce'),
-            'res_model': 'account.move',
-            'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
-            'views': [(tree_view.id, 'tree'), (form_view.id, 'form')],
-            'domain': [('payment_reference', '=', self.name)],
-        }
-
     def create_folio_invoice(self):
         """This is the function for creating customer invoice
         from the picking"""
@@ -348,7 +327,7 @@ class HotelFolio(models.Model):
                     'quantity': service_lines.product_uom_qty,
                 })
                 invoice_line_list.append(service_vals)
-                invoice_line_list.append(vals)
+            invoice_line_list.append(vals)
             invoice = folio.env['account.move'].sudo().create({
                 'move_type': 'out_invoice',
                 'invoice_origin': folio.name,

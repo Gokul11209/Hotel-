@@ -1,7 +1,6 @@
 # See LICENSE file for full copyright and licensing details.
 
 from odoo import _, fields, models
-from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -10,14 +9,6 @@ class HotelHousekeeping(models.Model):
     _description = "Hotel Housekeeping"
     _rec_name = "room_id"
 
-    # def name_get(self):
-    #     self.hotel_rooms = []
-    #     for rec in self:
-    #         name = rec.hotel_room_id.name
-    #         roomno = rec.hotel_room_id.room_no
-    #         rec.hotel_rooms.append((roomno, name))
-    #     return rec.hotel_rooms
-
     current_date = fields.Date(
         "Today's Date",
         required=True,
@@ -25,7 +16,6 @@ class HotelHousekeeping(models.Model):
         states={"done": [("readonly", True)]},
         default=fields.Date.today,
     )
-
     clean_type = fields.Selection(
         [
             ("daily", "Daily"),
@@ -36,18 +26,7 @@ class HotelHousekeeping(models.Model):
         required=True,
         states={"done": [("readonly", True)]},
     )
-    activity_type = fields.Selection(
-        [
-            ("internal", "Internal Activity "),
-            ("external", " External Activity"),
-        ],
-        "Activity Type", default='external',
-        required=True)
     room_id = fields.Many2one("hotel.reservation", "Reservation ID")
-    hotel_room_id = fields.Many2one("hotel.room", "Reservation ID")
-    floor_id = fields.Many2one("hotel.floor", "Floor ")
-    hotel_rooms = fields.Char("Rooms Details")
-
     activity_line_ids = fields.One2many(
         "hotel.housekeeping.activities",
         "housekeeping_id",
@@ -98,15 +77,6 @@ class HotelHousekeeping(models.Model):
     housekeeping_cancel_remarks = fields.Text(string='Housekeeping Cancel Remarks')
     housekeeping_cancel_remarks_2 = fields.Text(string='Housekeeping Cancel Remarks')
     housekeeping_cancel_remarks_3 = fields.Text(string='Housekeeping Cancel Remarks')
-
-    @api.onchange('activity_type', 'hotel_room_id')
-    def room_no_added(self):
-        for rec in self:
-            if rec.hotel_room_id:
-                roomno = str(rec.hotel_room_id.room_no) + '-' + str(rec.hotel_room_id.name) + '-' + str(rec.floor_id.name)
-                rec.hotel_rooms = roomno
-            else:
-                rec.hotel_rooms = ''
 
     def house_keeping_cancel(self):
         view_id = self.env['housekeeping.cancel']
@@ -168,6 +138,8 @@ class HotelHousekeeping(models.Model):
             line_vals.append(vals)
         return line_vals
 
+
+
     def room_done(self):
         """
         This method is used to change the state
@@ -187,6 +159,10 @@ class HotelHousekeeping(models.Model):
         # else:
         #     raise ValidationError(_("Alert!, Please Create a Folio against the Reservation"))
         self.write({"state": "done"})
+
+
+
+
 
     def room_inspect(self):
         """

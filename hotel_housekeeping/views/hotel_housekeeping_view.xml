@@ -10,122 +10,118 @@
             <form string="Housekeeping">
                 <header>
                     <button
-                            string="Clean"
-                            name="room_clean"
-                            aria-label="Clean"
-                            title="Clean"
-                            states="inspect,dirty"
-                            type="object"
-                            class="btn btn-primary"
+                        string="Clean"
+                        name="room_clean"
+                        aria-label="Clean"
+                        title="Clean"
+                        states="inspect,dirty"
+                        type="object"
+                        class="btn btn-primary"
                     >
-                        <i class="fa fa-paint-brush"/>
+                        <i class="fa fa-paint-brush" />
                     </button>
                     <button
-                            string="Dirty"
-                            name="action_set_to_dirty"
-                            aria-label="Dirty"
-                            title="Dirty"
-                            states="inspect,clean"
-                            type="object"
-                            class="btn btn-primary"
+                        string="Dirty"
+                        name="action_set_to_dirty"
+                        aria-label="Dirty"
+                        title="Dirty"
+                        states="inspect,clean"
+                        type="object"
+                        class="btn btn-primary"
                     >
-                        <i class="fa-pencil-square-o"/>
+                        <i class="fa-pencil-square-o" />
                     </button>
                     <button
-                            string="Done"
-                            name="room_done"
-                            aria-label="Done"
-                            title="Done"
-                            states="clean"
-                            type="object"
-                            class="btn btn-primary">
-                        <i class="fa-check"/>
+                        string="Done"
+                        name="room_done"
+                        aria-label="Done"
+                        title="Done"
+                        states="clean"
+                        type="object"
+                        class="btn btn-primary"
+                    >
+                        <i class="fa-check" />
                     </button>
                     <button
-                            string="Cancel"
-                            name="house_keeping_cancel"
-                            aria-label="Cancel"
-                            title="Cancel"
-                            states="clean,dirty,inspect"
-                            type="object"
-                            class="btn btn-primary"
+                        string="Cancel"
+                        name="house_keeping_cancel"
+                        aria-label="Cancel"
+                        title="Cancel"
+                        states="clean,dirty,inspect"
+                        type="object"
+                        class="btn btn-primary"
                     >
-                        <i class="fa-times-circle"/>
+                        <i class="fa-times-circle" />
                     </button>
                     <button
-                            string="Inspect"
-                            name="room_inspect"
-                            aria-label="Inspect"
-                            title="Inspect"
-                            states="cancel"
-                            type="object"
-                            class="btn btn-primary"
+                        string="Inspect"
+                        name="room_inspect"
+                        aria-label="Inspect"
+                        title="Inspect"
+                        states="cancel"
+                        type="object"
+                        class="btn btn-primary"
                     >
-                        <i class="fa-search"/>
+                        <i class="fa-search" />
                     </button>
-                    <!--                    <button name="done_state" class="oe_highlight" string="Done" type="object"-->
-                    <!--                                states="done"/>-->
-                    <field name="state" widget="statusbar"/>
+<!--                    <button name="done_state" class="oe_highlight" string="Done" type="object"-->
+<!--                                states="done"/>-->
+                    <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="activity_type" widget="radio" options="{'horizontal': True}"/>
-                            <field name="room_id" attrs="{'invisible': [('activity_type', '=', 'internal')]}"/>
-                            <field name="floor_id" force_save="1" attrs="{'invisible': [('activity_type', '=', 'external')]}"/>
-                            <field name="hotel_room_id" force_save="1"
-                                   attrs="{'invisible': [('activity_type', '=', 'external')]}"/>
-                            <field name="hotel_rooms" force_save="1" attrs="{'invisible': [('activity_type', '=', 'external')]}" readonly="1"/>
-                            <field name="current_date"/>
-                            <field name="clean_type"/>
+                            <field name="room_id" />
+                            <field name="current_date" />
+                            <field name="clean_type" />
                         </group>
                         <group>
-                            <field name="inspector_id"/>
-                            <field name="inspect_date_time"/>
+                            <field name="inspector_id" />
+                            <field name="inspect_date_time" />
                             <field
-                                    name="quality"
-                                    attrs="{'invisible':[('state','not in',['clean','done'])]}"
+                                name="quality"
+                                attrs="{'invisible':[('state','not in',['clean','done'])]}"
                             />
                         </group>
                     </group>
-                    <newline/>
-                    <newline/>
-                    <separator string="Activity Lines" colspan="4"/>
+                    <newline />
+                    <newline />
+                    <separator string="Activity Lines" colspan="4" />
                     <field
-                            name="activity_line_ids"
-                            context="{'room_id':room_id, 'today_date':current_date}"
-                            colspan="4"
-                            nolabel="1"
+                        name="activity_line_ids"
+                        context="{'room_id':room_id, 'today_date':current_date}"
+                        colspan="4"
+                        nolabel="1"
                     >
                         <form string="Activity Lines">
                             <group colspan="4" col="4">
-                                <field name="today_date"/>
-                                <field name="activity_id"/>
-                                <field name="housekeeper_id"/>
-                                <field name="clean_start_time"/>
-                                <field name="clean_end_time"/>
+                                <field name="today_date" />
+                                <field name="activity_id" />
+                                <field name="housekeeper_id" />
+                                <field name="clean_start_time" />
+                                <field name="clean_end_time" />
                             </group>
                             <div class="oe_title">
                                 <div class="oe_edit_only">
-                                    <field name="is_dirty"/>
-                                    <label for="is_dirty" string="Is Dirty?"/>
-                                    <field name="is_clean"/>
-                                    <label for="is_clean" string="Is Clean?"/>
+                                    <field name="is_dirty" />
+                                    <label for="is_dirty" string="Is Dirty?" />
+                                    <field name="is_clean" />
+                                    <label for="is_clean" string="Is Clean?" />
                                 </div>
                             </div>
                         </form>
                         <tree editable="buttom">
-                            <field name="activity_id"/>
-                            <field name="housekeeper_id"/>
-                            <field name="today_date"/>
-                            <field name="clean_start_time"/>
-                            <field name="clean_end_time"/>
-                            <field name="is_dirty" readonly="1"/>
-                            <field name="is_clean" readonly="1"/>
+                            <field name="activity_id" />
+                            <field name="housekeeper_id" />
+                            <field name="today_date" />
+                            <field name="clean_start_time" />
+                            <field name="clean_end_time" />
+                            <field name="is_dirty" readonly="1" />
+                            <field name="is_clean" readonly="1" />
                         </tree>
                     </field>
-                    <newline/>
-                    <notebook>
+                    <newline />
+                     <notebook>
                         <page name="housekeeping_cancel_remarks" string='House Keeping Cancel Remarks'>
                             <group>
                                 <field name='housekeeping_cancel_remarks' readonly="1" force_save="1"
@@ -144,7 +140,7 @@
         </field>
     </record>
 
-    <record id="hotel_calendar_view" model="ir.ui.view">
+     <record id="hotel_calendar_view" model="ir.ui.view">
         <field name="name">Hotel Housekeeping</field>
         <field name="model">hotel.housekeeping</field>
         <field name="priority" eval="2"/>
@@ -155,12 +151,12 @@
                     date_stop="inspect_date_time"
                     color="room_id"
             >
-                <!--                <field name="partner_id"/>-->
+<!--                <field name="partner_id"/>-->
             </calendar>
         </field>
     </record>
 
-    <record id="view_hotel_housekeeping_kanban" model="ir.ui.view">
+     <record id="view_hotel_housekeeping_kanban" model="ir.ui.view">
         <field name="name">hotel.housekeeping.kanban</field>
         <field name="model">hotel.housekeeping</field>
         <field name="arch" type="xml">
@@ -178,11 +174,11 @@
                                     </div>
                                 </div>
                                 <!--                                                                <widget name="web_ribbon" title="3 DAYS" bg_color="bg-danger">-->
-                                <!--                                <div t-attf-class="ribbon ribbon-top-right">-->
-                                <!--                                    <span t-attf-class="ribbon-{{ record.state.raw_value }}">-->
-                                <!--&lt;!&ndash;                                        <t t-esc="record.state.raw_value"/>&ndash;&gt;-->
-                                <!--                                    </span>-->
-                                <!--                                </div>-->
+<!--                                <div t-attf-class="ribbon ribbon-top-right">-->
+<!--                                    <span t-attf-class="ribbon-{{ record.state.raw_value }}">-->
+<!--&lt;!&ndash;                                        <t t-esc="record.state.raw_value"/>&ndash;&gt;-->
+<!--                                    </span>-->
+<!--                                </div>-->
                                 <!--                                </widget>-->
                                 <br/>
                                 <h4>
@@ -206,12 +202,12 @@
         <field name="model">hotel.housekeeping</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="current_date"/>
-                <field name="clean_type"/>
-                <field name="room_id"/>
-                <field name="inspector_id"/>
-                <field name="inspect_date_time"/>
-                <field name="state"/>
+                <field name="current_date" />
+                <field name="clean_type" />
+                <field name="room_id" />
+                <field name="inspector_id" />
+                <field name="inspect_date_time" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -224,38 +220,38 @@
             <search string="Housekeeping">
                 <group string='Filters'>
                     <filter
-                            domain="[('state','=','dirty')]"
-                            string="Dirty"
-                            name="dirty"
+                        domain="[('state','=','dirty')]"
+                        string="Dirty"
+                        name="dirty"
                     />
                     <filter
-                            domain="[('state','=','clean')]"
-                            string="Clean"
-                            name="clean"
+                        domain="[('state','=','clean')]"
+                        string="Clean"
+                        name="clean"
                     />
                     <filter
-                            domain="[('state','=','inspect')]"
-                            string="Inspect"
-                            name="inspect"
+                        domain="[('state','=','inspect')]"
+                        string="Inspect"
+                        name="inspect"
                     />
                     <filter
-                            domain="[('state','=','cancel')]"
-                            string="Cancel"
-                            name="cancel"
+                        domain="[('state','=','cancel')]"
+                        string="Cancel"
+                        name="cancel"
                     />
-                    <filter domain="[('state','=','done')]" string="Done" name="done"/>
+                    <filter domain="[('state','=','done')]" string="Done" name="done" />
                 </group>
-                <field name="inspector_id"/>
-                <field name="quality"/>
-                <field name="state"/>
-                <newline/>
+                <field name="inspector_id" />
+                <field name="quality" />
+                <field name="state" />
+                <newline />
                 <group expand="0" string="Group By">
                     <filter
-                            name="inspector_id"
-                            string="Inspector Name"
-                            icon="terp-personal"
-                            domain="[]"
-                            context="{'group_by':'inspector_id'}"
+                        name="inspector_id"
+                        string="Inspector Name"
+                        icon="terp-personal"
+                        domain="[]"
+                        context="{'group_by':'inspector_id'}"
                     />
                 </group>
             </search>
@@ -263,32 +259,32 @@
     </record>
 
     <!-- Action for hotel housekeeping -->
-    <!--    <record id="open_hotel_housekeeping_form_tree" model="ir.actions.act_window">-->
-    <!--        <field name="name">Housekeeping Services</field>-->
-    <!--        <field name="res_model">hotel.housekeeping</field>-->
-    <!--        <field name="binding_view_types">form</field>-->
-    <!--        <field name="view_mode">kanban,tree,form,calendar</field>-->
-    <!--        <field name="view_id" ref="view_hotel_housekeeping_tree" />-->
-    <!--    </record>-->
+<!--    <record id="open_hotel_housekeeping_form_tree" model="ir.actions.act_window">-->
+<!--        <field name="name">Housekeeping Services</field>-->
+<!--        <field name="res_model">hotel.housekeeping</field>-->
+<!--        <field name="binding_view_types">form</field>-->
+<!--        <field name="view_mode">kanban,tree,form,calendar</field>-->
+<!--        <field name="view_id" ref="view_hotel_housekeeping_tree" />-->
+<!--    </record>-->
 
-    <record id="open_hotel_housekeeping_form_tree" model="ir.actions.act_window">
+     <record id="open_hotel_housekeeping_form_tree" model="ir.actions.act_window">
         <field name="name">Housekeeping Services</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hotel.housekeeping</field>
         <field name="view_mode">kanban,tree,form,calendar</field>
     </record>
     <menuitem
-            id="menu_housekeeping"
-            name="Housekeeping Services"
-            parent="hotel.hotel_management_menu"
-            sequence="4"
+        id="menu_housekeeping"
+        name="Housekeeping Services"
+        parent="hotel.hotel_management_menu"
+        sequence="4"
     />
     <menuitem
-            name="Housekeeping Services"
-            id="menu_open_hotel_housekeeping_form_tree"
-            action="open_hotel_housekeeping_form_tree"
-            parent="menu_housekeeping"
-            sequence="4"
+        name="Housekeeping Services"
+        id="menu_open_hotel_housekeeping_form_tree"
+        action="open_hotel_housekeeping_form_tree"
+        parent="menu_housekeeping"
+        sequence="4"
     />
 
     <!-- ================ Activity Category================= -->
@@ -300,8 +296,8 @@
             <form string="Housekeeping Activity Types">
                 <sheet>
                     <group>
-                        <field name="name" string="Activity Name"/>
-                        <field name="activity_id"/>
+                        <field name="name" string="Activity Name" />
+                        <field name="activity_id" />
                     </group>
                 </sheet>
             </form>
@@ -314,15 +310,15 @@
         <field name="model">hotel.housekeeping.activity.type</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
+                <field name="name" />
             </tree>
         </field>
     </record>
 
     <!-- Action of hotel housekeeping activity type -->
     <record
-            id="action_hotel_housekeeping_activity_type_view_form"
-            model="ir.actions.act_window"
+        id="action_hotel_housekeeping_activity_type_view_form"
+        model="ir.actions.act_window"
     >
         <field name="name">Activity Types</field>
         <field name="res_model">hotel.housekeeping.activity.type</field>
@@ -330,17 +326,17 @@
         <field name="view_mode">tree,form</field>
     </record>
     <menuitem
-            id="menu_hotel_activity"
-            name="Activity"
-            parent="hotel.hotel_configuration_menu"
-            sequence="2"
+        id="menu_hotel_activity"
+        name="Activity"
+        parent="hotel.hotel_configuration_menu"
+        sequence="2"
     />
     <menuitem
-            id="menu_action_hotel_housekeeping_activity_type_view_form"
-            name="Activity Types"
-            action="action_hotel_housekeeping_activity_type_view_form"
-            parent="menu_hotel_activity"
-            sequence="12"
+        id="menu_action_hotel_housekeeping_activity_type_view_form"
+        name="Activity Types"
+        action="action_hotel_housekeeping_activity_type_view_form"
+        parent="menu_hotel_activity"
+        sequence="12"
     />
 
     <!-- Activity -->
@@ -352,8 +348,8 @@
             <form string="Housekeeping Activity">
                 <sheet>
                     <group>
-                        <field name="name" string="Activity Name"/>
-                        <field name="categ_id"/>
+                        <field name="name" string="Activity Name" />
+                        <field name="categ_id" />
                     </group>
                 </sheet>
             </form>
@@ -366,16 +362,16 @@
         <field name="model">hotel.activity</field>
         <field name="arch" type="xml">
             <search string="Housekeeping Activity">
-                <field name="name"/>
-                <field name="categ_id"/>
-                <newline/>
+                <field name="name" />
+                <field name="categ_id" />
+                <newline />
                 <group expand="0" string="Group By...">
                     <filter
-                            name="categ_id"
-                            string="Catagory"
-                            icon="terp-stock_symbol-selection"
-                            domain="[]"
-                            context="{'group_by':'categ_id'}"
+                        name="categ_id"
+                        string="Catagory"
+                        icon="terp-stock_symbol-selection"
+                        domain="[]"
+                        context="{'group_by':'categ_id'}"
                     />
                 </group>
             </search>
@@ -388,8 +384,8 @@
         <field name="model">hotel.activity</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
-                <field name="categ_id"/>
+                <field name="name" />
+                <field name="categ_id" />
             </tree>
         </field>
     </record>
@@ -404,10 +400,10 @@
     </record>
 
     <menuitem
-            id="menu_open_h_activity_form"
-            name="Activities"
-            action="action_h_activity_form"
-            parent="menu_hotel_activity"
+        id="menu_open_h_activity_form"
+        name="Activities"
+        action="action_h_activity_form"
+        parent="menu_hotel_activity"
     />
 
 </odoo>

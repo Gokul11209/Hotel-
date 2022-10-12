@@ -41,30 +41,12 @@
         <field name="arch" type="xml">
             <form string="Hotel Room">
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="smart_room_button_count"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-list-alt">
-                            <field name="user_room_count" widget="statinfo"/>
-                        </button>
-
-                        <button name="smart_laundry_button_count"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-list-alt">
-                            <field name="user_laundary_count" widget="statinfo"/>
-                        </button>
-
-                    </div>
-
                     <field
                             name="image_1920"
                             widget="image"
                             class="oe_avatar"
                             options="{'preview_image': 'image_128'}"/>
                     <div class="oe_title">
-
                         <label for="name" string="Name"/>
                         <h1>
                             <field name="name"/>
@@ -107,9 +89,8 @@
                                 <label for="room_no"/>
                                 <div>
                                     <field name="room_no" required="1"/>
-                                    <span></span>
-                                    <button name="generate_hotel_room_sequence" string="Generate Room No" type="object"
-                                            class="oe_highlight"/>
+                                    <span> </span>
+                                    <button name="generate_hotel_room_sequence" string="Generate Room No" type="object" class="oe_highlight"/>
                                 </div>
 
 
