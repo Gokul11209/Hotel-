@@ -101,7 +101,7 @@
                             <field name="adults" required="1"/>
                             <field name="children"/>
                             <field name="booking_hrs" force_save="1"/>
-                            <field name="days" force_save="1" readonly='1'/>
+                            <field name="days" force_save="1"/>
                             <field name="proof_type" force_save="1" attrs="{'readonly': [('state', '=', 'done')]}"/>
                         </group>
                     </group>

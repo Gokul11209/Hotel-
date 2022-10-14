@@ -135,6 +135,7 @@ class HotelReservation(models.Model):
     days = fields.Char(string='Days', store=True)
     advance_payment = fields.Float(string="Advance")
     proof_type = fields.Binary(string='Proof')
+    days_1 = fields.Float(string='Days', store=True)
 
     reservation_hrs_selection = fields.Selection([
         ('short', 'Short Close'),
@@ -142,6 +143,13 @@ class HotelReservation(models.Model):
         ('12', '12 Hours'),
         ('24', '24 Hours'),
     ])
+
+    @api.onchange('days')
+    def days_integer(self):
+        value = str(self.days).split(" ")[0]
+        self.days_1 = float(value)
+        print("=======================",self.days,value,self.days_1)
+
 
     @api.depends('checkin', 'checkout')
     @api.onchange('checkin', 'checkout')
@@ -473,6 +481,8 @@ class HotelReservation(models.Model):
         @param self: The object pointer
         @return: new record set for hotel folio.
         """
+        value = self.booking_hrs/24.00
+        self.days_1 = float(value)
         hotel_folio_obj = self.env["hotel.folio"]
         for reservation in self:
             folio_lines = []
@@ -508,7 +518,7 @@ class HotelReservation(models.Model):
                                 "product_id": r.product_id and r.product_id.id,
                                 "name": reservation["reservation_no"],
                                 "price_unit": r.list_price,
-                                "product_uom_qty": duration,
+                                "product_uom_qty": self.days_1,
                                 "is_reserved": True,
                             },
                         )

@@ -351,6 +351,7 @@ class QuickRoomReservation(models.TransientModel):
         res_partner.write({
             'proof_img': self.add_proof,
         })
+        self.env["account.payment"].action_post()
         if self.check_in and self.check_out:
             for res in self:
                 if self.advance_amt == 0:
