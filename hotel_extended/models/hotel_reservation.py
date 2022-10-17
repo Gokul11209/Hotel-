@@ -146,10 +146,12 @@ class HotelReservation(models.Model):
 
     @api.onchange('days')
     def days_integer(self):
-        value = str(self.days).split(" ")[0]
-        self.days_1 = float(value)
-        print("=======================",self.days,value,self.days_1)
-
+        if self.days:
+            value = str(self.days).split(" ")[0]
+            self.days_1 = float(value)
+            print("=======================",self.days,value,self.days_1)
+        else:
+            pass
 
     @api.depends('checkin', 'checkout')
     @api.onchange('checkin', 'checkout')

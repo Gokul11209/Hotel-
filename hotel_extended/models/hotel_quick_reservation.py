@@ -238,6 +238,7 @@ class QuickRoomReservation(models.TransientModel):
             self.write({
                 'partner_id': mobile.id
             })
+            print("============================11111111111111",date.today())
         else:
             self.write({
                 'partner_id': False
@@ -288,6 +289,7 @@ class QuickRoomReservation(models.TransientModel):
     @api.onchange('search_mobile')
     def onchange_proof(self):
         if self.search_mobile:
+
             details = self.env['res.partner'].sudo().search([
                 ('mobile', '=', self.search_mobile)])
             self.write({
@@ -344,14 +346,19 @@ class QuickRoomReservation(models.TransientModel):
                     "journal_id": i.journal.id,
                 }
             )
-        hotel_advance_pay.action_post()
         res_partner = self.env['res.partner'].sudo().search([
             ('name', '=', self.partner_id.name)])
-        print("=====================", res_partner)
         res_partner.write({
             'proof_img': self.add_proof,
         })
-        self.env["account.payment"].action_post()
+        journal = self.env["account.payment"].sudo().search([
+            ('partner_id', '=', self.partner_id.id),
+            ('amount', '=', self.advance_amt),
+            ('date', '=', date.today()),
+            ('journal_id', '=', self.journal.id),
+        ])
+        print("=====================", journal)
+        journal.action_post()
         if self.check_in and self.check_out:
             for res in self:
                 if self.advance_amt == 0:
@@ -382,6 +389,7 @@ class QuickRoomReservation(models.TransientModel):
                                 )
                             ],
                         }
+
                     )
                 else:
                     print('************* NON ZERO******************')
@@ -426,115 +434,14 @@ class QuickRoomReservation(models.TransientModel):
                         "status": "confirm",
                         "reservation_id": hotel_res_obj_new.id,
                     }
-                    # self.env["hotel.room.reservation.line"].create(vals)
                     self.room_id.room_reservation_line_ids.sudo().create(vals)
-
-        # if self.reserve_date and self.check_in_time and self.check_out_time:
-        #     ref_date1 = self.reserve_date
-        #     chk_in_time = self.check_in_time
-        #     chk_out_time = self.check_out_time
-        #     import datetime
-        #     d11 = str(ref_date1)
-        #     print("================ Zero =====================", self.reserve_date)
-        #     dt21 = datetime.datetime.strptime(d11, '%Y-%m-%d')
-        #     date1 = dt21.strftime("%Y-%m-%d")
-        #     print("The date format is", date1, type(date1))
-        #     d22 = str(chk_in_time)
-        #     dt22 = datetime.datetime.strptime(d22, "%H:%M")
-        #     check_in_time = dt22.strftime("%H:%M")
-        #     datetime_object = date1 + ' ' + check_in_time + ":00"
-        #     print("THe final result is", datetime_object)
-        #
-        #     if self.check_out_time:
-        #         d33 = str(chk_out_time)
-        #         dt33 = datetime.datetime.strptime(d33, "%H:%M")
-        #         check_out_time = dt33.strftime("%H:%M")
-        #         datetime_object_2 = date1 + ' ' + check_out_time + ":00"
-        #         print("THe final result is", datetime_object_2)
-        #
-        #     for res in self:
-        #         date_time_1 = datetime.datetime.strptime(datetime_object, "%Y-%m-%d %H:%M:%S")
-        #         date_time_2 = datetime.datetime.strptime(datetime_object_2, "%Y-%m-%d %H:%M:%S")
-        #         datetime_object_11 = date_time_1 - timedelta(hours=5, minutes=30)
-        #         datetime_object_12 = date_time_2 - timedelta(hours=5, minutes=30)
-        #         if self.hrs_selection == str(24):
-        #             datetime_object_12 = date_time_2 + timedelta(hours=29, minutes=30)
-        #         print(datetime_object_11, "===============", datetime_object_12)
-        #
-        #         if self.advance_amt == 0:
-        #             print('*************ZERO******************')
-        #             rec = hotel_res_obj.create(
-        #                 {
-        #                     "partner_id": res.partner_id.id,
-        #                     "partner_invoice_id": res.partner_invoice_id.id,
-        #                     "partner_order_id": res.partner_order_id.id,
-        #                     "partner_shipping_id": res.partner_shipping_id.id,
-        #                     "checkin": datetime_object_11,
-        #                     "checkout": datetime_object_12,
-        #                     "reservation_hrs_selection": res.hrs_selection,
-        #                     "company_id": res.company_id.id,
-        #                     "pricelist_id": res.pricelist_id.id,
-        #                     "adults": res.adults,
-        #                     "children": res.children,
-        #                     "proof_type": res.add_proof,
-        #                     "advance_payment": res.advance_amt,
-        #                     "reservation_line": [
-        #                         (
-        #                             0,
-        #                             0,
-        #                             {
-        #                                 "reserve": [(6, 0, res.room_id.ids)],
-        #                                 "name": res.room_id.name or " ",
-        #                             },
-        #                         )
-        #                     ],
-        #                 }
-        #             )
-        #         else:
-        #             hotel_res_obj.create({
-        #                 "partner_id": res.partner_id.id,
-        #                 "partner_invoice_id": res.partner_invoice_id.id,
-        #                 "partner_order_id": res.partner_order_id.id,
-        #                 "partner_shipping_id": res.partner_shipping_id.id,
-        #                 "checkin": datetime_object_11,
-        #                 "checkout": datetime_object_12,
-        #                 "reservation_hrs_selection": res.hrs_selection,
-        #                 "company_id": res.company_id.id,
-        #                 "pricelist_id": res.pricelist_id.id,
-        #                 "adults": res.adults,
-        #                 "children": res.children,
-        #                 "proof_type": res.add_proof,
-        #                 "state": "confirm",
-        #                 "advance_payment": res.advance_amt,
-        #                 "reservation_line": [
-        #                     (
-        #                         0,
-        #                         0,
-        #                         {
-        #                             "reserve": [(6, 0, res.room_id.ids)],
-        #                             "name": res.room_id.name or " ",
-        #                         },
-        #                     )
-        #                 ],
-        #             })
-        #             hotel_res_obj_new = self.env["hotel.reservation"].search([
-        #                 ("partner_id", "=", res.partner_id.id),
-        #                 ("checkin", "=", datetime_object_11),
-        #                 ("checkout", "=", datetime_object_12),
-        #                 ("adults", "=", res.adults),
-        #                 # ("reservation_line.name", "=", res.room_id.name),
-        #             ])
-        #             vals = {
-        #                 "room_id": res.room_id.id,
-        #                 "check_in": datetime_object_11,
-        #                 "check_out": datetime_object_12,
-        #                 "state": "assigned",
-        #                 "status": "confirm",
-        #                 "reservation_id": hotel_res_obj_new.id,
-        #             }
-        #             print(vals)
-        #             self.room_id.room_reservation_line_ids.sudo().create(vals)
-
+            folio = hotel_res_obj.sudo().search([
+                        ("partner_id", "=", self.partner_id.id),
+                        ("checkin", "=", self.check_in),
+                        ("checkout", "=", self.check_out),
+                        ("adults", "=", self.adults),
+            ])
+            folio.create_folio()
         return rec
 
     @api.onchange('create_guest')

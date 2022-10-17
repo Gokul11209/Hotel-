@@ -23,3 +23,10 @@ class AddProofType(models.Model):
     proof_type = fields.Many2one("identity.register", string="Proof Type")
     proof_img=fields.Binary(string="Proof")
 
+
+
+class AddLinkToInvoice(models.Model):
+    _inherit = 'account.payment'
+    _description = 'Added Link To Invoice'
+
+    ref_id = fields.Many2one("hotel.reservation", string="Reservation ID")

@@ -59,4 +59,15 @@
         </field>
     </record>
 
+    <record id="link_invoice_id" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="ref_id"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

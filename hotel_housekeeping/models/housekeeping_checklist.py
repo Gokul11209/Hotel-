@@ -10,6 +10,31 @@ class HousekeepingChecklistLine(models.Model):
     true = fields.Boolean('True')
     false = fields.Boolean('False')
     remarks = fields.Char(string='Remarks')
+    things_selection = fields.Selection([
+        ('available', 'Available'),
+        ('non_available', 'Non Available')],
+        string='Things',
+    )
+
+    def click_yes(self):
+        self.write({
+            'things_selection': 'available', })
+        room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
+        for room in room_obj.cheack_line_ids:
+            if self.name == room.name:
+                room.write({
+                    'things_selection': 'available'
+                })
+
+    def click_no(self):
+        self.write({
+            'things_selection': 'non_available', })
+        room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
+        for room in room_obj.cheack_line_ids:
+            if self.name == room.name:
+                room.write({
+                    'things_selection': 'non_available'
+                })
 
 
 class RoomChecklistLine(models.Model):
@@ -18,9 +43,12 @@ class RoomChecklistLine(models.Model):
 
     name = fields.Char(string='Name')
     room_no = fields.Many2one('hotel.room', string='Company')
-    true = fields.Boolean('True')
-    false = fields.Boolean('False')
     remarks = fields.Char(string='Remarks')
+    things_selection = fields.Selection([
+        ('available', 'Available'),
+        ('non_available', 'Non Available')],
+        string='Things',
+    )
 
 
 class HousekepingChecklist(models.Model):
@@ -38,14 +66,14 @@ class HousekepingChecklist(models.Model):
         room_obj = self.env["hotel.room"]
         room_ids = room_obj.search([('name', '=', self.ref_name.name)])
         print(room_ids)
+        list = [(5, 0, 0)]
         for i in room_ids.cheack_line_ids:
-            print("=========================", i.name)
             vals = {
-                'name': i.name
+                'name': i.name,
+                'things_selection' : i.things_selection
             }
-            print("================", vals)
-            self.cheacklist_line_ids.write(vals)
-            print("================", vals)
+            list.append((0, 0, vals))
+        self.cheacklist_line_ids = list
 
 
 class Checklist(models.Model):

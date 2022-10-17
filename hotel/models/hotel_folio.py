@@ -317,14 +317,8 @@ class HotelFolio(models.Model):
     def create_folio_invoice(self):
         """This is the function for creating customer invoice
         from the picking"""
-        global invoice
         for folio in self:
             current_user = self.env.uid
-            # if picking_id.picking_type_id.code == 'outgoing':
-            #     customer_journal_id = picking_id.env['ir.config_parameter'].sudo().get_param(
-            #         'stock_move_invoice.customer_journal_id') or False
-            #     if not customer_journal_id:
-            #         raise UserError(_("Alert!, Please configure the journal from settings"))
             invoice_line_list = []
             invoice_service_line_list = []
             for move_ids_without_package in folio.room_line_ids:
@@ -334,9 +328,10 @@ class HotelFolio(models.Model):
                     'price_unit': move_ids_without_package.price_unit,
                     'account_id': move_ids_without_package.product_id.property_account_income_id.id if move_ids_without_package.product_id.property_account_income_id
                     else move_ids_without_package.product_id.categ_id.property_account_income_categ_id.id,
-                    # 'tax_ids': [(6, 0, [folio.company_id.account_sale_tax_id.id])],
+                    'tax_ids': [(6, 0, [folio.company_id.account_sale_tax_id.id])],
                     'quantity': move_ids_without_package.product_uom_qty,
                 })
+                invoice_line_list.append(vals)
             for service_lines in folio.service_line_ids:
                 service_vals = (0, 0, {
                     'name': service_lines.name,
@@ -344,11 +339,10 @@ class HotelFolio(models.Model):
                     'price_unit': service_lines.price_unit,
                     'account_id': service_lines.product_id.property_account_income_id.id if service_lines.product_id.property_account_income_id
                     else service_lines.product_id.categ_id.property_account_income_categ_id.id,
-                    # 'tax_ids': [(6, 0, [folio.company_id.account_sale_tax_id.id])],
+                    'tax_ids': [(6, 0, [folio.company_id.account_sale_tax_id.id])],
                     'quantity': service_lines.product_uom_qty,
                 })
                 invoice_line_list.append(service_vals)
-                invoice_line_list.append(vals)
             invoice = folio.env['account.move'].sudo().create({
                 'move_type': 'out_invoice',
                 'invoice_origin': folio.name,
@@ -364,13 +358,7 @@ class HotelFolio(models.Model):
                 'folio_id': folio.id,
                 'invoice_line_ids': invoice_line_list
             })
-            # invoice = folio.env['account.move'].sudo().write({
-            #     'invoice_line_ids': invoice_service_line_list
-            # })
-            # sale_sr = self.env['hotel.folio'].sudo().search([('folio_id', '=', self.id)])
-            # sale_sr.write({
-            #     'hotel_invoice_id': invoice.id,
-            # })
+            print("The create invoice from folio values is----------------------------------------------------", invoice)
             return invoice
 
     def action_cancel_draft(self):

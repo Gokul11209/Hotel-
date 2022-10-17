@@ -85,8 +85,8 @@
             <field name="domain">[('user_id','=', uid)]</field>
         </record>
 
-        <menuitem id="laundry_washing" name="Laundry Works" parent="laundry_management_sub_menu" action="action_washing"
-                  sequence="2"/>
+<!--        <menuitem id="laundry_washing" name="Laundry Works" parent="laundry_management_sub_menu" action="action_washing"-->
+<!--                  sequence="2"/>-->
 
     </data>
 </odoo>

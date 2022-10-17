@@ -277,19 +277,19 @@
         <field name="res_model">hotel.housekeeping</field>
         <field name="view_mode">kanban,tree,form,calendar</field>
     </record>
-    <menuitem
-            id="menu_housekeeping"
-            name="Housekeeping Services"
-            parent="hotel.hotel_management_menu"
-            sequence="4"
-    />
-    <menuitem
-            name="Housekeeping Services"
-            id="menu_open_hotel_housekeeping_form_tree"
-            action="open_hotel_housekeeping_form_tree"
-            parent="menu_housekeeping"
-            sequence="4"
-    />
+<!--    <menuitem-->
+<!--            id="menu_housekeeping"-->
+<!--            name="Housekeeping Services"-->
+<!--            parent="hotel.hotel_management_menu"-->
+<!--            sequence="4"-->
+<!--    />-->
+<!--    <menuitem-->
+<!--            name="Housekeeping Services"-->
+<!--            id="menu_open_hotel_housekeeping_form_tree"-->
+<!--            action="open_hotel_housekeeping_form_tree"-->
+<!--            parent="menu_housekeeping"-->
+<!--            sequence="4"-->
+<!--    />-->
 
     <!-- ================ Activity Category================= -->
     <!-- Form view of hotel housekeeping activity type -->
@@ -403,12 +403,12 @@
         <field name="context">{'default_isactivitytype':1}</field>
     </record>
 
-    <menuitem
-            id="menu_open_h_activity_form"
-            name="Activities"
-            action="action_h_activity_form"
-            parent="menu_hotel_activity"
-    />
+<!--    <menuitem-->
+<!--            id="menu_open_h_activity_form"-->
+<!--            name="Activities"-->
+<!--            action="action_h_activity_form"-->
+<!--            parent="menu_hotel_activity"-->
+<!--    />-->
 
     <record id="hotel_folio_form" model="ir.ui.view">
         <field name="name">hotel.folio.form.inherit</field>
@@ -419,10 +419,13 @@
                 <page string="House Keeping Cheacklist">
                    <group><field name="ref_name"/></group>
                     <field name="cheacklist_line_ids" readonly="0">
-                        <tree editable="bottom" create="1" delete="0">
+                        <tree editable="bottom" create="1" delete="1">
                             <field name="name"/>
-                            <field name="true"/>
-                            <field name="false"/>
+                            <field name="things_selection"/>
+                            <button name="click_yes" type="object"
+                                    icon="fa-check-circle-o"/>
+                            <button name="click_no" type="object"
+                                    icon="fa-times-circle-o"/>
                             <field name="remarks"/>
                         </tree>
                     </field>
@@ -441,8 +444,7 @@
                     <field name="cheack_line_ids" readonly="0">
                         <tree editable="bottom" create="1" delete="0">
                             <field name="name"/>
-                            <field name="true"/>
-                            <field name="false"/>
+                            <field name="things_selection"/>
                             <field name="remarks"/>
                         </tree>
                     </field>
