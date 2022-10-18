@@ -318,19 +318,19 @@
         <field name="res_model">hotel.reservation</field>
         <field name="view_mode">kanban,tree,form,calendar,graph</field>
     </record>
-    <menuitem
-            id="menu_hotel_reservation"
-            name="Reservations"
-            parent="hotel.hotel_management_menu"
-            sequence="1"
-    />
-    <menuitem
-            name="Reservations"
-            id="menu_action_hotel_reservation_tree_all"
-            action="action_hotel_reservation_tree_all"
-            parent="menu_hotel_reservation"
-            sequence="1"
-    />
+<!--    <menuitem-->
+<!--            id="menu_hotel_reservation"-->
+<!--            name="Reservations"-->
+<!--            parent="hotel.hotel_management_menu"-->
+<!--            sequence="1"-->
+<!--    />-->
+<!--    <menuitem-->
+<!--            name="Reservations"-->
+<!--            id="menu_action_hotel_reservation_tree_all"-->
+<!--            action="action_hotel_reservation_tree_all"-->
+<!--            parent="menu_hotel_reservation"-->
+<!--            sequence="1"-->
+<!--    />-->
     <record id="view_hotel_room_form_inherited" model="ir.ui.view">
         <field name="name">view.hotel.room.form.inherited</field>
         <field name="model">hotel.room</field>

@@ -188,7 +188,6 @@ class LaundryManagement(models.Model):
             'service_line_ids': self.get_service_order_line_items(),
         })
 
-
     name = fields.Char(string="Label", copy=False)
     # proforma_id = fields.Many2one('hotel.folio', string="Proforma")
     invoice_status = fields.Selection([
@@ -260,10 +259,7 @@ class LaundryManagement(models.Model):
     def fetch_details(self):
         self.partner_id = self.res_id.partner_id
         self.partner_invoice_id = self.res_id.partner_invoice_id
-        self.partner_shipping_id=self.res_id.partner_order_id
-
-
-
+        self.partner_shipping_id = self.res_id.partner_order_id
 
     def hotel_landry_cancel(self):
         view_id = self.env['landry.order.cancel']
@@ -594,3 +590,52 @@ class LaundryManagementInvoice(models.TransientModel):
                                        subtype_id=self.env.ref(
                                            'mail.mt_note').id)
         return invoice
+
+
+class HotelFolio(models.Model):
+    _inherit = "hotel.folio"
+    _order = "reservation_id desc"
+
+    reservation_id = fields.Many2one(
+        "hotel.reservation", "Reservation", ondelete="restrict"
+    )
+    hotel_laundry_orders = fields.One2many(
+        "laundry.details.line", 'proforma_id'
+    )
+
+
+class LaundryDetails(models.Model):
+    _name = 'laundry.details.line'
+    _description = 'Laundry Details'
+
+    proforma_id = fields.Many2one('hotel.folio')
+    name = fields.Char(string="Label", copy=False)
+    partner_id = fields.Many2one('res.partner', string='Guest')
+    order_date = fields.Datetime(string="Date")
+    laundry_person = fields.Many2one('res.users', string='Laundry Person')
+    total_amount = fields.Float(string='Total')
+
+
+class HotelButtonBox(models.Model):
+    _inherit = "hotel.room"
+
+    user_laundary_count = fields.Integer(string="Laundry", compute='get_use_laundry_count')
+
+    def get_use_laundry_count(self):
+        self.user_laundary_count = self.env['laundry.order'].sudo().search_count([
+            ('hotel_laundary_room_id.name', '=', self.name)])
+
+    def smart_laundry_button_count(self):
+        self.sudo().ensure_one()
+        context = dict(self._context or {})
+        active_model = context.get('active_model')
+        form_view = self.sudo().env.ref('laundry_management.laundry_order_form_view')
+        tree_view = self.sudo().env.ref('laundry_management.laundry_order_tree_view')
+        return {
+            'name': _(' Laundry Order'),
+            'res_model': 'laundry.order',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'views': [(tree_view.id, 'tree'), (form_view.id, 'form')],
+            'domain': [('hotel_laundary_room_id.name', '=', self.name)],
+        }

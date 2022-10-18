@@ -45,9 +45,9 @@
     </record>
     <!-- Action for hotel folio -->
     <record id="open_hotel_folio1_form_tree_all" model="ir.actions.act_window">
-        <field name="name">Generate Proforma</field>
+        <field name="name">Generate Reservation</field>
         <field name="res_model">hotel.folio</field>
-        <field name="view_mode">tree,form,calendar,graph</field>
+        <field name="view_mode">kanban,tree,form,calendar,graph</field>
         <field name="context">{'folio': True}</field>
     </record>
     <!-- Action for hotel service type -->

@@ -136,15 +136,50 @@
                 </p>
             </field>
         </record>
+        <record id="hotel_folio_laundry_tab" model="ir.ui.view">
+            <field name="name">hotel.folio.form.inherit</field>
+            <field name="model">hotel.folio</field>
+            <field name="inherit_id" ref="hotel.view_hotel_folio_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/notebook/page[3]" position="after">
+                    <page string="Laundry Order">
+                        <field name="hotel_laundry_orders" readonly="0">
+                            <tree editable="bottom" create="1" delete="1">
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                                <field name="order_date"/>
+                                <field name="laundry_person"/>
+                                <field name="total_amount"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        <record id="hotel_folio_form" model="ir.ui.view">
+            <field name="name">hotel.room.form.inherit</field>
+            <field name="model">hotel.room</field>
+            <field name="inherit_id" ref="hotel.view_hotel_room_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="smart_laundry_button_count"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-list-alt">
+                        <field name="user_laundary_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
 
         <!--        <menuitem name="Laundry Management" id="laundry_management_menu"-->
         <!--                  />-->
-<!--        <menuitem id="laundry_management_sub_menu" name="Laundry Management"-->
-<!--                  parent="hotel.hotel_management_menu"-->
-<!--                  sequence="5"/>-->
-<!--        <menuitem id="laundry_management_order" name="Laundry Order"-->
-<!--                  parent="laundry_management_sub_menu"-->
-<!--                  action="action_laundry_order" sequence="1"/>-->
+        <menuitem id="laundry_management_sub_menu" name="Laundry Management"
+                  parent="hotel.hotel_management_menu"
+                  sequence="5"/>
+        <menuitem id="laundry_management_order" name="Laundry Order"
+                  parent="laundry_management_sub_menu"
+                  action="action_laundry_order" sequence="4"/>
 
     </data>
 </odoo>

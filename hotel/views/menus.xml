@@ -70,15 +70,15 @@
     />
     <menuitem
             id="menu_all_folio"
-            name="Proforma"
+            name="Reservation"
             parent="hotel.hotel_management_menu"
-            sequence="6"
+            sequence="1"
     />
     <menuitem
-            name="Generate Proforma"
+            name="Generate Reservations"
             id="menu_open_hotel_folio1_form_tree_all"
             action="open_hotel_folio1_form_tree_all"
-            sequence="5"
+            sequence="1"
             parent="menu_all_folio"
     />
     <menuitem

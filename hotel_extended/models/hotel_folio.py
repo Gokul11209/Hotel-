@@ -11,12 +11,12 @@ class HotelFolio(models.Model):
     reservation_id = fields.Many2one(
         "hotel.reservation", "Reservation", ondelete="restrict"
     )
-    hotel_house_keeping_orders_ids = fields.One2many(
-        "house.keeping.details", 'proforma_id'
-    )
-    hotel_laundry_orders_ids = fields.One2many(
-        "laundry.details", 'proforma_id'
-    )
+    # hotel_house_keeping_orders_ids = fields.One2many(
+    #     "house.keeping.details", 'proforma_id'
+    # )
+    # hotel_laundry_orders_ids = fields.One2many(
+    #     "laundry.details", 'proforma_id'
+    # )
 
     def write(self, vals):
         res = super(HotelFolio, self).write(vals)

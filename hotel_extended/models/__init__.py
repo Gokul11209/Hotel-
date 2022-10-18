@@ -8,3 +8,4 @@ from . import hotel_folio_state
 from . import guest_reservation
 from . import payment_mode
 from . import time_based_room_reserve
+from . import checklist

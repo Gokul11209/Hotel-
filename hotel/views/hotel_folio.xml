@@ -1,4 +1,68 @@
 <odoo>
+    <record id="view_reservation_kanban" model="ir.ui.view">
+        <field name="name">hotel.folio.kanban</field>
+        <field name="model">hotel.folio</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_order='name desc'>
+                <templates>
+                    <!--                    <field name="day"-->
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <!--                                                                <widget name="web_ribbon" title="3 DAYS" bg_color="bg-danger">-->
+                                <div t-attf-class="ribbon ribbon-top-right">
+                                    <span t-attf-class="ribbon-{{ record.state.raw_value }}">
+                                        <t t-esc="record.state.raw_value"/>
+                                    </span>
+                                </div>
+                                <!--                                </widget>-->
+                                <h4>
+                                    <field name="partner_id"/>
+                                </h4>
+                                <br/>
+                                <b>CheckIn:</b>
+                                <field name="checkin_date"/>
+                                <br/>
+                                <b>CheckOut:</b>
+                                <field name="checkout_date"/>
+                                <br/>
+                                <t t-if="record.state.raw_value">
+                                    <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-success"
+                                          style="font-size:15px;">
+                                        <field name="state"/>
+                                    </span>
+                                </t>
+                                <t t-if="record.amount_total.raw_value">
+                                    <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"
+                                          style="font-size:15px;">
+                                        <field name="amount_total"/>
+                                    </span>
+                                </t>
+<!--                                <t t-elif="record.booking_hrs.raw_value">-->
+<!--                                    <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"-->
+<!--                                          style="font-size:15px;">-->
+<!--                                        <field name="booking_hrs"/>-->
+<!--                                        <span>Hrs/Mints</span>-->
+<!--                                    </span>-->
+<!--                                </t>-->
+<!--                                <span>-->
+<!--                                    <field name="state" invisible="1"/>-->
+<!--                                </span>-->
+<!--                                <br/>-->
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
     <!-- Form view of hotel folio -->
     <record id="view_hotel_folio_form" model="ir.ui.view">
         <field name="name">hotel.folio.form</field>
@@ -48,7 +112,7 @@
                     <button
                             name="create_folio_invoice"
                             type="object"
-                            string="Create Folio Invoice"
+                            string="Create Invoice"
                             class="oe_highlight"
                             attrs="{'invisible':[('invoice_folio_count','!=',0)]}"
                             help="If a Hotel Folio is done, you cannot modify it manually anymore. However, you will still be able to invoice or deliver. This is used to freeze the Hotel Folio."
@@ -69,7 +133,7 @@
                             <field name="invoice_folio_count" widget="statinfo"/>
                         </button>
                     </div>
-                    <label for="name" string="Proforma Number"/>
+                    <label for="name" string="Reservation Number"/>
                     <h1>
                         <field name="name" colspan="4" invisible="1"/>
                     </h1>
@@ -88,7 +152,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page name="folio" string="Proforma">
+                        <page name="folio" string="Reservation">
                             <group colspan="4" col="4">
                                 <field
                                         name="partner_id"
@@ -304,7 +368,7 @@
         <field name="model">hotel.folio</field>
         <field name="arch" type="xml">
             <calendar
-                    string="Proforma"
+                    string="Reservation"
                     date_start="checkin_date"
                     color="user_id"
                     date_stop="checkout_date"

@@ -127,7 +127,7 @@ class QuickRoomReservation(models.TransientModel):
             price_info_id = self.env['product.pricelist'].sudo().search([('id', '=', self.pricelist_id.id)])
             if self.pricelist_id:
                 for price_list in price_info_id.item_ids:
-                    if self.room_category.name == price_list.categ_id.name:
+                    if price_list.product_tmpl_id.name == self.room_id.name:
                         self.room_price = price_list.fixed_price
 
     @api.depends('remaining_time', 'guest_creation')

@@ -19,3 +19,4 @@ laundry_report_laundry_order_model_access_right_manager11,laundry_model_report_l
 laundry_report_laundry_order_model_access_right_manager112,laundry_model_report_laundry_order_access_right1112,sale.model_sale_order_line,laundry_group_user,1,1,1,1
 access_landry_order_cancel,landry.order.cancel,model_landry_order_cancel,,1,1,1,1
 access_washing_order_cancel,washing.order.cancel,model_washing_order_cancel,,1,1,1,1
+access_laundry_details_line,laundry.details.line,model_laundry_details_line,,1,1,1,1

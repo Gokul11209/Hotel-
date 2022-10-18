@@ -277,19 +277,19 @@
         <field name="res_model">hotel.housekeeping</field>
         <field name="view_mode">kanban,tree,form,calendar</field>
     </record>
-<!--    <menuitem-->
-<!--            id="menu_housekeeping"-->
-<!--            name="Housekeeping Services"-->
-<!--            parent="hotel.hotel_management_menu"-->
-<!--            sequence="4"-->
-<!--    />-->
-<!--    <menuitem-->
-<!--            name="Housekeeping Services"-->
-<!--            id="menu_open_hotel_housekeeping_form_tree"-->
-<!--            action="open_hotel_housekeeping_form_tree"-->
-<!--            parent="menu_housekeeping"-->
-<!--            sequence="4"-->
-<!--    />-->
+    <menuitem
+            id="menu_housekeeping"
+            name="Housekeeping Services"
+            parent="hotel.hotel_management_menu"
+            sequence="4"
+    />
+    <menuitem
+            name="Housekeeping Services"
+            id="menu_open_hotel_housekeeping_form_tree"
+            action="open_hotel_housekeeping_form_tree"
+            parent="menu_housekeeping"
+            sequence="4"
+    />
 
     <!-- ================ Activity Category================= -->
     <!-- Form view of hotel housekeeping activity type -->
@@ -410,23 +410,20 @@
 <!--            parent="menu_hotel_activity"-->
 <!--    />-->
 
-    <record id="hotel_folio_form" model="ir.ui.view">
+    <record id="hotel_folio_housekeeping_tab" model="ir.ui.view">
         <field name="name">hotel.folio.form.inherit</field>
         <field name="model">hotel.folio</field>
         <field name="inherit_id" ref="hotel.view_hotel_folio_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form/sheet/notebook/page[5]" position="after">
-                <page string="House Keeping Cheacklist">
-                   <group><field name="ref_name"/></group>
-                    <field name="cheacklist_line_ids" readonly="0">
+            <xpath expr="//form/sheet/notebook/page[3]" position="after">
+                <page string="House Keeping">
+                    <field name="hotel_house_keeping_orders" readonly="0">
                         <tree editable="bottom" create="1" delete="1">
-                            <field name="name"/>
-                            <field name="things_selection"/>
-                            <button name="click_yes" type="object"
-                                    icon="fa-check-circle-o"/>
-                            <button name="click_no" type="object"
-                                    icon="fa-times-circle-o"/>
-                            <field name="remarks"/>
+                            <field name="current_date"/>
+                            <field name="clean_type"/>
+                            <field name="room_id"/>
+                            <field name="inspector_id"/>
+                            <field name="inspect_date_time"/>
                         </tree>
                     </field>
                 </page>
@@ -434,21 +431,18 @@
         </field>
     </record>
 
-    <record id="hotel_room_chechlist_line" model="ir.ui.view">
+    <record id="hotel_folio_form" model="ir.ui.view">
         <field name="name">hotel.room.form.inherit</field>
         <field name="model">hotel.room</field>
         <field name="inherit_id" ref="hotel.view_hotel_room_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form/sheet/notebook/page[4]" position="after">
-                <page string="Cheacklist">
-                    <field name="cheack_line_ids" readonly="0">
-                        <tree editable="bottom" create="1" delete="0">
-                            <field name="name"/>
-                            <field name="things_selection"/>
-                            <field name="remarks"/>
-                        </tree>
-                    </field>
-                </page>
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button name="smart_room_button_count"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-list-alt">
+                    <field name="user_room_count" widget="statinfo"/>
+                </button>
             </xpath>
         </field>
     </record>

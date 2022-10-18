@@ -56,7 +56,7 @@ class HotelFolio(models.Model):
         )
         return fields.Datetime.to_string(checkout_date)
 
-    name = fields.Char("Proforma Number", readonly=True, index=True, default="New")
+    name = fields.Char("Reservation Number", readonly=True, index=True, default="New")
     order_id = fields.Many2one(
         "sale.order", "Order", delegate=True, required=True, ondelete="cascade"
     )
@@ -113,6 +113,8 @@ class HotelFolio(models.Model):
     folio_cancel_remarks = fields.Text(string=' Proforma Cancel Remarks')
     folio_cancel_remarks_2 = fields.Text(string=' Proforma Cancel Remarks')
     invoice_folio_count = fields.Integer(string="Invoice Count", compute='invoice_count_folio')
+    room_name = fields.Text(string=' Proforma Cancel Remarks')
+
 
 
     def action_cancel(self):
