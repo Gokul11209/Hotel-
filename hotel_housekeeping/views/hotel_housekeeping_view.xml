@@ -342,6 +342,19 @@
             parent="menu_hotel_activity"
             sequence="12"
     />
+    <menuitem
+            id="menu_hotel_service"
+            name="Services"
+            parent="hotel.hotel_configuration_menu"
+            sequence="2"
+    />
+    <menuitem
+            name="Service Types"
+            id="menu_open_hotel_service_type_form_tree"
+            action="open_hotel_service_type_form_tree"
+            sequence="9"
+            parent="menu_hotel_service"
+    />
 
     <!-- Activity -->
     <!-- Form view of hotel activity -->

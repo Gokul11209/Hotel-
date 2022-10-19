@@ -11,12 +11,6 @@ class HotelFolio(models.Model):
     reservation_id = fields.Many2one(
         "hotel.reservation", "Reservation", ondelete="restrict"
     )
-    # hotel_house_keeping_orders_ids = fields.One2many(
-    #     "house.keeping.details", 'proforma_id'
-    # )
-    # hotel_laundry_orders_ids = fields.One2many(
-    #     "laundry.details", 'proforma_id'
-    # )
 
     def write(self, vals):
         res = super(HotelFolio, self).write(vals)
@@ -103,15 +97,6 @@ class HotelFolioLine(models.Model):
         return super(HotelFolioLine, self).write(vals)
 
 
-# class HotelHousekeeping(models.Model):
-#     _inherit = "hotel.housekeeping"
-#
-#     def room_done(self):
-#         folio_id = self.env["hotel.folio"].search(['reservation_id', '=', 'res_id'])
-#         print('=======================================', folio_id)
-#
-#         res = super(HotelHousekeeping, self).room_done()
-#         return res
 
 
 class HouseKeepingDetails(models.Model):

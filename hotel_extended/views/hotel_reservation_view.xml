@@ -417,7 +417,7 @@
                             <field name="date_to" class="oe_inline"
                                    widget="daterange" options="{'related_start_date': 'date_to'}"/>
                             <br/>
-                            <button name="button_room_summary_refresh" string="Refresh" type="object" icon="fa-refresh" class="oe_highlight"/>
+                            <button name="button_room_summary_refresh" string="Refresh" type="object" icon="fa-refresh" class="btn_highlight"/>
                         </div>
                     </group>
                     <group colspan="4" col="4">

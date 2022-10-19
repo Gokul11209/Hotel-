@@ -81,19 +81,19 @@
             sequence="1"
             parent="menu_all_folio"
     />
-    <menuitem
-            id="menu_hotel_service"
-            name="Services"
-            parent="hotel.hotel_configuration_menu"
-            sequence="2"
-    />
-    <menuitem
-            name="Service Types"
-            id="menu_open_hotel_service_type_form_tree"
-            action="open_hotel_service_type_form_tree"
-            sequence="9"
-            parent="hotel.menu_hotel_service"
-    />
+<!--    <menuitem-->
+<!--            id="menu_hotel_service"-->
+<!--            name="Services"-->
+<!--            parent="hotel.hotel_configuration_menu"-->
+<!--            sequence="2"-->
+<!--    />-->
+<!--    <menuitem-->
+<!--            name="Service Types"-->
+<!--            id="menu_open_hotel_service_type_form_tree"-->
+<!--            action="open_hotel_service_type_form_tree"-->
+<!--            sequence="9"-->
+<!--            parent="hotel.menu_hotel_service"-->
+<!--    />-->
     <menuitem
             id="menu_open_hotel_services_form"
             name="Services"
