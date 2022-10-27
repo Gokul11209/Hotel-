@@ -1,3 +1,5 @@
+import datetime
+
 from odoo import api, fields, models
 
 
@@ -21,8 +23,7 @@ class AddProofType(models.Model):
     _description = 'Guest Proof Register'
 
     proof_type = fields.Many2one("identity.register", string="Proof Type")
-    proof_img=fields.Binary(string="Proof")
-
+    proof_img = fields.Binary(string="Proof")
 
 
 class AddLinkToInvoice(models.Model):
@@ -30,3 +31,33 @@ class AddLinkToInvoice(models.Model):
     _description = 'Added Link To Invoice'
 
     ref_id = fields.Many2one("hotel.reservation", string="Reservation ID")
+
+
+class ForceCloseReservation(models.Model):
+    _inherit = 'hotel.folio'
+    _description = 'Added Force Close Button'
+
+    cancel_remarks = fields.Text(string='Force Close Remarks')
+
+    def force_close(self):
+        applicant_id = self.id
+        print("++++++++++++==",applicant_id)
+
+        view_id = self.env['folio.order.cancel']
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Hotel Management Reservations Force Close Remarks',
+            'res_model': 'hotel.proforma.force.close',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_id': view_id.id,
+            'view_id': self.env.ref('hotel_extended.force_close_folio_cancel_remarks_wizard', False).id,
+            'target': 'new',
+        }
+        # active_id = self.env['hotel.folio'].search([('id', '=', applicant_id)])
+        # now = str(datetime.datetime.now()).split('.')[0]
+        # print("+++++++++++++++++++++++++++++",now)
+        # for i in active_id.room_line_ids:
+        #     print("============",i)
+
+

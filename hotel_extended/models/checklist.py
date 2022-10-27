@@ -10,15 +10,24 @@ class HousekeepingChecklistLine(models.Model):
     true = fields.Boolean('True')
     false = fields.Boolean('False')
     remarks = fields.Char(string='Remarks')
+    qty = fields.Integer(string='Quantity')
     things_selection = fields.Selection([
-        ('available', 'Available'),
-        ('non_available', 'Non Available')],
-        string='Things',
+        ('available', 'Available & Good Condition'),
+        ('damage_available', 'Available & Damaged'),
+        ('non_available', 'Not Available')],
+        string=' Check IN Status',
     )
+    Checkout_things_selection = fields.Selection([
+        ('available', 'Available & Good Condition'),
+        ('damage_available', 'Available & Damaged'),
+        ('non_available', 'Not Available')],
+        string=' Check Out Status',
+    )
+    reservation_checklist_image = fields.Binary(string='Image')
 
     def click_yes(self):
         self.write({
-            'things_selection': 'available', })
+            'Checkout_things_selection': 'available', })
         room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
         for room in room_obj.cheack_line_ids:
             if self.name == room.name:
@@ -28,12 +37,22 @@ class HousekeepingChecklistLine(models.Model):
 
     def click_no(self):
         self.write({
-            'things_selection': 'non_available', })
+            'Checkout_things_selection': 'non_available', })
         room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
         for room in room_obj.cheack_line_ids:
             if self.name == room.name:
                 room.write({
                     'things_selection': 'non_available'
+                })
+
+    def click_damaged(self):
+        self.write({
+            'Checkout_things_selection': 'damage_available', })
+        room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
+        for room in room_obj.cheack_line_ids:
+            if self.name == room.name:
+                room.write({
+                    'things_selection': 'damage_available'
                 })
 
 
@@ -44,11 +63,14 @@ class RoomChecklistLine(models.Model):
     name = fields.Char(string='Name')
     room_no = fields.Many2one('hotel.room', string='Company')
     remarks = fields.Char(string='Remarks')
+    qty = fields.Integer(string='Quantity')
     things_selection = fields.Selection([
-        ('available', 'Available'),
-        ('non_available', 'Non Available')],
-        string='Things',
+        ('available', 'Available & Good Condition'),
+        ('damage_available', 'Available & Damaged'),
+        ('non_available', 'Not Available')],
+        string='Status',
     )
+    checklist_image = fields.Binary(string='Image')
 
 
 class HousekepingChecklist(models.Model):
@@ -63,14 +85,16 @@ class HousekepingChecklist(models.Model):
 
     @api.onchange('ref_name')
     def fetch_checklist(self):
-        room_obj = self.env["hotel.room"]
-        room_ids = room_obj.search([('name', '=', self.ref_name.name)])
-        print(room_ids)
+        room_obj = self.env["hotel.reservation"]
+        room_ids = room_obj.search([('reservation_no', '=', self.reservation_id.reservation_no)])
+        print('==================================', self.reservation_id.reservation_no)
         list = [(5, 0, 0)]
-        for i in room_ids.cheack_line_ids:
+        for i in room_ids.checkin_checklist_line:
             vals = {
                 'name': i.name,
-                'things_selection' : i.things_selection
+                'things_selection': i.things_selection,
+                'qty': i.qty,
+                'reservation_checklist_image': i.checklist_image
             }
             list.append((0, 0, vals))
         self.cheacklist_line_ids = list

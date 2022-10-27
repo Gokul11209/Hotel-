@@ -94,11 +94,11 @@
 <!--            sequence="9"-->
 <!--            parent="hotel.menu_hotel_service"-->
 <!--    />-->
-    <menuitem
-            id="menu_open_hotel_services_form"
-            name="Services"
-            action="action_hotel_services_form"
-            sequence="8"
-            parent="hotel.menu_hotel_service"
-    />
+<!--    <menuitem-->
+<!--            id="menu_open_hotel_services_form"-->
+<!--            name="Services"-->
+<!--            action="action_hotel_services_form"-->
+<!--            sequence="8"-->
+<!--            parent="hotel.menu_hotel_service"-->
+<!--    />-->
 </odoo>

@@ -40,22 +40,14 @@
                                     </span>
                                 </t>
                                 <t t-if="record.amount_total.raw_value">
-                                    <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"
-                                          style="font-size:15px;">
-                                        <field name="amount_total"/>
-                                    </span>
+                                    <div>
+                                        <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"
+                                              style="font-size:15px;">
+                                            <field name="amount_total"/>/
+                                            <field name="company_currency" force_save="1"/>
+                                        </span>
+                                    </div>
                                 </t>
-<!--                                <t t-elif="record.booking_hrs.raw_value">-->
-<!--                                    <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"-->
-<!--                                          style="font-size:15px;">-->
-<!--                                        <field name="booking_hrs"/>-->
-<!--                                        <span>Hrs/Mints</span>-->
-<!--                                    </span>-->
-<!--                                </t>-->
-<!--                                <span>-->
-<!--                                    <field name="state" invisible="1"/>-->
-<!--                                </span>-->
-<!--                                <br/>-->
                             </div>
                         </div>
                     </t>

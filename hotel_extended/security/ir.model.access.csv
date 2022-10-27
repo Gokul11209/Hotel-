@@ -21,3 +21,6 @@ access_house_keeping_details,house.keeping.details,model_house_keeping_details,,
 access_laundry_details,laundry.details,model_laundry_details,,1,1,1,1
 access_housekeeping_checklist_line,housekeeping.checklist.line,model_housekeeping_checklist_line,base.group_user,1,1,1,1
 access_room_checklist_line,room.checklist.line,model_room_checklist_line,base.group_user,1,1,1,1
+access_checkin_checklist,checkin.checklist,model_checkin_checklist,base.group_user,1,1,1,1
+access_hotel_proforma_force_close,hotel.proforma.force.close,model_hotel_proforma_force_close,,1,1,1,1
+

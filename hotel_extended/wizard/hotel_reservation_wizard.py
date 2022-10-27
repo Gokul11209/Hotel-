@@ -2,7 +2,7 @@
 
 from odoo import fields, models
 from datetime import datetime, timedelta, date
-
+import datetime
 
 
 class HotelReservationWizard(models.TransientModel):
@@ -130,4 +130,36 @@ class TableOrderCancel(models.TransientModel):
             active_id.cancel_reservation()
             active_id.write({'reservation_cancel_remarks': text})
 
+        return True
+class ForceCloseWizard(models.TransientModel):
+    _name = 'hotel.proforma.force.close'
+    _description = 'Hotel Management Reservations Cancel Force Close Remarks'
+    _inherit = ['mail.thread']
+
+    remarks = fields.Text('Remarks')
+
+    def tick_ok(self):
+        applicant_id = self._context.get('active_ids')[0]
+        active_id = self.env['hotel.folio'].search([('id', '=', applicant_id)])
+        now = str(datetime.datetime.now()).split('.')[0]
+        current_user = self.env.user.name
+        text = '[ ' + current_user + ' ]' + '[ ' + now + ' ]' + ' - ' + self.remarks + '\n'
+        active_id.write({'cancel_remarks': text})
+        # active_id.write({'state': 'done'})
+        vals = {
+            "check_out": now,
+        }
+        print(active_id.name)
+        for i in active_id.room_line_ids:
+            reservation = self.env['hotel.reservation'].search([('reservation_no', '=',active_id.reservation_id.reservation_no)])
+            reservation.write({'checkout':now})
+            values = {
+                'checkout_date': now,
+            }
+            active_id.room_line_ids.update(values)
+            room = self.env['hotel.room'].search([('name', '=', i.product_id.name)])
+            line_ids = room.room_reservation_line_ids.search([('reservation_id', '=', active_id.reservation_id.id)])
+            line_folio_ids = room.room_line_ids.search([('folio_id', '=', active_id.id)])
+            line_ids.sudo().update(vals)
+            line_folio_ids.sudo().update(vals)
         return True

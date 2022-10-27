@@ -146,3 +146,10 @@
     padding-top: 6px;
 }
 
+.btn_highlight_red{
+    background-color:#de1a1a;
+    margin-top: -25px;
+    color: white;
+    float: right;
+    padding-top: 6px;
+}

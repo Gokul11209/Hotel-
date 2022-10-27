@@ -134,6 +134,7 @@ class RoomReservationSummary(models.Model):
         """
         @param self: object pointer
         """
+        global reservation_id
         res = {}
         all_detail = []
         room_obj = self.env["hotel.room"]
@@ -458,7 +459,7 @@ class RoomReservationSummary(models.Model):
                             else:
                                 chk_date = str(chk_date).split(" ")[0] + " 00:00:00"
 
-                            if reservline_ids or folio_resrv_ids:
+                            if reservline_ids:
                                 if hasattr(reservline_ids, 'reservation_id') and reservline_ids.reservation_id:
                                     reservation_id = reservline_ids.reservation_id
                                 room_list_stats.append(
@@ -470,7 +471,7 @@ class RoomReservationSummary(models.Model):
                                         "floor_id": room.floor_id.id,
                                         "is_draft": "No",
                                         "data_model": "",
-                                        "data_id": reservation_id.id or 0,
+                                        # "data_id": reservation_id.id or 0,
                                     }
                                 )
                             elif reserve_draft_id:
@@ -500,7 +501,6 @@ class RoomReservationSummary(models.Model):
 
                     room_detail.update({"value": room_list_stats})
                     all_room_detail.append(room_detail)
-                    # print(room_detail)
             main_header.append({"header": summary_header_list})
             self.summary_header = str(main_header)
             self.room_summary = str(all_room_detail)

@@ -143,7 +143,8 @@ class HotelReservation(models.Model):
         ('12', '12 Hours'),
         ('24', '24 Hours'),
     ])
-
+    checkin_checklist_line = fields.One2many(
+        "checkin.checklist", "room_reservation")
     @api.onchange('days')
     def days_integer(self):
         if self.days:

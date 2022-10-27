@@ -114,7 +114,7 @@ class HotelFolio(models.Model):
     folio_cancel_remarks_2 = fields.Text(string=' Proforma Cancel Remarks')
     invoice_folio_count = fields.Integer(string="Invoice Count", compute='invoice_count_folio')
     room_name = fields.Text(string=' Proforma Cancel Remarks')
-
+    company_currency = fields.Many2one(related='company_id.currency_id', string="Currency", )
 
 
     def action_cancel(self):
