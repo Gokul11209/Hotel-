@@ -460,8 +460,8 @@ class RoomReservationSummary(models.Model):
                                 chk_date = str(chk_date).split(" ")[0] + " 00:00:00"
 
                             if reservline_ids:
-                                if hasattr(reservline_ids, 'reservation_id') and reservline_ids.reservation_id:
-                                    reservation_id = reservline_ids.reservation_id
+                                # if hasattr(reservline_ids, 'reservation_id') and reservline_ids.reservation_id:
+                                reservation_id = reservline_ids.reservation_id
                                 room_list_stats.append(
                                     {
                                         "state": "Reservation",
@@ -471,7 +471,7 @@ class RoomReservationSummary(models.Model):
                                         "floor_id": room.floor_id.id,
                                         "is_draft": "No",
                                         "data_model": "",
-                                        # "data_id": reservation_id.id or 0,
+                                        "data_id": reservation_id.id or 0,
                                     }
                                 )
                             elif reserve_draft_id:
