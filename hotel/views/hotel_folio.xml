@@ -174,7 +174,7 @@
                                     name="room_line_ids"
                                     colspan="4"
                                     string="Room Line"
-                                    nolabel="1"
+                                    readonly="0"
                                     context="{'default_checkin_date':checkin_date,
                                         'default_checkout_date':checkout_date}"
                             >
@@ -187,6 +187,7 @@
                                     />
                                     <field name="checkin_date"/>
                                     <field name="checkout_date"/>
+                                    <field name="actual_checkout"/>
                                     <field
                                             name="product_id"
                                             string="Room No"
@@ -196,7 +197,8 @@
                                             options="{'no_open': True}"
                                     />
                                     <field name="name"/>
-                                    <field name="product_uom_qty" string="Duration"/>
+                                    <field name="product_uom_qty" string="Duration(hrs/mins)" invisible="1"/>
+                                    <field name="duration" string="Duration(hrs/mins)"/>
                                     <field
                                             name="product_uom_category_id"
                                             invisible="1"
@@ -209,6 +211,7 @@
                                             groups="uom.group_uom"
                                             options="{'no_open': True}"
                                     />
+                                    <field name="day"/>
                                     <field name="price_unit"/>
                                     <field
                                             domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"

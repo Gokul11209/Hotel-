@@ -518,6 +518,7 @@ class HotelReservation(models.Model):
                             {
                                 "checkin_date": checkin_date,
                                 "checkout_date": checkout_date,
+                                "actual_checkout": checkout_date,
                                 "product_id": r.product_id and r.product_id.id,
                                 "name": reservation["reservation_no"],
                                 "price_unit": r.list_price,

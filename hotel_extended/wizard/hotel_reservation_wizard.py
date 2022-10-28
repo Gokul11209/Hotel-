@@ -137,8 +137,15 @@ class ForceCloseWizard(models.TransientModel):
     _inherit = ['mail.thread']
 
     remarks = fields.Text('Remarks')
+    checkin_time = fields.Char("Check In Time")
 
+    # @api.depands('')
+
+    def show_checkin_time(self):
+        now = str(datetime.datetime.now()).split('.')[0]
+        self.checkin_time=now
     def tick_ok(self):
+
         applicant_id = self._context.get('active_ids')[0]
         active_id = self.env['hotel.folio'].search([('id', '=', applicant_id)])
         now = str(datetime.datetime.now()).split('.')[0]
@@ -154,7 +161,7 @@ class ForceCloseWizard(models.TransientModel):
             reservation = self.env['hotel.reservation'].search([('reservation_no', '=',active_id.reservation_id.reservation_no)])
             reservation.write({'checkout':now})
             values = {
-                'checkout_date': now,
+                'actual_checkout': now,
             }
             active_id.room_line_ids.update(values)
             room = self.env['hotel.room'].search([('name', '=', i.product_id.name)])

@@ -1,6 +1,6 @@
 # See LICENSE file for full copyright and licensing details.
 import time
-from datetime import timedelta
+from datetime import timedelta,datetime
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -115,6 +115,7 @@ class HotelFolio(models.Model):
     invoice_folio_count = fields.Integer(string="Invoice Count", compute='invoice_count_folio')
     room_name = fields.Text(string=' Proforma Cancel Remarks')
     company_currency = fields.Many2one(related='company_id.currency_id', string="Currency", )
+
 
 
     def action_cancel(self):
@@ -394,7 +395,33 @@ class HotelFolioLine(models.Model):
     folio_id = fields.Many2one("hotel.folio", "Folio", ondelete="cascade")
     checkin_date = fields.Datetime("Check In", required=True)
     checkout_date = fields.Datetime("Check Out", required=True)
+    actual_checkout = fields.Datetime("Actual Check Out")
     is_reserved = fields.Boolean(help="True when folio line created from Reservation")
+    day = fields.Char(string="Days", compute="_compute_remain_hrs")
+    duration = fields.Float(string="Duration",compute="_compute_remain_hrs")
+
+    @api.depends('checkin_date', 'checkout_date',)
+    @api.onchange('checkin_date', 'checkout_date')
+    def _compute_remain_hrs(self):
+        if self.checkin_date and self.checkout_date:
+            date1 = str(self.checkin_date)
+            datetimeFormat = '%Y-%m-%d %H:%M:%S'
+            date2 = str(self.checkout_date)
+            date11 = datetime.strptime(date1, datetimeFormat)
+            date12 = datetime.strptime(date2, datetimeFormat)
+            timedelta = date12 - date11
+            tot_sec = timedelta.total_seconds()
+            h = tot_sec // 3600
+            m = (tot_sec % 3600) // 60
+            duration_hour = ("%d.%d" % (h, m))
+            duration = float(duration_hour)
+            if self.duration <= 24.00:
+                self.day = timedelta
+                self.duration = duration
+            else:
+                self.duration = duration
+                self.day = timedelta
+
 
     @api.model
     def create(self, vals):
