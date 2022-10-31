@@ -20,5 +20,11 @@
 
 
     ],
+    'assets': {
+        'web.assets_qweb': [],
+        'web.assets_backend': [
+            'hotel_housekeeping/static/css/housekeeping.css',
+        ],
+    },
     "installable": True,
 }

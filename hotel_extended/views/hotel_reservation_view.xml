@@ -593,7 +593,7 @@
                         <page name="checklist" string="CheckIn CheckList"
                              attrs="{'invisible': [('guest_creation', '=', 'new')]}">
                             <field name="checkin_checklist_line" readonly="0" force_save="1">
-                                <tree editable="bottom" create="1" delete="1">
+                                <tree editable="bottom" create="0" delete="0">
                                     <field name="name"/>
                                     <field name="checklist_image" widget="image" style="height:50px; width:50px;"/>
                                     <field name="qty"/>

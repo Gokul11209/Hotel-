@@ -14,6 +14,7 @@ class TestRestaurant(common.TransactionCase):
         self.rest_order_obj = self.env["hotel.restaurant.order.list"]
         self.hotel_rest_order_obj = self.env["hotel.restaurant.order"]
         self.hotel_reserv_order_obj = self.env["hotel.reservation.order"]
+        self.hotel_resbar_order_obj = self.env["hotel.bar.order"]
         self.fooditem = self.env.ref("hotel_restaurant.hotel_fooditem_5")
         self.fooditem_type = self.env.ref("hotel_restaurant.hotel_menucard_type_1")
         self.rest_res = self.env.ref("hotel_restaurant.hotel_restaurant_reservation_1")

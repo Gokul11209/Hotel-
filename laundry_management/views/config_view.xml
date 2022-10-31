@@ -84,19 +84,14 @@
 <!--        <menuitem id="laundry_customer" name="Guests"-->
 <!--                  parent="hotel_extended.menu_hotel_reservation" action="base.action_partner_customer_form"-->
 <!--                  sequence="2"/>-->
-        <menuitem
-            id="menu_products_hotel_room"
-            name="Products"
-            parent="hotel.hotel_configuration_menu"
-            sequence="3"/>
-        <menuitem id="laundry_products" name="Products" parent="menu_products_hotel_room"
-                  action="product.product_normal_action_sell" sequence="10"/>
-        <menuitem id="laundry_washing_type" name="Washing Type"
-                  action="action_washing_type" sequence="9"
-                  parent="hotel.menu_hotel_service"/>
-        <menuitem id="laundry_washing_work" name="Additional Works" sequence="10"
-                  parent="hotel.menu_hotel_service"
-                  action="action_washing_work"/>
+<!--        <menuitem id="laundry_products" name="Products" parent="hotel_extended.menu_hotel_reservation"-->
+<!--                  action="product.product_normal_action_sell" sequence="3"/>-->
+<!--        <menuitem id="laundry_washing_type" name="Washing Type"-->
+<!--                  action="action_washing_type" sequence="9"-->
+<!--                  parent="hotel.menu_hotel_service"/>-->
+<!--        <menuitem id="laundry_washing_work" name="Additional Works" sequence="10"-->
+<!--                  parent="hotel.menu_hotel_service"-->
+<!--                  action="action_washing_work"/>-->
 
     </data>
 </odoo>

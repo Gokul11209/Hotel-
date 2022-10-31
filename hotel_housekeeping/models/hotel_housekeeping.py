@@ -17,7 +17,7 @@ class HotelHousekeeping(models.Model):
     #         roomno = rec.hotel_room_id.room_no
     #         rec.hotel_rooms.append((roomno, name))
     #     return rec.hotel_rooms
-
+    name = fields.Char(string="Name", default="/", readonly=True)
     current_date = fields.Date(
         "Today's Date",
         required=True,
@@ -103,7 +103,8 @@ class HotelHousekeeping(models.Model):
     def room_no_added(self):
         for rec in self:
             if rec.hotel_room_id:
-                roomno = str(rec.hotel_room_id.room_no) + '-' + str(rec.hotel_room_id.name) + '-' + str(rec.floor_id.name)
+                roomno = str(rec.hotel_room_id.room_no) + '-' + str(rec.hotel_room_id.name) + '-' + str(
+                    rec.floor_id.name)
                 rec.hotel_rooms = roomno
             else:
                 rec.hotel_rooms = ''
@@ -178,7 +179,7 @@ class HotelHousekeeping(models.Model):
 
         folio_id = self.env['hotel.folio'].sudo().search([('reservation_id', '=', self.room_id.id)])
         folio_id.sudo().write({
-            'hotel_house_keeping_orders_ids': self.proforma_housekeeping_activity(),
+            'hotel_house_keeping_orders': self.proforma_housekeeping_activity(),
             'service_line_ids': self.get_service_order_line_items(),
         })
         if not self.quality:
@@ -206,3 +207,13 @@ class HotelHousekeeping(models.Model):
         """
         self.write({"state": "clean", "quality": False})
         self.activity_line_ids.write({"is_clean": True, "is_dirty": False})
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', '/') == '/':
+            if vals.get('activity_type') == 'internal':
+                vals['name'] = self.env['ir.sequence'].next_by_code('hotel.internal.housekeeping') or '/'
+            if vals.get('activity_type') == 'external':
+                vals['name'] = self.env['ir.sequence'].next_by_code('hotel.external.housekeeping') or '/'
+
+        return super(HotelHousekeeping, self).create(vals)

@@ -33,10 +33,6 @@ class LaundryManagement(models.Model):
     _description = "Laundry Order"
     _order = 'order_date desc, id desc'
 
-    @api.model
-    def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('laundry.order')
-        return super(LaundryManagement, self).create(vals)
 
     @api.depends('order_lines')
     def get_total(self):
@@ -188,7 +184,7 @@ class LaundryManagement(models.Model):
             'service_line_ids': self.get_service_order_line_items(),
         })
 
-    name = fields.Char(string="Label", copy=False)
+    name = fields.Char(string="Label", default="/", readonly=True)
     # proforma_id = fields.Many2one('hotel.folio', string="Proforma")
     invoice_status = fields.Selection([
         ('upselling', 'Upselling Opportunity'),
@@ -232,14 +228,17 @@ class LaundryManagement(models.Model):
     total_amount = fields.Float(compute='get_total', string='Total', store=1)
     currency_id = fields.Many2one("res.currency", string="Currency")
     note = fields.Text(string='Terms and conditions')
+    inter_laundry = fields.Boolean(
+        "Is Internal or External??", help="is guest reside in hotel or not"
+    )
     laundry_activity_type = fields.Selection(
         [
             ("internal", "Internal laundry "),
             ("external", " External laundry"),
         ],
-        "Activity Type", default='external',
-        required=True)
-    hotel_laundary_room_id = fields.Many2one("hotel.room", "Ref No")
+        "Activity Type", default=False)
+
+    hotel_laundary_room_id = fields.Many2one("hotel.room", "Room")
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -254,6 +253,19 @@ class LaundryManagement(models.Model):
     landry_cancel_remarks = fields.Text(string='Landry Cancel Remarks')
     landry_cancel_remarks_2 = fields.Text(string='Landry Cancel Remarks')
     res_id = fields.Many2one("hotel.reservation", "Ref No")
+    floor_no = fields.Many2one("hotel.floor", "Floor No")
+    categ = fields.Many2one("hotel.room.type", "Room")
+    room_number = fields.Char("Room No")
+    room_num_in_squ = fields.Char("Number")
+
+    @api.onchange('room_number','floor_no','categ')
+    def onchange_room_number(self):
+        floor = self.floor_no.short_code
+        category = self.categ.short_code
+        if floor and category and self.room_number:
+            self.room_num_in_squ = str(floor) + '/' + str(category) + '/' + str(self.room_number)
+
+
 
     @api.onchange('res_id')
     def fetch_details(self):
@@ -273,6 +285,16 @@ class LaundryManagement(models.Model):
             'view_id': self.env.ref('laundry_management.hotel_management_landry_cancel_remarks_wizard', False).id,
             'target': 'new',
         }
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', '/') == '/':
+            if vals.get('laundry_activity_type') == 'internal':
+                vals['name'] = self.env['ir.sequence'].next_by_code('laundry.internal.order') or '/'
+            if vals.get('laundry_activity_type') == 'external':
+                vals['name'] = self.env['ir.sequence'].next_by_code('laundry.external.order') or '/'
+
+        return super(LaundryManagement, self).create(vals)
 
 
 class LaundryManagementLine(models.Model):
@@ -393,6 +415,7 @@ class Washing(models.Model):
         if f == 0:
             self.laundry_obj.laundry_obj.state = 'done'
             folio_id = self.env["hotel.folio"].search([("reservation_id", "=", self.laundry_obj.laundry_obj.res_id.id)])
+            print("ooooooooooooooooooooooooooooooooo",folio_id)
             if folio_id:
                 line_vals = []
                 vals = [0, 0, {
@@ -406,7 +429,7 @@ class Washing(models.Model):
             else:
                 raise ValidationError(_("Alert!, Please Create a Folio against the Reservation"))
             folio_id.update({
-                'hotel_laundry_orders_ids': line_vals,
+                'hotel_laundry_orders': line_vals,
             })
         laundry_obj1 = self.search([('laundry_obj', '=', self.laundry_obj.id)])
         f1 = 0

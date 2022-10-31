@@ -19,6 +19,7 @@
         "views/folio_order_report.xml",
         "views/hotel_restaurant_sequence.xml",
         "views/hotel_restaurant_view.xml",
+        "views/hotel_bar_view.xml",
         "wizard/hotel_restaurant_wizard.xml",
         "wizard/cancel_wizard.xml",
 

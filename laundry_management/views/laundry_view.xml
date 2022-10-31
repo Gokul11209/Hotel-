@@ -28,6 +28,7 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,order,done,return,cancel"/>
                     </header>
                     <sheet>
+
                         <div class="oe_button_box" name="buttons">
                             <button name='action_view_laundry_works' class="oe_stat_button" type="object"
                                     icon="fa-money" states="order,done,return,process">
@@ -44,11 +45,21 @@
                             </h1>
                         </div>
                         <group>
+                            <group colspan="4" col="4">
+                                <field name="inter_laundry"/>
+                                <newline/>
+                                <field name="laundry_activity_type" widget="radio" options="{'horizontal': True}"
+                                    attrs="{'invisible': [('inter_laundry','=',False)]}"/>
+                            </group>
                             <group>
-                                <field name="laundry_activity_type" widget="radio" options="{'horizontal': True}"/>
-                                <field name="res_id" attrs="{'invisible': [('laundry_activity_type', '=', 'internal')]}" options="{'no_open': True, 'no_create': True}"/>
-                                <field name="hotel_laundary_room_id" attrs="{'invisible': [('laundry_activity_type', '=', 'external')]}" force_save="1"/>
-                                <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="room_num_in_squ" readonly="1" force_save="1"/>
+                                <field name="res_id" attrs="{'required': [('inter_laundry', '=', False)],'invisible': [('inter_laundry','=',True)]}"
+                                       force_save="1"/>
+                                <field name="floor_no" options="{'no_open': True, 'no_create': True}"
+                                   attrs="{'required': [('inter_laundry', '=', True)],'invisible': [('inter_laundry','=',False)]}"/>
+                                <field name="categ" force_save="1" attrs="{'required': [('inter_laundry', '=', True)],'invisible': [('inter_laundry','=',False)]}"/>
+                                <field name="room_number" options="{'no_open': True, 'no_create': True}"
+                                    attrs="{'required': [('inter_laundry', '=', True)],'invisible': [('inter_laundry','=',False)]}"/>
                                 <field name="partner_invoice_id" context="{'default_type':'invoice'}"
                                        attrs="{'readonly': [('state','in',('done','return','cancel'))]}"
                                        options="{'no_open': True, 'no_create': True}"/>
@@ -57,6 +68,9 @@
                                        options="{'no_open': True, 'no_create': True}"/>
                             </group>
                             <group>
+                                <field name="partner_id" context="{'default_type':'invoice'}"
+                                       attrs="{'readonly': [('state','in',('done','return','cancel'))]}"
+                                       options="{'no_open': True, 'no_create': True}"/>
                                 <field name="order_date" attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="currency_id" attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="laundry_person"
@@ -124,11 +138,72 @@
             </field>
         </record>
 
+        <record id="laundry_order_kanban_view" model="ir.ui.view">
+            <field name="name">laundry.order.kanban</field>
+            <field name="model">laundry.order</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="oe_kanban_details">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <div t-attf-class="ribbon ribbon-top-right">
+                                        <span t-attf-class="ribbon-{{ record.state.raw_value }}">
+                                            <t t-esc="record.state.raw_value"/>
+                                        </span>
+                                    </div>
+                                    <b>Customer:</b>
+                                    <field name="partner_id"/>
+                                    <br/>
+                                    <b>Order Date:</b>
+                                    <field name="order_date"/>
+                                    <br/>
+                                    <t t-if="record.total_amount">
+                                        <b>Total:</b>
+                                        <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-success"
+                                              style="font-size:15px;">
+                                            <field name="total_amount"/>
+                                            <br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="record.state.raw_value">
+                                        <span class="badge badge-pill o_field_badge o_field_widget o_readonly_modifier bg-warning"
+                                              style="font-size:15px;">
+                                            <field name="state"/>
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="laundry_order_graph_view" model="ir.ui.view">
+            <field name="name">laundry_order_graph_view.graph</field>
+            <field name="model">laundry.order</field>
+            <field name="arch" type="xml">
+                <graph string="Laundry" type="pie">
+                    <field name="name"/>
+                    <field name="order_date"/>
+                    <field name="total_amount"/>
+                </graph>
+            </field>
+        </record>
+
         <record id="action_laundry_order" model="ir.actions.act_window">
             <field name="name">Laundry Management</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">laundry.order</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">kanban,tree,form,graph</field>
             <field name="domain">[]</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
@@ -179,7 +254,7 @@
                   sequence="5"/>
         <menuitem id="laundry_management_order" name="Laundry Order"
                   parent="laundry_management_sub_menu"
-                  action="action_laundry_order" sequence="4"/>
+                  action="action_laundry_order" sequence="1"/>
 
     </data>
 </odoo>
