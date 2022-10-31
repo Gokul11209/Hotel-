@@ -280,18 +280,18 @@
     </record>
 
     <menuitem
-            name="Table Booking"
+            name="Orders"
             id="menu_open_view_hotel_bar_reservation_form_tree"
             action="open_view_hotel_bar_reservation_form_tree"
             parent="hotel_bar_menu"
     />
 
-    <menuitem
-            id="menu_open_view_hotel_bar_order_form_tree"
-            name="Orders"
-            action="open_view_hotel_bar_order_form_tree"
-            parent="hotel_bar_menu"
-    />
+<!--    <menuitem-->
+<!--            id="menu_open_view_hotel_bar_order_form_tree"-->
+<!--            name="Orders"-->
+<!--            action="open_view_hotel_bar_order_form_tree"-->
+<!--            parent="hotel_bar_menu"-->
+<!--    />-->
 
 
     <!-- ======= Orders for Reservation ======= -->

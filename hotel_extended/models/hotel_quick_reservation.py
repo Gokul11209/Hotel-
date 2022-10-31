@@ -121,8 +121,7 @@ class QuickRoomReservation(models.TransientModel):
     check_out_time = fields.Char(string="Check Out Time")
     room_price = fields.Float(related='room_id.list_price', string="Price")
     hrs_selection = fields.Selection([
-        ('short', 'Short Close'),
-        ('free_hrs', 'Free Hours'),
+        ('short', 'Free Hours'),
         ('12', '12 Hours'),
         ('24', '24 Hours'), ],
         string='Hours',

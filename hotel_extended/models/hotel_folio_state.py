@@ -11,6 +11,7 @@ class HotelFolio(models.Model):
         ('sent', 'Quotation Sent'),
         ('sale', 'Confirm'),
         ('done', 'Done'),
+        ('short', 'Short Close'),
         ('cancel', 'Cancel')
     ],
         "State",

@@ -3,7 +3,7 @@
         <field name="name">hotel.folio.kanban</field>
         <field name="model">hotel.folio</field>
         <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile" default_order='name desc'>
+            <kanban class="o_kanban_mobile" default_order='name desc' create="0" duplicate="0" edit="0">
                 <templates>
                     <!--                    <field name="day"-->
                     <t t-name="kanban-box">
@@ -60,7 +60,7 @@
         <field name="name">hotel.folio.form</field>
         <field name="model">hotel.folio</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false" duplicate="false" edit="false">
                 <header>
                     <button
                             name="action_confirm"
@@ -113,7 +113,7 @@
                             name="state"
                             select="2"
                             widget="statusbar"
-                            statusbar_visible="draft,done,sale,cancel"
+                            statusbar_visible="draft,done,sale,short,cancel"
                     />
                 </header>
                 <sheet>
@@ -346,7 +346,7 @@
         <field name="name">hotel.folio.tree</field>
         <field name="model">hotel.folio</field>
         <field name="arch" type="xml">
-            <tree default_order='name desc'>
+            <tree default_order='name desc' create="0" duplicate="0" edit="0">
                 <field name="checkin_date"/>
                 <field name="checkout_date"/>
                 <field name="name"/>

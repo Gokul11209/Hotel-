@@ -73,8 +73,8 @@
                 </page>
             </xpath>
             <xpath expr="//field[@name='reservation_id']" position="after">
-                <button name="force_close" string="Force Close" type="object"
-                        states="sale" icon="fa-clock-o" class="btn_highlight_red"/>
+                <button name="force_close" string="Short Close" type="object"
+                        states="done" icon="fa-clock-o" class="btn_highlight_red"/>
             </xpath>
         </field>
     </record>

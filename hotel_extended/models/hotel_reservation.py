@@ -138,8 +138,7 @@ class HotelReservation(models.Model):
     days_1 = fields.Float(string='Days', store=True)
 
     reservation_hrs_selection = fields.Selection([
-        ('short', 'Short Close'),
-        ('free_hrs', 'Free Hours'),
+        ('short', 'Free Hours'),
         ('12', '12 Hours'),
         ('24', '24 Hours'),
     ])
