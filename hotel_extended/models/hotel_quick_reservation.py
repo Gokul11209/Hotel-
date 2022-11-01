@@ -13,6 +13,7 @@ class CheckInCheckList(models.TransientModel):
     _description = 'Room  CheckList Checklist Line'
 
     name = fields.Char(string='Name')
+    product_id = fields.Many2one('product.product', string='Check List')
     room_no = fields.Many2one('quick.room.reservation', string='Company')
     room_reservation = fields.Many2one('hotel.reservation', string='Reservation')
     qty = fields.Integer(string='Quantity')
@@ -142,7 +143,7 @@ class QuickRoomReservation(models.TransientModel):
         list = [(5, 0, 0)]
         for i in room_ids.cheack_line_ids:
             vals = {
-                'name': i.name,
+                'product_id': i.product_id.id,
                 'things_selection': i.things_selection,
                 'qty': i.qty,
                 'checklist_image': i.checklist_image
@@ -462,7 +463,7 @@ class QuickRoomReservation(models.TransientModel):
                     list = [(5, 0, 0)]
                     for i in self.checkin_checklist_line:
                         values = {
-                            'name': i.name,
+                            'product_id': i.product_id.id,
                             'things_selection': i.things_selection,
                             'qty': i.qty,
                             'checklist_image': i.checklist_image

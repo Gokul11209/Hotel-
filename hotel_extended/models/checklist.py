@@ -7,6 +7,7 @@ class HousekeepingChecklistLine(models.Model):
 
     name = fields.Char(string='Name')
     room_id = fields.Many2one('hotel.folio', string='Company')
+    product_id = fields.Many2one('product.product', string='Check List')
     true = fields.Boolean('True')
     false = fields.Boolean('False')
     remarks = fields.Char(string='Remarks')
@@ -29,8 +30,10 @@ class HousekeepingChecklistLine(models.Model):
         self.write({
             'Checkout_things_selection': 'available', })
         room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
+        print("=============", room_obj.name)
         for room in room_obj.cheack_line_ids:
-            if self.name == room.name:
+            if self.product_id.name == room.product_id.name:
+                print("=====11111111111========", room_obj)
                 room.write({
                     'things_selection': 'available'
                 })
@@ -40,7 +43,7 @@ class HousekeepingChecklistLine(models.Model):
             'Checkout_things_selection': 'non_available', })
         room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
         for room in room_obj.cheack_line_ids:
-            if self.name == room.name:
+            if self.product_id.name == room.product_id.name:
                 room.write({
                     'things_selection': 'non_available'
                 })
@@ -50,7 +53,7 @@ class HousekeepingChecklistLine(models.Model):
             'Checkout_things_selection': 'damage_available', })
         room_obj = self.env["hotel.room"].search([('name', '=', self.room_id.ref_name.name)])
         for room in room_obj.cheack_line_ids:
-            if self.name == room.name:
+            if self.product_id.name == room.product_id.name:
                 room.write({
                     'things_selection': 'damage_available'
                 })
@@ -61,6 +64,7 @@ class RoomChecklistLine(models.Model):
     _description = 'Room Checklist Line'
 
     name = fields.Char(string='Name')
+    product_id = fields.Many2one('product.product', string='Check List')
     room_no = fields.Many2one('hotel.room', string='Company')
     remarks = fields.Char(string='Remarks')
     qty = fields.Integer(string='Quantity')
@@ -70,7 +74,7 @@ class RoomChecklistLine(models.Model):
         ('non_available', 'Not Available')],
         string='Status',
     )
-    checklist_image = fields.Binary(string='Image')
+    checklist_image = fields.Binary(string='Image', related='product_id.image_1920')
 
 
 class HousekepingChecklist(models.Model):
@@ -87,11 +91,10 @@ class HousekepingChecklist(models.Model):
     def fetch_checklist(self):
         room_obj = self.env["hotel.reservation"]
         room_ids = room_obj.search([('reservation_no', '=', self.reservation_id.reservation_no)])
-        print('==================================', self.reservation_id.reservation_no)
         list = [(5, 0, 0)]
         for i in room_ids.checkin_checklist_line:
             vals = {
-                'name': i.name,
+                'product_id': i.product_id.id,
                 'things_selection': i.things_selection,
                 'qty': i.qty,
                 'reservation_checklist_image': i.checklist_image
