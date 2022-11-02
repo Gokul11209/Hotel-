@@ -101,7 +101,10 @@
                             <field name="adults" required="1"/>
                             <field name="children"/>
                             <field name="booking_hrs" force_save="1"/>
+                            <field name="guest_type_nation" force_save="1"  readonly="1"/>
+                            <field name="booking_source" force_save="1"  readonly="1"/>
                             <field name="days" force_save="1" readonly="1"/>
+                            <field name="amount_Receive" force_save="1" readonly="1"/>
                             <field name="proof_type" force_save="1" attrs="{'readonly': [('state', '=', 'done')]}"/>
                         </group>
                     </group>
@@ -433,7 +436,7 @@
                     </group>
                     <group colspan="4" col="4">
                         <field name="room_categ_id" widget="many2many_tags"/>
-                        <field name="room_category" widget="many2many_tags"/>
+                        <field name="room_name" widget="many2many_tags"/>
                     </group>
                     <notebook>
                         <page name="room_summary" string="Room Summary">
@@ -518,10 +521,16 @@
                             <field name="partner_invoice_id" readonly="1" force_save="1"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                            <field name="partner_order_id" readonly="1" force_save="1"
+                            <field name="booking_source"  force_save="1"
+                                   placeholder="e.g.WalkIn OR Online"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="guest_type_nation"  force_save="1"
+                                   placeholder="e.g.Domestic"
+                                   attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
+                            <field name="partner_order_id" readonly="1" force_save="1" invisible="1"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
-                            <field name="partner_shipping_id" readonly="1" force_save="1"
+                            <field name="partner_shipping_id" readonly="1" force_save="1" invisible="1"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'required': [('guest_creation', '=', 'exist')]}"/>
                             <field name="journal" invisible="1" attrs="{'required': [('guest_creation', '=', 'exist')]}"

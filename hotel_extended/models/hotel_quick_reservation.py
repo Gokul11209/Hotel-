@@ -135,6 +135,10 @@ class QuickRoomReservation(models.TransientModel):
     date_today = fields.Date("Date", default=lambda self: fields.Date.today())
     time_interval = fields.Char('Time Interval')
     remaining_time = fields.Char(string="Remaining Time", compute="_compute_remain_hrs")
+    guest_type_nation = fields.Char('Guest Type')
+    booking_source = fields.Char('Booking Source')
+
+    amount_Receive = fields.Char('Amount state')
 
     @api.onchange('room_id')
     def fetch_data_checklistline(self):
@@ -393,6 +397,12 @@ class QuickRoomReservation(models.TransientModel):
         ])
         print("=====================", journal)
         journal.action_post()
+        print("==========================",journal.state)
+        if journal.state == 'posted':
+            self.amount_Receive = 'Received'
+        elif journal.state == 'draft':
+            self.amount_Receive = 'Progress'
+
         if self.check_in and self.check_out:
             for res in self:
                 if self.advance_amt == 0:
@@ -411,6 +421,9 @@ class QuickRoomReservation(models.TransientModel):
                             "adults": res.adults,
                             "children": res.children,
                             "proof_type": res.add_proof,
+                            "guest_type_nation": res.guest_type_nation,
+                            "booking_source": res.booking_source,
+                            "amount_Receive": res.amount_Receive,
                             "advance_payment": res.advance_amt,
                             "reservation_line": [
                                 (
@@ -440,6 +453,9 @@ class QuickRoomReservation(models.TransientModel):
                         "adults": res.adults,
                         "children": res.children,
                         "proof_type": res.add_proof,
+                        "guest_type_nation": res.guest_type_nation,
+                        "booking_source": res.booking_source,
+                        "amount_Receive": res.amount_Receive,
                         "state": "confirm",
                         "advance_payment": res.advance_amt,
                         "reservation_line": [

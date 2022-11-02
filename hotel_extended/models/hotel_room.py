@@ -104,10 +104,11 @@ class RoomReservationSummary(models.Model):
     room_categ_id = fields.Many2many(
         "hotel.floor", string="Floor Category", ondelete="restrict"
     )
-    room_category= fields.Many2many("hotel.room.type",string="Room Category")
+    room_name= fields.Many2many("hotel.room",string="Room Number")
 
     summary_header = fields.Text("Summary Header")
     room_summary = fields.Text("Room Summary")
+
 
     def room_reservation(self):
         """room_line_ids
@@ -129,7 +130,7 @@ class RoomReservationSummary(models.Model):
         self.get_room_summary()
         self.date_to += timedelta(seconds=1)
 
-    @api.onchange("date_from", "date_to","room_categ_id","room_category","room_summary")  # noqa C901 (function is too complex)
+    @api.onchange("date_from", "date_to","room_categ_id","room_name","room_summary")  # noqa C901 (function is too complex)
     def get_room_summary(self):  # noqa C901 (function is too complex)
         """
         @param self: object pointer
@@ -179,11 +180,11 @@ class RoomReservationSummary(models.Model):
 
             if self.room_categ_id:
                 domain = [('floor_id', '=', self.room_categ_id.ids)]
-            elif self.room_category:
-                domain = [('room_categ_id', '=', self.room_category.ids)]
+            elif self.room_name:
+                domain = [('room_categ_id', '=', self.room_name.ids)]
 
             all_room_detail = []
-            if self.room_categ_id or self.room_category:
+            if self.room_categ_id or self.room_name:
                 room_ids = room_obj.search(domain)
                 for room in room_ids:
                     room_detail = {}

@@ -136,6 +136,9 @@ class HotelReservation(models.Model):
     advance_payment = fields.Float(string="Advance")
     proof_type = fields.Binary(string='Proof')
     days_1 = fields.Float(string='Days', store=True)
+    guest_type_nation = fields.Char('Guest Type')
+    booking_source = fields.Char('Booking Source')
+    amount_Receive = fields.Char('Amount state')
 
     reservation_hrs_selection = fields.Selection([
         ('short', 'Free Hours'),

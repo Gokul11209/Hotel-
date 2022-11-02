@@ -42,7 +42,7 @@ class TimeBasedRoomReserve(models.Model):
     room_categ_id = fields.Many2many(
         "hotel.floor", string="Floor Category", ondelete="restrict"
     )
-    room_category = fields.Many2many("hotel.room.type", string="Room Category")
+    room_category = fields.Many2many("hotel.room", string="Room Number")
 
     summary_header = fields.Text("Summary Header")
     room_summary = fields.Text("Room Summary")
