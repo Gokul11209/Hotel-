@@ -60,53 +60,84 @@
                             <div class="page" align="center"
                                  style="padding: 10px; background-color: white; color: #454748">
                                 <strong style="font-size:20px;">GUEST RESERVATION REPORT</strong>
-
                                 <table class="table table-sm table-bordered"
                                        style="padding: 20px; background-color: white; color: #454748;border-color:rgb(233,232,233);
                                     border-collapse:separate;border-radius:8pt;border: 2px solid black">
                                     <tr>
-                                        <td colspan="4" class="text-left">
+                                        <td colspan="3" class="text-left">
                                             <strong>Guest Name</strong>
                                             <strong class="px-2">:</strong>
                                             <span t-field="o.partner_id"/>
+                                            <br/>
+                                            <strong>Address</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                                            <span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/>
+                                            <br/>
+                                            <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                                            <span t-if="o.partner_id.state_id.name"
+                                                  t-field="o.partner_id.state_id.name"/>
+                                            <span t-if="o.partner_id.country_id.name"
+                                                  t-field="o.partner_id.country_id.name"/>
+                                            <br/>
+                                            <span t-if="o.partner_id.phone" t-field="o.partner_id.phone"/>
+                                            <strong>Contact Number</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-if="o.partner_id.mobile" t-field="o.partner_id.mobile"/>
+                                            <br/>
+                                            <strong>Guest Type</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-field="o.reservation_id.guest_type_nation"></span>
+                                            <strong class="px-2"></strong>
                                         </td>
-                                        <td colspan="3" class="text-center">
+                                        <td colspan="3" class="text-left">
+                                            <strong>Room Type</strong>
+                                            <strong class="px-2">:</strong>
+                                            <t t-foreach="o.room_line_ids" t-as="l">
+                                                <span t-field="l.product_id"></span>
+                                            </t>
+                                            <br/>
                                             <strong>Room Number</strong>
                                             <strong class="px-2">:</strong>
                                             <span t-field="o.reservation_id"></span>
+                                            <br/>
+                                            <strong>Room Capacity</strong>
+                                            <strong class="px-2">:</strong>
+                                            <t t-foreach="o.reservation_id" t-as="l">
+                                                <span t-field="l.reservation_line.reserve.capacity"></span>
+                                            </t>
+                                            <br/>
+                                            <strong>Adults</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-field="o.reservation_id.adults"></span>
+                                            <br/>
+                                            <strong>Children</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-field="o.reservation_id.children"></span>
                                         </td>
                                     </tr>
                                     <td colspan="7" class="text-center">
-                                        <strong style="align:center;">Reservation Information</strong>
+                                        <strong style="align:center;">Guest Room Booking Information</strong>
                                     </td>
                                     <tr>
                                         <td colspan="7" valign="middle" align="center"
                                             class="padding_all tbottom ttop text-left">
-                                            <t t-foreach="o.reservation_id" t-as="l">
-                                                <strong>Room Capacity</strong>
-                                                <strong class="px-2">:</strong>
-                                                <span t-field="l.reservation_line.reserve.capacity"></span>
-                                            </t>
-                                            <strong class="px-2"></strong>
-                                            <strong>Adults</strong>
-                                            <strong class="px-2">:</strong>
-                                            <span t-field="o.reservation_id.adults"></span>
-                                            <strong class="px-2"></strong>
-                                            <strong>Children</strong>
-                                            <strong class="px-2">:</strong>
-                                            <span t-field="o.reservation_id.children"></span>
-                                            <strong class="px-2"></strong>
-                                            <strong>Hour's</strong>
-                                            <strong class="px-2">:</strong>
-                                            <span t-field="o.reservation_id.booking_hrs"></span>
-                                            <strong class="px-2"></strong>
-                                            <strong>Day's</strong>
-                                            <strong class="px-2">:</strong>
-                                            <span t-field="o.reservation_id.days"></span>
                                             <strong class="px-2"></strong>
                                             <strong>Advance Amount</strong>
                                             <strong class="px-2">:</strong>
                                             <span t-field="o.reservation_id.advance_payment"></span>
+                                            <strong class="px-2"></strong>
+                                            <strong>Amount State</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-field="o.reservation_id.amount_Receive"></span>
+                                            <strong class="px-2"></strong>
+                                            <strong>Guest Type</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-field="o.reservation_id.guest_type_nation"></span>
+                                            <strong class="px-2"></strong>
+                                            <strong>Booking Source</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-field="o.reservation_id.booking_source"></span>
                                         </td>
                                     </tr>
 
@@ -119,12 +150,6 @@
                                         </th>
                                         <th width="10%" class="text-center">
                                             <strong>Check Out</strong>
-                                        </th>
-                                        <th width="10%" class="text-center">
-                                            <strong>Room Name</strong>
-                                        </th>
-                                        <th width="10%" class="text-center">
-                                            <strong>Room Category</strong>
                                         </th>
                                         <th width="10%" class="text-center">
                                             <strong>Duration</strong>
@@ -163,30 +188,6 @@
                                                 </t>
                                             </t>
                                             <t>
-                                                <t t-if="l.product_id">
-                                                    <td width="10%" class="padding_all tleft tbottom ttop text-left">
-                                                        <span t-field="l.product_id"/>
-                                                    </td>
-                                                </t>
-                                                <t t-else="">
-                                                    <td width="10%" class="padding_all tleft tbottom ttop text-center">
-                                                        <span>-</span>
-                                                    </td>
-                                                </t>
-                                            </t>
-                                            <t>
-                                                <t t-if="l.name">
-                                                    <td width="10%" class="padding_all tleft tbottom ttop text-left">
-                                                        <span t-field="l.name"/>
-                                                    </td>
-                                                </t>
-                                                <t t-else="">
-                                                    <td width="10%" class="padding_all tleft tbottom ttop text-center">
-                                                        <span>-</span>
-                                                    </td>
-                                                </t>
-                                            </t>
-                                            <t>
                                                 <t t-if="l.day">
                                                     <td width="10%" class="padding_all tleft tbottom ttop text-right">
                                                         <span t-field="l.day"/>
@@ -216,16 +217,14 @@
                                     <br/>
                                     <tr>
                                         <td colspan="4">
-                                            <table class="table table-sm table-bordered"
-                                                   style="padding:2px; background-color: white; color: #454748;
-                                    border-collapse:separate;border-radius:8pt">
+                                            <table class="table table-sm table-bordered">
                                                 <tr>
                                                     <strong>Guest ID Proof:</strong>
                                                 </tr>
                                                 <tr>
                                                     <td class="padding_all tleft tbottom ttop text-center">
                                                         <img t-if="o.partner_id.proof_img"
-                                                             style="height:60;width:60%;" class="image"
+                                                             style="height:40;width:50%;" class="image"
                                                              t-att-src="image_data_uri(o.partner_id.proof_img)"/>
                                                     </td>
                                                 </tr>
@@ -236,7 +235,6 @@
                                                 <tr>
                                                     <strong>Payment Details:</strong>
                                                 </tr>
-                                                <br/>
                                                 <br/>
                                                 <tr class="text-right">
                                                     <td colspan="7" class="text-right">
@@ -267,13 +265,40 @@
                                                         <span>&amp;nbsp;&amp;nbsp;</span>
                                                         <strong>Total</strong>
                                                         <strong class="px-2">:</strong>
-                                                        <span t-field="o.amount_total"/>
+                                                        <span t-field="o.amount_total"></span>
+                                                        <t t-set="advance_amount"
+                                                           t-value="o.reservation_id.advance_payment"/>
+                                                        <t t-set="total" t-value="o.amount_total"/>
+                                                        <br/>
+                                                        <t t-if="advance_amount">
+                                                            <strong>Advance</strong>
+                                                            <strong class="px-2">:</strong>
+                                                            <span t-esc="advance_amount"></span>
+                                                        </t>
+                                                        <span>__________________________________________</span>
+                                                        <br/>
+                                                        <strong>Balance</strong>
+                                                        <strong class="px-2">:</strong>
+                                                        <span t-esc="total-advance_amount"
+                                                              t-options='{"widget": "float", "precision": 2}'/>
                                                     </td>
                                                 </tr>
+                                                <br/>
+                                                <br/>
                                             </table>
+                                        </td>
+                                        <br/>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7">
+                                            <strong>Terms and Conditions</strong>
+                                            <strong class="px-2">:</strong>
+                                            <span t-field="o.note"></span>
                                         </td>
                                     </tr>
                                 </table>
+                                <br/>
+                                <br/>
                                 <br/>
                                 <div align="left" style="margin-top: 10px; font-size:15px;">
                                     <div class="row">
@@ -286,7 +311,6 @@
                                         </div>
                                         <div class="col-3" align="center">
                                         </div>
-
                                         <div class="col-3" align="right">
                                             <strong>
                                                 Guest Signature
