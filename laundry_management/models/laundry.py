@@ -414,7 +414,11 @@ class Washing(models.Model):
                 break
         if f == 0:
             self.laundry_obj.laundry_obj.state = 'done'
-            folio_id = self.env["hotel.folio"].search([("reservation_id", "=", self.laundry_obj.laundry_obj.res_id.id)])
+            if self.laundry_obj.laundry_obj.res_id:
+                folio_id = self.env["hotel.folio"].search([("reservation_id", "=", self.laundry_obj.laundry_obj.res_id.id)])
+            else:
+                folio_id = self.env["hotel.folio"].search([("room_num_floor", "=", self.laundry_obj.laundry_obj.room_num_in_squ)])
+
             print("ooooooooooooooooooooooooooooooooo",folio_id)
             if folio_id:
                 line_vals = []

@@ -11,7 +11,13 @@ class HotelFolio(models.Model):
     reservation_id = fields.Many2one(
         "hotel.reservation", "Reservation", ondelete="restrict"
     )
+    room_num_floor = fields.Char("Room Number")
 
+    @api.onchange('reservation_id')
+    def get_room_num_floor(self):
+        room = self.env['hotel.room'].sudo().search([
+            ('name', '=', self.room_line_ids.product_id.name)])
+        self.room_num_floor=room.room_no
     def write(self, vals):
         res = super(HotelFolio, self).write(vals)
         reservation_line_obj = self.env["hotel.room.reservation.line"]
