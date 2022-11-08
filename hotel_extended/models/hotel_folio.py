@@ -11,9 +11,9 @@ class HotelFolio(models.Model):
     reservation_id = fields.Many2one(
         "hotel.reservation", "Reservation", ondelete="restrict"
     )
-    room_num_floor = fields.Char("Room Number")
+    room_num_floor = fields.Char("Room Number" ,compute='get_room_num_floor')
 
-    @api.onchange('reservation_id')
+    @api.depends('reservation_id')
     def get_room_num_floor(self):
         room = self.env['hotel.room'].sudo().search([
             ('name', '=', self.room_line_ids.product_id.name)])
