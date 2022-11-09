@@ -17,8 +17,8 @@
                     <header>
                         <button name="confirm_order" class="oe_highlight" string="Confirm Order" type="object"
                                 states="draft"/>
-                        <button name="done_state" class="oe_highlight" string="Done" type="object"
-                                states="done"/>
+<!--                        <button name="done_state" class="oe_highlight" string="Done" type="object"-->
+<!--                                states="done"/>-->
                         <button name="create_invoice" class="oe_highlight" string="Create Invoice" type="object"
                                 attrs="{'invisible': ['|',('invoice_status', '=', 'invoiced'), ('state', '!=', 'done')]}"/>
                         <button name="return_dress" string="Return" class="oe_highlight" type="object" states="done"/>
@@ -49,10 +49,11 @@
                                 <field name="inter_laundry"/>
                                 <newline/>
                                 <field name="laundry_activity_type" widget="radio" options="{'horizontal': True}"
-                                    attrs="{'invisible': [('inter_laundry','=',False)]}"/>
+                                    attrs="{'required': [('inter_laundry', '=', True)],'invisible': [('inter_laundry','=',False)]}"/>
                             </group>
                             <group>
-                                <field name="room_num_in_squ" readonly="1" force_save="1"/>
+                                <field name="room_num_in_squ" readonly="1" force_save="1"
+                                attrs="{'required': [('inter_laundry', '=', True)],'invisible': [('inter_laundry','=',False)]}"/>
                                 <field name="res_id" attrs="{'required': [('inter_laundry', '=', False)],'invisible': [('inter_laundry','=',True)]}"
                                        force_save="1"/>
                                 <field name="floor_no" options="{'no_open': True, 'no_create': True}"

@@ -11,7 +11,7 @@ class HotelHousekeepingActivities(models.Model):
 
     housekeeping_id = fields.Many2one("hotel.housekeeping", "Reservation")
     today_date = fields.Date("Today Date")
-    activity_id = fields.Many2one("hotel.activity", "Housekeeping Activity")
+    activity_id = fields.Many2one("product.product", "Housekeeping Activity")
     housekeeper_id = fields.Many2one("res.users", "Housekeeper", required=True)
     clean_start_time = fields.Datetime("Clean Start Time", required=True)
     clean_end_time = fields.Datetime("Clean End Time", required=True)

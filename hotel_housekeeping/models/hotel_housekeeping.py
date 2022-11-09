@@ -47,6 +47,9 @@ class HotelHousekeeping(models.Model):
     hotel_room_id = fields.Many2one("hotel.room", "Reservation ID")
     floor_id = fields.Many2one("hotel.floor", "Floor ")
     hotel_rooms = fields.Char("Rooms Details")
+    categ = fields.Many2one("hotel.room.type", "Room")
+    room_number = fields.Char("Room No")
+    room_num_in_squ = fields.Char("Number")
 
     activity_line_ids = fields.One2many(
         "hotel.housekeeping.activities",
@@ -99,15 +102,12 @@ class HotelHousekeeping(models.Model):
     housekeeping_cancel_remarks_2 = fields.Text(string='Housekeeping Cancel Remarks')
     housekeeping_cancel_remarks_3 = fields.Text(string='Housekeeping Cancel Remarks')
 
-    @api.onchange('activity_type', 'hotel_room_id')
-    def room_no_added(self):
-        for rec in self:
-            if rec.hotel_room_id:
-                roomno = str(rec.hotel_room_id.room_no) + '-' + str(rec.hotel_room_id.name) + '-' + str(
-                    rec.floor_id.name)
-                rec.hotel_rooms = roomno
-            else:
-                rec.hotel_rooms = ''
+    @api.onchange('floor_id', 'categ', 'room_number')
+    def onchange_room_number(self):
+        floor = self.floor_id.short_code
+        category = self.categ.short_code
+        if floor and category and self.room_number:
+            self.room_num_in_squ = str(floor) + '/' + str(category) + '/' + str(self.room_number)
 
     def house_keeping_cancel(self):
         view_id = self.env['housekeeping.cancel']
@@ -143,15 +143,15 @@ class HotelHousekeeping(models.Model):
 
     def get_service_order_line_items(self):
         line_vals = []
-        # for line in self.activity_line_ids:
-        if self.activity_line_ids:
-            vals = [0, 0, {
-                'product_id': 12,
-                'product_uom_qty': len(self.activity_line_ids),
-                # 'name': line.housekeeper_id.name,
+        for line in self.activity_line_ids:
+            if self.activity_line_ids:
+                vals = [0, 0, {
+                    'product_id': line.activity_id.id,
+                    'product_uom_qty': len(self.activity_line_ids),
+                    'name': line.housekeeper_id.name,
 
-            }]
-            line_vals.append(vals)
+                }]
+                line_vals.append(vals)
         return line_vals
 
     def proforma_housekeeping_activity(self):
@@ -176,8 +176,11 @@ class HotelHousekeeping(models.Model):
         ---------------------------------------
         @param self: object pointer
         """
+        if self.room_id:
+            folio_id = self.env['hotel.folio'].sudo().search([('reservation_id', '=', self.room_id.id)])
+        else:
+            folio_id = self.env['hotel.folio'].sudo().search([("room_num_floor", "=", self.room_num_in_squ)])
 
-        folio_id = self.env['hotel.folio'].sudo().search([('reservation_id', '=', self.room_id.id)])
         folio_id.sudo().write({
             'hotel_house_keeping_orders': self.proforma_housekeeping_activity(),
             'service_line_ids': self.get_service_order_line_items(),

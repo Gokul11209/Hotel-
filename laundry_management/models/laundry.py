@@ -165,24 +165,9 @@ class LaundryManagement(models.Model):
 
             return value
 
-    def get_service_order_line_items(self):
-        line_vals = []
-        for line in self.order_lines:
-            if line:
-                vals = [0, 0, {
-                    'product_id': line.product_id.id,
-                    'product_uom_qty': line.qty,
-                    'name': self.name + '/' + line.product_id.name,
-                    'price_unit': line.washing_type.amount,
-                }]
-                line_vals.append(vals)
-        return line_vals
 
-    def done_state(self):
-        folio_id = self.env['hotel.folio'].sudo().search([('reservation_id', '=', self.res_id.id)])
-        folio_id.sudo().write({
-            'service_line_ids': self.get_service_order_line_items(),
-        })
+
+
 
     name = fields.Char(string="Label", default="/", readonly=True)
     # proforma_id = fields.Many2one('hotel.folio', string="Proforma")
@@ -391,6 +376,19 @@ class Washing(models.Model):
                      })
         self.state = 'process'
 
+    def get_service_order_line_items(self):
+        line_vals = []
+        for line in self.laundry_obj.laundry_obj.order_lines:
+            if line:
+                vals = [0, 0, {
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': line.qty,
+                    'name': self.name + '/' + line.product_id.name,
+                    'price_unit': line.washing_type.amount,
+                }]
+                line_vals.append(vals)
+        return line_vals
+
     def set_to_done(self):
         self.state = 'done'
         f = 0
@@ -419,6 +417,9 @@ class Washing(models.Model):
             else:
                 folio_id = self.env["hotel.folio"].search([("room_num_floor", "=", self.laundry_obj.laundry_obj.room_num_in_squ)])
 
+            folio_id.sudo().write({
+                'service_line_ids': self.get_service_order_line_items(),
+            })
             print("ooooooooooooooooooooooooooooooooo",folio_id)
             if folio_id:
                 line_vals = []
