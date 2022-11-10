@@ -140,6 +140,17 @@ class QuickRoomReservation(models.TransientModel):
 
     amount_Receive = fields.Char('Amount state')
 
+    @api.onchange('mobile')
+    def mobile_already_exits_function(self):
+        if self.mobile:
+            if len(self.mobile) > 9:
+                search = self.env['res.partner'].search([('mobile', '=', self.mobile)])
+                if search:
+                    raise ValidationError(_(' Alert!!.. Mobile Number Already Exits'))
+                else:
+                    pass
+
+
     @api.onchange('room_id')
     def fetch_data_checklistline(self):
         room_obj = self.env["hotel.room"]
