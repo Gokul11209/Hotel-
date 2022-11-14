@@ -104,7 +104,7 @@ class RoomReservationSummary(models.Model):
     room_categ_id = fields.Many2many(
         "hotel.floor", string="Floor Category", ondelete="restrict"
     )
-    room_name= fields.Many2many("hotel.room",string="Room Number")
+    room_name = fields.Many2many("hotel.room",string="Room Number")
 
     summary_header = fields.Text("Summary Header")
     room_summary = fields.Text("Room Summary")
@@ -180,8 +180,10 @@ class RoomReservationSummary(models.Model):
 
             if self.room_categ_id:
                 domain = [('floor_id', '=', self.room_categ_id.ids)]
+                if self.room_name:
+                    domain = [('floor_id', '=', self.room_categ_id.ids),('name', '=', self.room_name.name)]
             elif self.room_name:
-                domain = [('room_categ_id', '=', self.room_name.ids)]
+                domain = [('name', '=', self.room_name.name)]
 
             all_room_detail = []
             if self.room_categ_id or self.room_name:
