@@ -152,7 +152,7 @@ class ForceCloseWizard(models.TransientModel):
         current_user = self.env.user.name
         text = '[ ' + current_user + ' ]' + '[ ' + now + ' ]' + ' - ' + self.remarks + '\n'
         active_id.write({'cancel_remarks': text})
-        active_id.write({'state': 'short_close'})
+        active_id.write({'state': 'short'})
         vals = {
             "check_out": now,
         }
