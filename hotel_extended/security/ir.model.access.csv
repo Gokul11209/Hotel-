@@ -23,4 +23,7 @@ access_housekeeping_checklist_line,housekeeping.checklist.line,model_housekeepin
 access_room_checklist_line,room.checklist.line,model_room_checklist_line,base.group_user,1,1,1,1
 access_checkin_checklist,checkin.checklist,model_checkin_checklist,base.group_user,1,1,1,1
 access_hotel_proforma_force_close,hotel.proforma.force.close,model_hotel_proforma_force_close,,1,1,1,1
+access_hotel_guest_type,hotel.guest.type,model_hotel_guest_type,,1,1,1,1
+access_hotel_booking_source,hotel.booking.source,model_hotel_booking_source,,1,1,1,1
+
 

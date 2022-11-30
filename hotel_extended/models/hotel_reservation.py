@@ -136,8 +136,8 @@ class HotelReservation(models.Model):
     advance_payment = fields.Float(string="Advance")
     proof_type = fields.Binary(string='Proof')
     days_1 = fields.Float(string='Days', store=True)
-    guest_type_nation = fields.Char('Guest Type')
-    booking_source = fields.Char('Booking Source')
+    guest_type_nation = fields.Many2one('hotel.guest.type', string='Guest Type')
+    booking_source = fields.Many2one('hotel.booking.source', string='Booking Source')
     amount_Receive = fields.Char('Amount state')
 
     reservation_hrs_selection = fields.Selection([
@@ -687,3 +687,17 @@ class HotelRoomReservationLine(models.Model):
     )
     reservation_id = fields.Many2one("hotel.reservation", "Reservation")
     status = fields.Selection(string="state", related="reservation_id.state")
+
+
+class HotelBookingSource(models.Model):
+    _name = "hotel.booking.source"
+    _description = "Hotel Booking Source"
+
+    name = fields.Char(string="Name")
+
+
+class HotelGuestType(models.Model):
+    _name = "hotel.guest.type"
+    _description = "Hotel Guest Type"
+
+    name = fields.Char(string="Guest Type")

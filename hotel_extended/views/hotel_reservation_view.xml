@@ -655,4 +655,89 @@
     <!--            action="action_hotel_reservation_summary"-->
     <!--            parent="hotel_reservation_menu"-->
     <!--            sequence="1"/>-->
+
+    <record id="view_action_booking_source" model="ir.actions.act_window">
+        <field name="name">Booking Source</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hotel.booking.source</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_hotel_booking_source_form" model="ir.ui.view">
+        <field name="name">hotel.booking.source.form</field>
+        <field name="model">hotel.booking.source</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_booking_source_tree" model="ir.ui.view">
+        <field name="name">hotel.booking.source.tree</field>
+        <field name="model">hotel.booking.source</field>
+        <field name="arch" type="xml">
+            <tree default_order='name desc'>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <menuitem id="hotel_booking_source"
+              name="Booking Source"
+              parent="hotel.hotel_configuration_menu"
+              sequence="15"/>
+
+    <menuitem id="menu_open_hotel_booking_source"
+              name="Booking Source"
+              action="view_action_booking_source"
+              parent="hotel_booking_source"
+              sequence="15"/>
+
+    <record id="action_guest_type" model="ir.actions.act_window">
+        <field name="name">Guest Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hotel.guest.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_hotel_guest_type_form" model="ir.ui.view">
+        <field name="name">hotel.guest.type.form</field>
+        <field name="model">hotel.guest.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_guest_type_tree" model="ir.ui.view">
+        <field name="name">hotel.guest.type.tree</field>
+        <field name="model">hotel.guest.type</field>
+        <field name="arch" type="xml">
+            <tree default_order='name desc'>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <menuitem id="hotel_guest_type"
+              name="Guest Type"
+              parent="hotel.hotel_configuration_menu"
+              sequence="17"/>
+
+    <menuitem id="menu_open_hotel_guest_type"
+              name="Guest type"
+              action="action_guest_type"
+              parent="hotel_guest_type"
+              sequence="17"/>
+
 </odoo>

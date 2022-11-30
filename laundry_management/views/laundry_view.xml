@@ -90,7 +90,7 @@
                                         <field name="description"/>
                                         <field name="qty"/>
                                         <field name="washing_type"/>
-                                        <field name="extra_work" widget="many2many_tags"/>
+                                        <field name="extra_work"/>
                                         <field name="state"/>
                                         <field name="amount"/>
                                     </tree>

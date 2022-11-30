@@ -135,8 +135,8 @@ class QuickRoomReservation(models.TransientModel):
     date_today = fields.Date("Date", default=lambda self: fields.Date.today())
     time_interval = fields.Char('Time Interval')
     remaining_time = fields.Char(string="Remaining Time", compute="_compute_remain_hrs")
-    guest_type_nation = fields.Char('Guest Type')
-    booking_source = fields.Char('Booking Source')
+    guest_type_nation = fields.Many2one('hotel.guest.type', string='Guest Type')
+    booking_source = fields.Many2one('hotel.booking.source', string='Booking Source')
 
     amount_Receive = fields.Char('Amount state')
 
@@ -432,8 +432,8 @@ class QuickRoomReservation(models.TransientModel):
                             "adults": res.adults,
                             "children": res.children,
                             "proof_type": res.add_proof,
-                            "guest_type_nation": res.guest_type_nation,
-                            "booking_source": res.booking_source,
+                            "guest_type_nation": res.guest_type_nation.id,
+                            "booking_source": res.booking_source.id,
                             "amount_Receive": res.amount_Receive,
                             "advance_payment": res.advance_amt,
                             "reservation_line": [
@@ -464,8 +464,8 @@ class QuickRoomReservation(models.TransientModel):
                         "adults": res.adults,
                         "children": res.children,
                         "proof_type": res.add_proof,
-                        "guest_type_nation": res.guest_type_nation,
-                        "booking_source": res.booking_source,
+                        "guest_type_nation": res.guest_type_nation.id,
+                        "booking_source": res.booking_source.id,
                         "amount_Receive": res.amount_Receive,
                         "state": "confirm",
                         "advance_payment": res.advance_amt,

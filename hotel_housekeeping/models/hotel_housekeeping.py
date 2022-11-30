@@ -155,19 +155,33 @@ class HotelHousekeeping(models.Model):
         return line_vals
 
     def proforma_housekeeping_activity(self):
-        line_vals = []
-        # for line in self.activity_line_ids:
-        if self.room_id:
+        if self.activity_type == 'external':
+            line_vals = []
+
             vals = [0, 0, {
                 'current_date': self.current_date,
                 'clean_type': self.clean_type,
                 'room_id': self.room_id.id,
                 'inspector_id': self.inspector_id.id,
                 'inspect_date_time': self.inspect_date_time,
-
             }]
             line_vals.append(vals)
-        return line_vals
+            return line_vals
+
+        if self.activity_type == 'internal':
+            line_vals = []
+
+            vals = [0, 0, {
+                'current_date': self.current_date,
+                'clean_type': self.clean_type,
+                'internal_room': self.room_num_in_squ,
+                'inspector_id': self.inspector_id.id,
+                'inspect_date_time': self.inspect_date_time,
+            }]
+            line_vals.append(vals)
+            return line_vals
+
+        
 
     def room_done(self):
         """

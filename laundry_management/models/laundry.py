@@ -298,7 +298,7 @@ class LaundryManagementLine(models.Model):
     description = fields.Text(string='Description')
     washing_type = fields.Many2one('washing.type', string='Washing Type',
                                    required=1)
-    extra_work = fields.Many2many('washing.work', string='Extra Work')
+    extra_work = fields.Many2one('washing.work', string='Extra Work')
     amount = fields.Float(compute='get_amount', string='Amount')
     laundry_obj = fields.Many2one('laundry.order', invisible=1)
     state = fields.Selection([
@@ -379,12 +379,16 @@ class Washing(models.Model):
     def get_service_order_line_items(self):
         line_vals = []
         for line in self.laundry_obj.laundry_obj.order_lines:
+            if line.extra_work:
+                rate = line.washing_type.amount + line.extra_work.amount
+            else:
+                rate = line.washing_type.amount
             if line:
                 vals = [0, 0, {
                     'product_id': line.product_id.id,
                     'product_uom_qty': line.qty,
                     'name': self.name + '/' + line.product_id.name,
-                    'price_unit': line.washing_type.amount,
+                    'price_unit': rate,
                 }]
                 line_vals.append(vals)
         return line_vals

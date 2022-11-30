@@ -31,9 +31,10 @@ class HouseKeepingDetails(models.Model):
     #     "hotel.room",
     #     "Room No",
     # )
+    internal_room = fields.Char('Internal Room No')
     room_id = fields.Many2one(
         "hotel.reservation",
-        "Room No",
+        "External Room No",
     )
     inspector_id = fields.Many2one(
         "res.users",
