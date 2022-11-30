@@ -101,7 +101,7 @@ class RoomReservationSummary(models.Model):
         "Date To",
         default=lambda self: fields.Date.today() + relativedelta(days=30),
     )
-    room_categ_id = fields.Many2many(
+    room_categ_id = fields.Many2one(
         "hotel.floor", string="Floor Category", ondelete="restrict"
     )
     room_name = fields.Many2many("hotel.room",string="Room Number")
@@ -181,10 +181,12 @@ class RoomReservationSummary(models.Model):
             if self.room_categ_id:
                 domain = [('floor_id', '=', self.room_categ_id.ids)]
                 if self.room_name:
-                    domain = [('floor_id', '=', self.room_categ_id.ids),('name', '=', self.room_name.name)]
+                    domain = [
+                        ('floor_id', '=', self.room_categ_id.ids),
+                        ('id', 'in', [i for i in self.room_name.ids])
+                    ]
             elif self.room_name:
-                domain = [('name', '=', self.room_name.name)]
-
+                domain = [('id', 'in', [i for i in self.room_name.ids])]
             all_room_detail = []
             if self.room_categ_id or self.room_name:
                 room_ids = room_obj.search(domain)

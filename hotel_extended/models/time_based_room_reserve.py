@@ -188,58 +188,7 @@ class TimeBasedRoomReserve(models.Model):
                                                             "entry": entry,
                                                         }
                                                     )
-                            #                 if reserve_checkin_date <= chk_date <= reserve_checkout_date:
-                            #                     for entry in summary_header_list:
-                            #                     # Equal to checkout date
-                            #                         if chk_date == reserve_checkout_date and chk_date != reserve_checkin_date:
-                            #                             # chk_out_time = str(reserve_checkin_time).split(':')[0]
-                            #                             for i in room_list_stats:
-                            #                                 if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
-                            #                                         i['entry'] < entry:
-                            #                                     i.update(
-                            #                                         {
-                            #                                             "state": "Reserved",
-                            #                                             "date": str(chk_date),
-                            #                                             "room_id": room.id,
-                            #                                             "floor_id": room.floor_id.id,
-                            #                                             "is_draft": "No",
-                            #                                             "data_model": "",
-                            #                                             "data_id": reserve_val.reservation_id.id or 0,
-                            #                                         }
-                            #                                     )
-                            #                         elif chk_date != reserve_checkin_date and chk_date != reserve_checkout_date:
-                            #                             for i in room_list_stats:
-                            #                                 if i['state'] == 'Free' and str(i['date']) == str(chk_date):
-                            #                                     i.update(
-                            #                                         {
-                            #                                             "state": "Reserved",
-                            #                                             "date": str(chk_date),
-                            #                                             "room_id": room.id,
-                            #                                             "floor_id": room.floor_id.id,
-                            #                                             "is_draft": "No",
-                            #                                             "data_model": "",
-                            #                                             "data_id": reserve_val.reservation_id.id or 0,
-                            #                                         }
-                            #                                     )
-                            #
-                            #                         # Equal to checkin date
-                            #                         elif chk_date == reserve_checkin_date and chk_date != reserve_checkout_date:
-                            #                             # chk_in_time = str(reserve_checkin_time).split(':')[0]
-                            #                             for i in room_list_stats:
-                            #                                 if i['state'] == 'Free' and str(i['date']) == str(chk_date) and \
-                            #                                         i['entry'] > entry:
-                            #                                     i.update(
-                            #                                         {
-                            #                                             "state": "Reserved",
-                            #                                             "date": str(chk_date),
-                            #                                             "room_id": room.id,
-                            #                                             "floor_id": room.floor_id.id,
-                            #                                             "is_draft": "No",
-                            #                                             "data_model": "",
-                            #                                             "data_id": reserve_val.reservation_id.id or 0,
-                            #                                         }
-                            #                                     )
-                            #
+
                             else:
                                 if reserve_checkin_date <= chk_date <= reserve_checkout_date:
                                     print("===================_______++++++++++++++++")
@@ -309,6 +258,7 @@ class TimeBasedRoomReserve(models.Model):
                                                         "data_id": reserve_val.reservation_id.id or 0,
                                                     }
                                                 )
+
                 #         #SECOND TIME IN THE LOOP
                         else:
                             if self.time_interval:
@@ -397,29 +347,17 @@ class TimeBasedRoomReserve(models.Model):
                                                     }
                                                 )
 
-                # if not room.room_reservation_line_ids:
-                #     for entry in summary_header_list:
-                #         import datetime
-                #         if self.time_interval:
-                #             room_list_stats.append(
-                #                 {
-                #                     "state": "Free",
-                #                     "date": str(chk_date),
-                #                     "room_id": room.id,
-                #                     "entry": entry,
-                #                 }
-                #             )
-                #         else:
-                #             m2 = datetime.datetime.strptime(entry, '%I %p')
-                #             m3 = str(m2).split(':')[0].split(' ')[-1]
-                #             room_list_stats.append(
-                #                 {
-                #                     "state": "Free",
-                #                     "date": str(chk_date),
-                #                     "room_id": room.id,
-                #                     "entry": m3 + ':' + '00',
-                #                 }
-                #             )
+                if not room.room_reservation_line_ids:
+                    for entry in summary_header_list:
+                        room_list_stats.append(
+                            {
+                                "state": "Free",
+                                "date": str(chk_date),
+                                "room_id": room.id,
+                                "entry": entry,
+                            }
+                        )
+
 
                 room_detail.update({"value": room_list_stats})
                 all_room_detail.append(room_detail)
