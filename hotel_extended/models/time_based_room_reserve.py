@@ -39,7 +39,7 @@ class TimeBasedRoomReserve(models.Model):
         "Date To",
         default=lambda self: fields.Date.today() + relativedelta(days=30),
     )
-    room_categ_id = fields.Many2many(
+    room_categ_id = fields.Many2one(
         "hotel.floor", string="Floor Category", ondelete="restrict"
     )
     room_category = fields.Many2many("hotel.room", string="Room Number")
@@ -89,7 +89,6 @@ class TimeBasedRoomReserve(models.Model):
                 interval = datetime.datetime.strftime(t, '%H:%M')
                 summary_header_list.append(interval)
                 t += delta
-        print(summary_header_list)
         global reserve_checkin_date, reserve_checkout_date
         hours = [(n, "%d %s" % (n % 12 or 12, ["AM", "PM"][n > 11])) for n in range(24)]
         res = {}
@@ -103,7 +102,6 @@ class TimeBasedRoomReserve(models.Model):
         if not self.time_interval:
             for time in hours:
                 summary_header_list.append(time[1])
-            print(summary_header_list)
         domain = []
 
         if self.room_categ_id:
@@ -196,7 +194,6 @@ class TimeBasedRoomReserve(models.Model):
 
                             else:
                                 if reserve_checkin_date <= chk_date <= reserve_checkout_date:
-                                    print("===================_______++++++++++++++++")
                                     # Equal to checkout date
                                     if chk_date == reserve_checkin_date and chk_date == reserve_checkin_date:
                                         checkin_time = str(reserve_checkin_time).split(':')[0]
@@ -300,7 +297,6 @@ class TimeBasedRoomReserve(models.Model):
 
 
                             else:
-                                print(reserve_checkout_date)
                                 if reserve_checkin_date <= chk_date <= reserve_checkout_date:
                                     # Equal to checkout date
                                     if chk_date == reserve_checkout_date and chk_date != reserve_checkin_date:

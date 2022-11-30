@@ -59,7 +59,7 @@
                         <field name="time_interval"/>
                     </group>
                     <group colspan="4" col="4">
-                        <field name="room_categ_id" widget="many2many_tags"/>
+                        <field name="room_categ_id"/>
                         <field name="room_category" widget="many2many_tags"/>
                     </group>
                     <notebook>
