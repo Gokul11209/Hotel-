@@ -108,8 +108,13 @@ class TimeBasedRoomReserve(models.Model):
 
         if self.room_categ_id:
             domain = [('floor_id', '=', self.room_categ_id.ids)]
+            if self.room_category:
+                domain = [
+                    ('floor_id', '=', self.room_categ_id.ids),
+                    ('id', 'in', [i for i in self.room_category.ids])
+                ]
         elif self.room_category:
-            domain = [('room_categ_id', '=', self.room_category.ids)]
+            domain = [('id', 'in', [i for i in self.room_category.ids])]
         if self.date_today:
             room_ids = room_obj.search(domain)
             for room in room_ids:
